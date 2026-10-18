@@ -12,7 +12,7 @@ const bannedInEngine = [
 ].map(([selector, message]) => ({ selector, message }));
 
 export default tseslint.config(
-  { ignores: ['**/node_modules/**', '**/coverage/**', '**/dist/**'] },
+  { ignores: ['**/node_modules/**', '**/coverage/**', '**/dist/**', '**/dist-*/**', '**/test-results/**', '**/results/**'] },
   ...tseslint.configs.recommended,
   { files: ['**/test/**/*.ts', '**/e2e/**/*.ts'], rules: { '@typescript-eslint/no-explicit-any': 'off' } },
   {
