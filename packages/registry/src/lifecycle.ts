@@ -2,7 +2,7 @@ import { Rule, type RuleValidation } from '@fisc/schemas';
 
 export class RegistryError extends Error {}
 
-type Content = Pick<Rule, 'article' | 'page' | 'effectiveDate' | 'source' | 'params'>;
+type Content = Pick<Rule, 'article' | 'page' | 'effectiveDate' | 'source' | 'params' | 'author'>;
 
 /**
  * Modifier le contenu d'une règle crée une nouvelle version et retire toute validation :

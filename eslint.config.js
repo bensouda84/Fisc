@@ -14,6 +14,7 @@ const bannedInEngine = [
 export default tseslint.config(
   { ignores: ['**/node_modules/**', '**/coverage/**', '**/dist/**'] },
   ...tseslint.configs.recommended,
+  { files: ['**/test/**/*.ts', '**/e2e/**/*.ts'], rules: { '@typescript-eslint/no-explicit-any': 'off' } },
   {
     files: ['packages/engine/src/**/*.ts'],
     rules: {

@@ -1,0 +1,16 @@
+# Environnement local du POC. Les secrets viennent de .env (voir .env.example), jamais du dépôt.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fisc
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?définir POSTGRES_PASSWORD dans .env}
+      POSTGRES_DB: fisc
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["dbdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fisc"]
+      interval: 5s
+      retries: 10
+volumes:
+  dbdata:

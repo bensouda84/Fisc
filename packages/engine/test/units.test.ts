@@ -119,3 +119,23 @@ describe('résolution des règles', () => {
     expect(res.ok && res.rule.id).toBe('is-rate');
   });
 });
+
+import { reviveResult, toWireJson } from '../src/index.ts';
+
+describe('transport JSON', () => {
+  it('aller-retour sans perte : résultat → JSON → résultat', () => {
+    const cases = [
+      { ...common, donations: 4_000_000n, cdiHires: 2, apprentices: 1 },
+      { ...common, donations: 'UNKNOWN' as const, cdiHires: 2, apprentices: 0 },
+      { profit: 40_000_000n, donations: 0n, cdiHires: 2, apprentices: 0 },
+    ];
+    for (const input of cases) {
+      for (const kind of ['TEST', 'REAL'] as const) {
+        for (const mode of ['INTERNAL', 'CLIENT'] as const) {
+          const r = simulate(input, snapshot(kind), commercial, { mode, asOf: AS_OF });
+          expect(reviveResult(JSON.parse(toWireJson(r)))).toEqual(r);
+        }
+      }
+    }
+  });
+});

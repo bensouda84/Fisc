@@ -129,7 +129,7 @@ describe('états et garde-fous', () => {
     for (const mode of ['INTERNAL', 'CLIENT'] as const) {
       const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, { mode, asOf: AS_OF });
       expect(r.taxBefore).toBeNull();
-      expect(r.levers[0]?.reasons.some((x) => x.code === (mode === 'INTERNAL' ? 'RULE_PENDING' : 'RULE_NOT_AVAILABLE'))).toBe(true);
+      expect(r.levers[0]?.reasons.some((x) => x.code === (mode === 'INTERNAL' ? 'RULE_PENDING' : 'RULE_MISSING'))).toBe(true);
     }
   });
 
@@ -179,5 +179,16 @@ describe('règles bloquées', () => {
     const snap = snapshot('REAL', { IS_RATE: { status: 'DRAFT', validations: [] } });
     const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, client);
     expect(r.blockedRules).toContainEqual({ concept: 'IS_RATE', ruleId: 'is-rate', status: 'DRAFT' });
+  });
+});
+
+describe('règle de TEST et règle REAL en attente pour le même concept', () => {
+  it('mode client : la règle REAL en attente est rapportée, la règle de TEST reste invisible', () => {
+    const base = snapshot('TEST');
+    const real = { ...pendingRule('is-rate-real', 'IS_RATE', 'Taux de l’IS'), kind: 'REAL' } as never;
+    const snap = { ...base, rules: [...base.rules, real] };
+    const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, client);
+    expect(r.blockedRules).toContainEqual({ concept: 'IS_RATE', ruleId: 'is-rate-real', status: 'PENDING' });
+    expect(JSON.stringify(r, (_k, v) => (typeof v === 'bigint' ? v.toString() : v))).not.toContain('TEST');
   });
 });

@@ -113,5 +113,7 @@ export function resolveRule<C extends RuleConcept>(
       };
     }
   }
-  return { ok: false, ...failure(candidates[0], concept, mode, asOf) };
+  // En mode client, une règle de TEST n'est jamais décrite : on rapporte la règle REAL, ou son absence.
+  const reportable = mode === 'CLIENT' ? candidates.filter((r) => r.kind === 'REAL') : candidates;
+  return { ok: false, ...failure(reportable[0], concept, mode, asOf) };
 }

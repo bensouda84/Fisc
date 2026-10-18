@@ -3,3 +3,5 @@ coverage
 dist
 *.log
 .env
+test-results
+playwright-report
