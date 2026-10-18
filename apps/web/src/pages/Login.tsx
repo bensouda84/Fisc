@@ -42,8 +42,11 @@ export function Login({ onLogin, scheme, onToggleScheme }: { onLogin: (u: User) 
       <Card sx={{ width: '100%', maxWidth: 440 }}>
         <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
           <Stack component="form" spacing={2.5} onSubmit={submit} noValidate aria-labelledby="login-title">
-            <Typography variant="h2" component="h1" id="login-title">FISC.CI</Typography>
-            <Typography color="text.secondary">Simulation fiscale sourcée. Connectez-vous pour continuer.</Typography>
+            <Typography variant="h1" component="h1" id="login-title" sx={{ m: 0, lineHeight: 0 }}>
+              <Box component="img" src={scheme === 'dark' ? '/logo-dark.png' : '/logo-light.png'} alt="mesimpo" width={240} height={60} sx={{ height: 56, width: 'auto', maxWidth: '100%' }} />
+            </Typography>
+            <Typography color="text.secondary">Payez juste. Pas plus.</Typography>
+            <Typography>Simulation fiscale sourcée. Connectez-vous pour continuer.</Typography>
             {error && <Alert severity="error" role="alert">{error}</Alert>}
             <TextField label="Adresse e-mail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required fullWidth />
             <TextField label="Mot de passe" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required fullWidth />

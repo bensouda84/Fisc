@@ -13,7 +13,7 @@ test('registre — de EN ATTENTE à CONFIRMÉE par deux validateurs distincts, p
   await expect(page.getByRole('heading', { level: 1, name: 'Registre des règles' })).toBeVisible();
   const rule = page.getByTestId('rule-is-rate');
   await expect(rule).toContainText('En attente');
-  await expect(rule).toContainText('Sources candidates');
+  await expect(rule).toContainText('Classeur MARABU');
   await expectNoCriticalA11y(page, 'registre-regles');
   await shot(page, 'registre-desktop');
 

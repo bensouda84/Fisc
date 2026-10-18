@@ -68,7 +68,7 @@ export function buildOpenApi(routes: RouteDef<never, never>[]): unknown {
   }
   return {
     openapi: '3.1.0',
-    info: { title: 'FISC.CI — API du POC', version: '0.1.0' },
+    info: { title: 'mesimpo — API du POC', version: '0.1.0' },
     components: { securitySchemes: { bearer: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } } },
     paths,
   };

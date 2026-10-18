@@ -1,8 +1,9 @@
-import { argbFromHex, hexFromArgb, themeFromSourceColor, type Scheme } from '@material/material-color-utilities';
+import { argbFromHex, hexFromArgb, themeFromSourceColor, type CustomColorGroup, type Scheme } from '@material/material-color-utilities';
 import { createTheme, type Theme } from '@mui/material/styles';
 
-/** Couleur source : neutre par défaut, à remplacer par celle de MARABU (question ouverte Q3, ADR-0003). */
-export const SOURCE_COLOR = '#51606f';
+/** Couleurs de la charte mesimpo, échantillonnées sur le logo fourni (docs/BRAND.md). */
+export const SOURCE_COLOR = '#109150'; // vert du logo : source des rôles M3
+export const ACCENT_COLOR = '#fda92b'; // orange de la flèche : couleur d'accent
 
 const ROLES = [
   'primary', 'onPrimary', 'primaryContainer', 'onPrimaryContainer',
@@ -13,14 +14,21 @@ const ROLES = [
   'outline', 'outlineVariant', 'inverseSurface', 'inverseOnSurface', 'inversePrimary',
 ] as const;
 
-type Role = (typeof ROLES)[number];
+type Role = (typeof ROLES)[number] | 'accent' | 'onAccent' | 'accentContainer' | 'onAccentContainer';
 export type Tokens = Record<Role, string>;
 
-const toTokens = (scheme: Scheme): Tokens =>
-  Object.fromEntries(ROLES.map((r) => [r, hexFromArgb(scheme[r])])) as Tokens;
+const toTokens = (scheme: Scheme, accent: CustomColorGroup['light']): Tokens => ({
+  ...(Object.fromEntries(ROLES.map((r) => [r, hexFromArgb(scheme[r])])) as Record<(typeof ROLES)[number], string>),
+  accent: hexFromArgb(accent.color),
+  onAccent: hexFromArgb(accent.onColor),
+  accentContainer: hexFromArgb(accent.colorContainer),
+  onAccentContainer: hexFromArgb(accent.onColorContainer),
+});
 
-const source = themeFromSourceColor(argbFromHex(SOURCE_COLOR));
-export const tokens = { light: toTokens(source.schemes.light), dark: toTokens(source.schemes.dark) };
+// L'orange de la marque devient un groupe de rôles M3 (couleur, conteneur et leurs « on-… »), contraste garanti par les tons.
+const source = themeFromSourceColor(argbFromHex(SOURCE_COLOR), [{ name: 'accent', value: argbFromHex(ACCENT_COLOR), blend: true }]);
+const accent = source.customColors[0]!;
+export const tokens = { light: toTokens(source.schemes.light, accent.light), dark: toTokens(source.schemes.dark, accent.dark) };
 
 const mix = (a: string, b: string, t: number): string => {
   const c = (hex: string, i: number): number => Number.parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16);

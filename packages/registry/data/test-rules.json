@@ -9,7 +9,7 @@
     "page": 1,
     "effectiveDate": "2026-01-01",
     "source": "Jeu de données fictif : valide l’arithmétique uniquement",
-    "author": "FISC.CI (initialisation)",
+    "author": "mesimpo (initialisation)",
     "version": 1,
     "validations": [],
     "params": { "rate": { "num": "1", "den": "4" } }
@@ -24,7 +24,7 @@
     "page": 1,
     "effectiveDate": "2026-01-01",
     "source": "Jeu de données fictif : valide l’arithmétique uniquement",
-    "author": "FISC.CI (initialisation)",
+    "author": "mesimpo (initialisation)",
     "version": 1,
     "validations": [],
     "params": { "deductible": true }
@@ -39,7 +39,7 @@
     "page": 1,
     "effectiveDate": "2026-01-01",
     "source": "Jeu de données fictif : valide l’arithmétique uniquement",
-    "author": "FISC.CI (initialisation)",
+    "author": "mesimpo (initialisation)",
     "version": 1,
     "validations": [],
     "params": { "amountPerHire": "1000000" }
@@ -54,7 +54,7 @@
     "page": 1,
     "effectiveDate": "2026-01-01",
     "source": "Jeu de données fictif : valide l’arithmétique uniquement",
-    "author": "FISC.CI (initialisation)",
+    "author": "mesimpo (initialisation)",
     "version": 1,
     "validations": [],
     "params": { "amountPerApprentice": "500000" }

@@ -1,8 +1,8 @@
-# Plan du POC FISC.CI — Checkpoint 1
+# Plan du POC mesimpo — Checkpoint 1
 
 Version 1 · 18 octobre 2026 · **Statut : en attente de validation MARABU. Aucun code produit.**
 
-Ce plan répond au prompt « POC FISC.CI v1 ». Il s'arrête avant tout code, comme demandé (§ 11).
+Ce plan répond au prompt « POC mesimpo v1 ». Il s'arrête avant tout code, comme demandé (§ 11).
 Les décisions d'architecture sont dans `docs/adr/`. Les points à trancher par MARABU sont dans `docs/OPEN-QUESTIONS.md`.
 
 > **Limite à connaître.** Les sept rôles (§ 2 du prompt) sont tenus ici par un seul agent. Ce plan n'a donc reçu **aucune relecture réelle** d'un fiscaliste, d'un juriste ou d'une équipe QA. Toute mention « relu par » dans ce dépôt désigne une relecture à faire, pas une relecture faite. Les validations de règles dans le registre (§ 4) seront saisies par des personnes réelles de MARABU, jamais par moi.

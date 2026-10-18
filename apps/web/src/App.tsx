@@ -18,7 +18,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Snackbar from '@mui/material/Snackbar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
@@ -90,7 +89,9 @@ function Shell({ user, onLogout, scheme, onToggleScheme }: { user: User; onLogou
       </Box>
       <AppBar position="sticky" color="inherit" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.default', zIndex: (t) => t.zIndex.drawer + 1 }}>
         <Toolbar sx={{ gap: 1, flexWrap: 'wrap', py: 0.5 }}>
-          <Typography variant="h4" component="p" sx={{ flexGrow: 1 }}>FISC.CI</Typography>
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', minHeight: 48 }}>
+            <Box component="img" src={scheme === 'dark' ? '/logo-dark.png' : '/logo-light.png'} alt="mesimpo" width={160} height={40} sx={{ height: 32, width: 'auto', display: 'block' }} />
+          </Box>
           <Chip label={ROLE_LABEL[user.role]} variant="outlined" />
           <SchemeToggle scheme={scheme} onToggle={onToggleScheme} />
           <IconButton aria-label="Se déconnecter" onClick={onLogout}><LogoutIcon /></IconButton>

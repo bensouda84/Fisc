@@ -1,4 +1,4 @@
-# Rapport de sprint 2 — checkpoint 3
+# Rapport de sprint 2 — checkpoint 3 (mesimpo)
 
 Date : 18 octobre 2026. Environnement : Chromium headless local, PostgreSQL 16 local, données fictives.
 
@@ -26,9 +26,9 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 | Couverture moteur | 95,96 % lignes, 90,82 % branches (seuil 90 %) |
 | Couverture registre | 100 % |
 | Couverture API | 93,7 % lignes, 71,5 % branches (pas de seuil fixé) |
-| Tests de bout en bout Playwright | 21/21 verts (dont 5 sur le thème sombre) |
+| Tests de bout en bout Playwright | 24/24 verts (dont 5 sur le thème sombre et 3 sur la marque) |
 | axe-core (WCAG 2.2 AA, toutes gravités) | 0 violation sur diagnostic, « pourquoi », source, résultat, simulation, export, client, registre (3 onglets, dialogue) |
-| Lighthouse mobile (simulé) | connexion 100/100/100 ; diagnostic 100/100/100 ; résultat 100/100/100 ; simulation 99/100/100 (performance / accessibilité / bonnes pratiques) |
+| Lighthouse mobile (simulé), après ajout de la marque | connexion 99/100/100 ; diagnostic 100/100/100 ; résultat 99/100/100 ; simulation 99/100/100 (performance / accessibilité / bonnes pratiques) |
 | Parité écran / PDF | les 6 montants de l'écran se retrouvent à l'identique dans le texte extrait du PDF (test e2e) |
 | Mode client | aucun « TEST » dans la page, dans l'API ni dans le PDF ; aucun montant à la place d'une lacune |
 | Aucun défilement horizontal | 320, 360, 768 et 1440 px, sur les 4 écrans ; texte à 200 % ; axe à 320 px |
@@ -53,7 +53,7 @@ Défaut trouvé et corrigé pendant l'ajout : le bouton supplémentaire dans la 
 
 - **ADR-0003 : MUI 9.5.0 confirmé après essai de Material Web 2.5.0** (`spikes/material-web`, résultats dans l'ADR). MUI n'est pas du M3 strict : tokens de rôle générés par `@material/material-color-utilities`, formes, échelle typographique et chips de statut reprennent M3. Écart connu : composants MUI standards (ex. `BottomNavigation`) plutôt que composants M3 natifs.
 - **Police : Mulish (OFL 1.1)**, auto-hébergée via `@fontsource/mulish`. Avenir non utilisé (Q3).
-- **Couleur source M3 neutre `#51606f`** (Q3 sans réponse).
+- **Charte mesimpo appliquée** (voir `docs/BRAND.md`) : couleur source M3 = vert du logo `#109150`, accent orange `#fda92b` (chip « Partielle »), logos clair et sombre, favicon, signature « Payez juste. Pas plus. » sur la connexion. Les couleurs sont échantillonnées sur les images fournies, les logos sont des recadrages de bitmaps (pas de vectoriel). Le nom du produit est **mesimpo** ; `fisc` reste le nom de code technique.
 - **Le moteur tourne côté serveur** pour l'écran comme pour le PDF : le mode client est imposé par le rôle, le navigateur d'un client ne reçoit jamais les règles de TEST ni les règles non confirmées. Conséquence : la simulation appelle l'API (≈ 120 ms de délai anti-rebond).
 - **Les trois décaissements doivent être saisis** (0 compris) pour obtenir un net complet. L'interface les demande explicitement.
 - **Paramètres commerciaux non validés par défaut** : un client ne voit aucune commission tant qu'un administrateur n'a pas coché « validés par MARABU » (Q7, Q9, Q11).

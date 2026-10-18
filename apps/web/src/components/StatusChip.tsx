@@ -23,7 +23,7 @@ const ROLES: Record<ChipKind, { bg: keyof Tokens; fg: keyof Tokens }> = {
   CALCULATED: { bg: 'primaryContainer', fg: 'onPrimaryContainer' },
   NOT_COMPUTABLE: { bg: 'errorContainer', fg: 'onErrorContainer' },
   NULL: { bg: 'secondaryContainer', fg: 'onSecondaryContainer' },
-  PARTIAL: { bg: 'tertiaryContainer', fg: 'onTertiaryContainer' },
+  PARTIAL: { bg: 'accentContainer', fg: 'onAccentContainer' }, // orange de la marque
 };
 
 export function StatusChip({ kind }: { kind: ChipKind }) {

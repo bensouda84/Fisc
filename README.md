@@ -1,6 +1,8 @@
-# FISC.CI — POC
+# mesimpo — POC
 
-Plateforme de simulation et d'optimisation fiscale légale (Côte d'Ivoire), à l'initiative de MARABU.
+Plateforme de simulation et d'optimisation fiscale légale (Côte d'Ivoire), à l'initiative de MARABU. *Payez juste. Pas plus.*
+
+> **Nom du produit : mesimpo** (anciennement FISC.CI). Le nom de code technique `fisc` reste dans le dépôt, les paquets `@fisc/*`, les bases et les comptes de démonstration `@fisc.test`. Charte : [docs/BRAND.md](docs/BRAND.md).
 
 **État : sprint 2 terminé (checkpoint 3).** Moteur, registre, API, interface, export PDF, tests de bout en bout et accessibilité. Voir les limites dans `docs/SPRINT-2-REPORT.md`.
 

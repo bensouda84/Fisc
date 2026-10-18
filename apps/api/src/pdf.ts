@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import PDFDocument from 'pdfkit';
 import {
   CONCEPT_TITLE_FR, INPUT_KEYS, INPUT_LABEL_FR, LEVER_STATE_LABEL_FR, describeAggregate, describeInput, formatDate, formatMoney,
@@ -9,6 +10,7 @@ const require = createRequire(import.meta.url);
 const font = (weight: 400 | 600 | 700): string =>
   require.resolve(`@fontsource/mulish/files/mulish-latin-${weight}-normal.woff`);
 
+const LOGO = fileURLToPath(new URL('../assets/logo.png', import.meta.url));
 const INK = '#1b1c1e';
 const MUTED = '#44474c';
 
@@ -20,7 +22,7 @@ export function renderProofPdf(result: EngineResult, input: EngineInput): Promis
   const doc = new PDFDocument({
     size: 'A4',
     margin: 48,
-    info: { Title: 'FISC.CI — Dossier de preuve', Author: 'FISC.CI', Subject: 'Simulation fiscale' },
+    info: { Title: 'mesimpo — Dossier de preuve', Author: 'mesimpo', Subject: 'Simulation fiscale' },
   });
   doc.registerFont('body', font(400));
   doc.registerFont('semi', font(600));
@@ -36,8 +38,10 @@ export function renderProofPdf(result: EngineResult, input: EngineInput): Promis
     doc.font(bold ? 'bold' : 'body').fontSize(10).fillColor(INK).text(`${label} : ${value}`, { width });
   };
 
+  doc.image(LOGO, 48, 40, { height: 34 });
+  doc.y = 84;
   doc.font('bold').fontSize(18).fillColor(INK).text('Dossier de preuve — simulation fiscale');
-  doc.font('body').fontSize(10).fillColor(MUTED).text('FISC.CI · Côte d’Ivoire · données fictives en phase POC');
+  doc.font('body').fontSize(10).fillColor(MUTED).text('mesimpo · Côte d’Ivoire · données fictives en phase POC');
   if (result.mode === 'INTERNAL') {
     doc.moveDown(0.5).font('bold').fontSize(11).fillColor('#8c1d18')
       .text('DOCUMENT INTERNE — hypothèses non confirmées possibles. Ne pas remettre à un client.', { width });
