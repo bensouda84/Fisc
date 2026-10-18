@@ -23,19 +23,19 @@ test('parcours 2 — la simulation recalcule immédiatement et ne modifie jamais
   await expectNoHorizontalScroll(page);
 
   // T2 par la simulation : plus de crédits n'existe pas ici, on teste dons = 0 → brut 2 500 000.
-  await page.getByLabel('Dons effectués (F CFA)').fill('0');
+  await page.getByRole('textbox', { name: 'Dons effectués (F CFA)' }).fill('0');
   await expect(page.getByTestId('gross')).toHaveText(money('2500000'));
   await expect(page.getByTestId('net')).toHaveText(money('2500000'));
   // Valeur invalide : message en français, le dernier résultat valide reste affiché.
-  await page.getByLabel('Salaires supplémentaires (F CFA)').fill('1,5');
+  await page.getByRole('textbox', { name: 'Salaires supplémentaires (F CFA)' }).fill('1,5');
   await expect(page.getByText('Saisissez un montant entier en F CFA, sans virgule.')).toBeVisible();
-  await page.getByLabel('Salaires supplémentaires (F CFA)').fill('1000000');
+  await page.getByRole('textbox', { name: 'Salaires supplémentaires (F CFA)' }).fill('1000000');
   await expect(page.getByTestId('net')).toHaveText(money('1500000'));
   // Curseur au clavier.
   const slider = page.getByRole('slider', { name: /Bénéfice imposable/ });
   await slider.focus();
   await page.keyboard.press('End');
-  await expect(page.getByLabel('Bénéfice imposable (F CFA)')).toHaveValue('200000000');
+  await expect(page.getByRole('textbox', { name: 'Bénéfice imposable (F CFA)' })).toHaveValue('200000000');
   await shot(page, 'simulation-mobile');
 
   const registryAfter = await page.evaluate(async () => {

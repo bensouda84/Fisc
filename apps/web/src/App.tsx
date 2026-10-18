@@ -11,7 +11,6 @@ import Chip from '@mui/material/Chip';
 import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -87,7 +86,7 @@ function Shell({ user, onLogout }: { user: User; onLogout: () => void }) {
       {(tablet || desktop) && (
         <Drawer variant="permanent" open sx={{ width: railWidth, '& .MuiDrawer-paper': { width: railWidth, top: 64, height: 'calc(100% - 64px)', borderRight: 1, borderColor: 'divider' } }}>
           <nav aria-label="Navigation principale">
-            <List sx={{ p: tablet ? 1 : 2 }}>
+            <Box sx={{ p: tablet ? 1 : 2, display: "grid", gap: 0.5 }}>
               {items.map((i) => (
                 <ListItemButton key={i.id} selected={route === i.id} onClick={() => go(i.id)} aria-current={route === i.id ? 'page' : undefined}
                   sx={{ borderRadius: tablet ? 3 : 7, minHeight: 56, flexDirection: tablet ? 'column' : 'row', justifyContent: 'center', gap: tablet ? 0.25 : 0, py: 1 }}>
@@ -95,7 +94,7 @@ function Shell({ user, onLogout }: { user: User; onLogout: () => void }) {
                   <ListItemText primary={i.label} slotProps={{ primary: { variant: tablet ? 'caption' : 'body1', sx: { fontWeight: 700, textAlign: tablet ? 'center' : 'left' } } }} sx={{ flex: 'none' }} />
                 </ListItemButton>
               ))}
-            </List>
+            </Box>
           </nav>
         </Drawer>
       )}
@@ -131,7 +130,7 @@ export function App() {
       ) : (
         <Login onLogin={setUser} />
       )}
-      <Snackbar open={message !== null} autoHideDuration={5000} onClose={() => setMessage(null)} message={message} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} sx={{ bottom: { xs: 88, sm: 24 } }} />
+      <Snackbar open={message !== null} autoHideDuration={5000} onClose={() => setMessage(null)} message={message} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} sx={{ bottom: { xs: 88, sm: 24 }, pointerEvents: 'none' }} />
     </ThemeProvider>
   );
 }

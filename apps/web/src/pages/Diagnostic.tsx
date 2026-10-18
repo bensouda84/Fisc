@@ -88,7 +88,7 @@ export function Diagnostic({ rules, onDone }: { rules: WireRule[]; onDone: () =>
 
   useEffect(() => { heading.current?.focus(); }, [step]);
 
-  if (!loaded) return <Stack alignItems="center" sx={{ py: 8 }}><CircularProgress aria-label="Chargement du diagnostic" /></Stack>;
+  if (!loaded) return <Stack sx={{ py: 8, alignItems: "center" }}><CircularProgress aria-label="Chargement du diagnostic" /></Stack>;
   const current = STEPS[step]!;
   const stepHasError = current.fields.some((f) => fieldError(f, draft[f.key] ?? '') !== null);
   const stepEmpty = current.fields.some((f) => (draft[f.key] ?? '').trim() === '');

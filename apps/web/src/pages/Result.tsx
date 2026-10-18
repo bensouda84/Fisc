@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import type { Mode } from '@fisc/schemas';
 import { api } from '../api.ts';
-import { Fees, Levers, Notices, Synthesis, ThreeAmounts } from '../components/ResultView.tsx';
+import { Fees, Footnotes, Levers, Notices, Synthesis, ThreeAmounts } from '../components/ResultView.tsx';
 import { useApp } from '../state.tsx';
 
 export function Result({ onStart }: { onStart: () => void }) {
@@ -34,7 +34,7 @@ export function Result({ onStart }: { onStart: () => void }) {
     }
   }
 
-  useEffect(() => { if (!last) void compute(mode); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (!last) void compute(mode); }, []);
 
   async function exportPdf(): Promise<void> {
     if (!last?.id) return;
@@ -83,6 +83,7 @@ export function Result({ onStart }: { onStart: () => void }) {
       <ThreeAmounts result={result} />
       <Fees result={result} />
       <Levers result={result} />
+      <Footnotes result={result} />
       {last.id ? (
         <Button variant="contained" startIcon={<PictureAsPdfIcon />} onClick={exportPdf} disabled={exporting} sx={{ alignSelf: 'flex-start' }}>
           Exporter le dossier de preuve (PDF)

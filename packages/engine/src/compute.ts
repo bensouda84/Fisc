@@ -16,7 +16,8 @@ import type {
 } from '@fisc/schemas';
 import { assertClientSafe } from './guard.ts';
 import { max0, min, mulRate } from './fraction.ts';
-import { conceptLabel, resolveRule } from './rules.ts';
+import { CONCEPT_TITLE_FR } from './labels.ts';
+import { resolveRule } from './rules.ts';
 
 type AnyResolution =
   | { ok: true; source: SourceRef }
@@ -321,7 +322,7 @@ export function simulate(
         label: s.label,
         kind: s.kind,
         status: s.status,
-        message: `Hypothèse : ${conceptLabel(s.concept)} repose sur une règle non confirmée (${s.label}).`,
+        message: `${CONCEPT_TITLE_FR[s.concept]} : règle non confirmée (${s.label}).`,
       });
     }
   }

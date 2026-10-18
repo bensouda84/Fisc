@@ -86,6 +86,11 @@ test('la sauvegarde automatique conserve le diagnostic après rechargement', asy
 
 test('adaptatif : défilement horizontal absent et navigation adaptée à 360, 768 et 1440 px', async ({ page }) => {
   await login(page, 'consultant@fisc.test');
+  await page.evaluate(async () => {
+    const token = (JSON.parse(sessionStorage.getItem('fisc.session') ?? '{}') as { token?: string }).token ?? '';
+    const answers = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, extraSalaries: '0', otherOutflows: '0' };
+    await fetch('/api/diagnostic', { method: 'PUT', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ answers, step: 3 }) });
+  });
   for (const [name, size] of Object.entries(VIEWPORTS)) {
     await page.setViewportSize(size);
     for (const route of ['diagnostic', 'result', 'simulation', 'registry']) {
@@ -94,6 +99,7 @@ test('adaptatif : défilement horizontal absent et navigation adaptée à 360, 7
       await expectNoHorizontalScroll(page);
     }
     await page.goto('/#/result');
+    await expect(page.getByTestId('gross')).toBeVisible();
     await shot(page, `resultat-${name}`);
     const nav = page.getByRole('navigation', { name: 'Navigation principale' });
     await expect(nav).toBeVisible();
@@ -109,11 +115,19 @@ test('accessibilité clavier : focus visible et cibles de 48 px', async ({ page 
   await page.setViewportSize(VIEWPORTS.mobile);
   await login(page, 'consultant@fisc.test');
   await page.getByLabel('Bénéfice imposable (F CFA)').fill('1');
-  await page.keyboard.press('Tab');
-  await page.keyboard.press('Tab');
-  await page.keyboard.press('Tab');
-  const outline = await page.evaluate(() => getComputedStyle(document.activeElement!).outlineStyle);
-  expect(outline).not.toBe('none');
+  // Au clavier, chaque bouton atteint par Tab montre un indicateur de focus visible.
+  const outlines: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    await page.keyboard.press('Tab');
+    const info = await page.evaluate(() => {
+      const el = document.activeElement!;
+      const cs = getComputedStyle(el);
+      return { tag: el.tagName, role: el.getAttribute('role'), outline: cs.outlineStyle, width: cs.outlineWidth };
+    });
+    if (info.tag === 'BUTTON' || info.tag === 'A') outlines.push(`${info.outline} ${info.width}`);
+  }
+  expect(outlines.length).toBeGreaterThan(2);
+  for (const o of outlines) expect(o).not.toMatch(/^none/);
   for (const name of ['Continuer', 'Se déconnecter', 'Pourquoi cette question ?']) {
     const b = (await page.getByRole('button', { name }).boundingBox())!;
     expect(b.height, name).toBeGreaterThanOrEqual(48);

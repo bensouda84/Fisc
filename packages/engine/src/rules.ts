@@ -66,7 +66,7 @@ function failure(rule: Rule | undefined, concept: RuleConcept, mode: Mode, asOf:
   const blocked: BlockedRule = { concept, ruleId: rule.id, status: rule.status };
   if (rule.status === 'PENDING') {
     return {
-      reason: reason('RULE_PENDING', `La source pour ${what} reste à obtenir.`),
+      reason: reason('RULE_PENDING', `La règle pour ${what} n’est pas encore confirmée.`),
       blocked,
     };
   }

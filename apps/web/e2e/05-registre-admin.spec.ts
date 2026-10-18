@@ -51,9 +51,9 @@ test('registre — de EN ATTENTE à CONFIRMÉE par deux validateurs distincts, p
   await page.getByLabel('Nouvelle version (vX.Y.Z)').fill('v1.1.0');
   await page.getByRole('button', { name: 'Publier' }).click();
   await expect(page.getByText('Version v1.1.0 publiée.')).toBeVisible();
-  await page.getByLabel('De').click();
+  await page.getByRole('combobox', { name: 'De' }).click();
   await page.getByRole('option', { name: 'v1.0.0' }).click();
-  await page.getByLabel('À').click();
+  await page.getByRole('combobox', { name: 'À' }).click();
   await page.getByRole('option', { name: 'v1.1.0' }).click();
   await page.getByRole('button', { name: 'Comparer' }).click();
   await expect(page.getByTestId('diff')).toContainText('is-rate');
@@ -69,6 +69,7 @@ test('registre — de EN ATTENTE à CONFIRMÉE par deux validateurs distincts, p
   // Le client voit maintenant le taux confirmé et sa source, mais pas les autres règles.
   await logout(page);
   await login(page, 'client@fisc.test');
+  await page.getByLabel('Bénéfice imposable (F CFA)').fill('1');
   await page.getByRole('button', { name: 'Pourquoi cette question ?' }).click();
   await expect(page.getByRole('dialog')).toContainText('FICTIF-IS, page 12');
   await expect(page.getByRole('dialog')).toContainText('Confirmée');

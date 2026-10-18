@@ -38,7 +38,6 @@ export const surfaces = (t: Tokens) => ({
 export function buildTheme(scheme: 'light' | 'dark' = 'light'): Theme {
   const t = tokens[scheme];
   const s = surfaces(t);
-  const focus = { outline: `3px solid ${t.primary}`, outlineOffset: 2 };
   return createTheme({
     breakpoints: { values: { xs: 0, sm: 600, md: 840, lg: 1200, xl: 1600 } },
     palette: {
@@ -70,7 +69,7 @@ export function buildTheme(scheme: 'light' | 'dark' = 'light'): Theme {
         styleOverrides: {
           ':root': Object.fromEntries(Object.entries(t).map(([k, v]) => [`--md-sys-color-${k}`, v])),
           body: { backgroundColor: t.background },
-          '*:focus-visible': focus,
+          '*:focus-visible:not(.MuiInputBase-input)': { outline: `3px solid ${t.primary} !important`, outlineOffset: '2px !important' },
           '@media (prefers-reduced-motion: reduce)': {
             '*, *::before, *::after': { animationDuration: '0.01ms !important', animationIterationCount: '1 !important', transitionDuration: '0.01ms !important', scrollBehavior: 'auto !important' },
           },

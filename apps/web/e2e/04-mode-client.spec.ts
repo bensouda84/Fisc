@@ -29,6 +29,8 @@ test('mode client — aucun chiffre sans règle confirmée, aucun faux zéro, au
 
   // Le « Pourquoi ? » ne révèle ni source interne ni règle de TEST.
   await page.goto('/#/diagnostic');
+  for (let i = 0; i < 3; i++) await page.getByRole('button', { name: 'Retour' }).click();
+  await expect(page.getByText('Question 1 sur 4')).toBeVisible();
   await page.getByRole('button', { name: 'Pourquoi cette question ?' }).click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toContainText('en cours de confirmation');

@@ -10,6 +10,7 @@ export async function login(page: Page, email: string, options: { fresh?: boolea
   await page.getByLabel('Adresse e-mail').fill(email);
   await page.getByLabel('Mot de passe').fill(PASSWORD);
   await page.getByRole('button', { name: 'Se connecter' }).click();
+  await expect(page.getByRole('button', { name: 'Se déconnecter' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   if (options.fresh ?? true) {
     // Chaque test part d'un diagnostic vide.
@@ -18,6 +19,7 @@ export async function login(page: Page, email: string, options: { fresh?: boolea
       await fetch('/api/diagnostic', { method: 'PUT', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ answers: {}, step: 0 }) });
     });
     await page.reload();
+    await expect(page.getByRole('button', { name: 'Se déconnecter' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   }
 }

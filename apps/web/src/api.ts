@@ -39,7 +39,8 @@ async function request(method: string, path: string, body?: unknown): Promise<Re
   const res = await fetch(`/api${path}`, {
     method,
     headers: { 'content-type': 'application/json', ...(session ? { authorization: `Bearer ${session.token}` } : {}) },
-    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    // Fastify refuse un corps vide avec content-type JSON : les POST sans données envoient {}.
+    ...(body === undefined ? (method === 'GET' ? {} : { body: '{}' }) : { body: JSON.stringify(body) }),
   });
   if (!res.ok) {
     let message = 'Une erreur est survenue. Réessayez.';

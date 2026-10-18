@@ -26,7 +26,7 @@ export function Synthesis({ result }: { result: EngineResult }) {
       <Typography id="synthesis-title" variant="h4" component="h2" sx={{ mb: 1.5 }}>Synthèse</Typography>
       <Stack direction="row" sx={{ gap: 1.5, flexWrap: 'wrap' }}>
         {cells.map((c) => (
-          <Card key={c.kind} sx={{ flex: '1 1 150px' }} data-testid={`count-${c.kind}`}>
+          <Card key={c.kind} sx={{ flex: { xs: '1 1 100%', sm: '1 1 150px' } }} data-testid={`count-${c.kind}`}>
             <CardContent>
               <Typography variant="h2" component="p" aria-label={`${c.count} ${c.label}${c.count > 1 ? 's' : ''}`}>{c.count}</Typography>
               <StatusChip kind={c.kind} />
@@ -83,7 +83,7 @@ export function Fees({ result }: { result: EngineResult }) {
             <Typography component="dt" sx={{ fontWeight: 700 }}>Commission TTC</Typography><Typography component="dd" sx={{ fontWeight: 700, m: 0, textAlign: 'right' }} data-testid="fee-ttc">{formatMoney(c.incl)}</Typography>
           </Box>
         ) : (
-          <Typography data-testid="fees-none">Commission non calculée. {c.reason.message}</Typography>
+          <Typography data-testid="fees-none">{c.reason.message}</Typography>
         )}
       </CardContent></Card>
     </Box>
@@ -140,6 +140,7 @@ export function Levers({ result }: { result: EngineResult }) {
   );
 }
 
+/** Bandeaux du haut de page : mode, hypothèses, ce qui manque. */
 export function Notices({ result }: { result: EngineResult }) {
   return (
     <Stack spacing={1.5}>
@@ -158,8 +159,17 @@ export function Notices({ result }: { result: EngineResult }) {
           </Box>
         </Alert>
       )}
-      <Box component="ul" sx={{ pl: 2.5, m: 0 }} aria-label="Avertissements">
-        {result.warnings.map((w) => <li key={w.code}><Typography variant="body2">{w.message}</Typography></li>)}
+    </Stack>
+  );
+}
+
+/** Pied de page : avertissements et mention de non-avis (R9). */
+export function Footnotes({ result }: { result: EngineResult }) {
+  return (
+    <Stack spacing={1.5}>
+      <Typography variant="h5" component="h2">Avertissements</Typography>
+      <Box component="ul" sx={{ pl: 2.5, m: 0 }}>
+        {result.warnings.filter((w) => w.code !== 'INTERNAL_MODE').map((w) => <li key={w.code}><Typography variant="body2">{w.message}</Typography></li>)}
       </Box>
       <Typography variant="body2" color="text.secondary" data-testid="disclaimer">{result.disclaimer}</Typography>
     </Stack>

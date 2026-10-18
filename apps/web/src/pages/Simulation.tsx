@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { EngineResult } from '@fisc/schemas';
 import { formatMoney } from '@fisc/engine';
 import { api } from '../api.ts';
-import { Fees, Levers, ThreeAmounts, Synthesis } from '../components/ResultView.tsx';
+import { Fees, Footnotes, Levers, ThreeAmounts, Synthesis } from '../components/ResultView.tsx';
 import { useApp } from '../state.tsx';
 import type { Answers } from '../wire.ts';
 
@@ -97,6 +97,7 @@ export function Simulation({ onStart }: { onStart: () => void }) {
             <ThreeAmounts result={result} />
             <Fees result={result} />
             <Levers result={result} />
+            <Footnotes result={result} />
           </Stack>
         )}
       </Box>

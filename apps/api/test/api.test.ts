@@ -4,7 +4,7 @@ import { NBSP_TO_SPACE, T1, harness, pdfText, type Harness } from './helpers.ts'
 
 const money = (n: bigint): string => NBSP_TO_SPACE(formatMoney(n));
 
-describe('API — registre initial (aucune règle réelle confirmée)', () => {
+describe.skipIf(!process.env.TEST_DATABASE_URL)('API — registre initial (aucune règle réelle confirmée)', () => {
   let h: Harness;
   beforeAll(async () => { h = await harness({ withTestRules: true }); });
   afterAll(async () => { await h.close(); });
@@ -111,7 +111,7 @@ describe('API — registre initial (aucune règle réelle confirmée)', () => {
   });
 });
 
-describe('API — de EN ATTENTE à CONFIRMÉE jusqu’à une sortie client sourcée', () => {
+describe.skipIf(!process.env.TEST_DATABASE_URL)('API — de EN ATTENTE à CONFIRMÉE jusqu’à une sortie client sourcée', () => {
   let h: Harness;
   beforeAll(async () => { h = await harness({ withTestRules: false }); });
   afterAll(async () => { await h.close(); });

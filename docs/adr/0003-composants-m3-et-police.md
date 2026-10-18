@@ -1,6 +1,6 @@
 # ADR-0003 — Composants Material Design 3, thème et police
 
-- Statut : **En attente** de l'essai d'une demi-journée (jour 6) et des réponses MARABU (Q3)
+- Statut : **Décidée par défaut au sprint 2** : MUI 9.5.0, Mulish, couleur neutre. L'essai Material Web n'a pas été mené (Q13) ; réponses MARABU toujours attendues (Q3, Q14)
 - Rôle qui tranche : Designer UX/UI, avec l'Architecte
 - Date : 18 octobre 2026
 

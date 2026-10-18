@@ -142,7 +142,7 @@ describe('états et garde-fous', () => {
   it('mode interne : les règles de TEST sont listées comme hypothèses', () => {
     const r = simulate({ ...common, donations: 4_000_000n, ...credits }, snapshot('TEST'), commercial, internal);
     expect(r.assumptions.length).toBe(4);
-    expect(r.assumptions[0]?.message).toContain('Hypothèse');
+    expect(r.assumptions[0]?.message).toContain('règle non confirmée');
   });
 
   it('mode client avec règles confirmées : sources complètes sur chaque montant (R2)', () => {
