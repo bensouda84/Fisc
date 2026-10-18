@@ -30,6 +30,7 @@ const PARAM_FIELDS: Record<string, { key: string; label: string; kind: 'rate' | 
   DONATION_DEDUCTIBILITY: { key: 'deductible', label: 'Les dons sont déductibles', kind: 'bool' },
   CREDIT_CDI: { key: 'amountPerHire', label: 'Crédit par CDI (F CFA)', kind: 'money' },
   CREDIT_APPRENTICE: { key: 'amountPerApprentice', label: 'Crédit par apprenti (F CFA)', kind: 'money' },
+  CREDIT_INTERN: { key: 'amountPerIntern', label: 'Crédit par stagiaire (F CFA)', kind: 'money' },
   STARTUP_EXEMPTION: { key: 'startup', label: 'Exonération des startups', kind: 'startup' },
   VAT_FUEL_RECOVERY: { key: 'capPercent', label: 'Plafond de la TVA récupérable (fraction), vide si aucun', kind: 'cap' },
 };

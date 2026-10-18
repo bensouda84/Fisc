@@ -1,7 +1,7 @@
 import type { Mode } from './input.ts';
 import type { RuleConcept, RuleKind, RuleStatus } from './rule.ts';
 
-export type LeverId = 'STARTUP_EXEMPTION' | 'DONATIONS' | 'CREDIT_CDI' | 'CREDIT_APPRENTICE' | 'VAT_FUEL_RECOVERY';
+export type LeverId = 'STARTUP_EXEMPTION' | 'DONATIONS' | 'CREDIT_CDI' | 'CREDIT_APPRENTICE' | 'CREDIT_INTERN' | 'VAT_FUEL_RECOVERY';
 export type LeverState = 'CALCULATED' | 'NOT_COMPUTABLE' | 'NULL';
 
 export type ReasonCode =

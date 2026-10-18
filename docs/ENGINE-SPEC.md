@@ -55,7 +55,7 @@ T3, T4 et T7 sont des tests d'états et de sortie, pas d'arithmétique.
 
 ## Décisions d'implémentation du sprint 1 (défauts validés, à confirmer en relecture fiscaliste)
 
-- **Imputation des crédits (Q4).** Dans l'ordre d'affichage (CDI, puis apprentis), en commençant par les leviers calculables ; un levier non calculable passe en dernier. Les montants des leviers calculables ne dépendent donc jamais d'un montant inconnu. L'ordre n'a d'effet que si le plafond (impôt) est atteint ; l'excédent est signalé par levier.
+- **Imputation des crédits (Q4).** Dans l'ordre d'affichage (CDI, apprentis, puis stagiaires), en commençant par les leviers calculables ; un levier non calculable passe en dernier. Les montants des leviers calculables ne dépendent donc jamais d'un montant inconnu. L'ordre n'a d'effet que si le plafond (impôt) est atteint ; l'excédent est signalé par levier.
 - **Dépendance au levier dons.** Si le levier dons est non calculable (don possible, mais règle non confirmée ou donnée manquante), l'impôt après déductions est indéterminé : les leviers de crédit deviennent non calculables (`DEPENDS_ON_DONATIONS_LEVER`).
 - **Décaissements.** Dons : rattachés au levier dons. Salaires supplémentaires et autres : non rattachés (`unallocatedOutflows`). Les trois doivent être saisis (0 est une saisie valide) pour que le net soit complet.
 - **Total partiel (Q6).** `PARTIAL` porte un sous-total et la liste des éléments manquants ; l'interface l'étiquette « partiel » ; commission non calculée.
@@ -83,3 +83,7 @@ Ajoutés après le sprint 2 à la demande de MARABU, à partir du classeur `docs
 
 ### Total et portes
 Un levier non interrogé (donnée absente) est NON CALCULABLE, comme pour tout levier. Un total sans aucun levier CALCULÉ est NON CALCULABLE (des zéros établis par les portes « Non » ne forment pas un sous-total).
+
+## Crédit stagiaires (N04, `CREDIT_INTERN`)
+
+Crédit par stagiaire (CGI 111 ter) traité comme CDI et apprentis : nombre saisi × montant du registre, imputé après les autres crédits, limité à l'impôt, excédent signalé. Une saisie à 0 donne un levier NUL ; une saisie manquante, un levier NON CALCULABLE. Le registre ne porte **qu'un montant par stagiaire** : la condition qui distingue 25 000 F de 50 000 F (seuil PME) est ouverte (Q26) et ne sera ajoutée comme question qu'une fois tranchée. Règle réelle EN ATTENTE, règle de TEST à 25 000 F pour l'arithmétique.

@@ -13,6 +13,7 @@ async function reachStartupStep(page: Page): Promise<void> {
   }
   await page.getByLabel('Embauches en CDI').fill('0');
   await page.getByLabel('Apprentis').fill('0');
+  await page.getByLabel('Stagiaires').fill('0');
   await page.getByRole('button', { name: 'Continuer' }).click();
   await page.getByLabel('Salaires supplémentaires (F CFA)').fill('0');
   await page.getByLabel('Autres décaissements (F CFA)').fill('0');

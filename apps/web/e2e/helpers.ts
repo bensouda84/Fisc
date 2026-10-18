@@ -84,6 +84,7 @@ export const fillDiagnostic = async (
   await page.getByRole('button', { name: 'Continuer' }).click();
   await page.getByLabel('Embauches en CDI').fill(v.cdi);
   await page.getByLabel('Apprentis').fill(v.app);
+  await page.getByLabel('Stagiaires').fill('0');
   await page.getByRole('button', { name: 'Continuer' }).click();
   await page.getByLabel('Salaires supplémentaires (F CFA)').fill(v.sal);
   await page.getByLabel('Autres décaissements (F CFA)').fill(v.other);
@@ -95,7 +96,7 @@ export const fillDiagnostic = async (
 export async function seedDiagnostic(page: Page, extra: Record<string, string | number> = {}): Promise<void> {
   await page.evaluate(async (extraAnswers) => {
     const token = (JSON.parse(sessionStorage.getItem('fisc.session') ?? '{}') as { token?: string }).token ?? '';
-    const answers = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, extraSalaries: '0', otherOutflows: '0', isStartup: 'NO', vatAgri: 'NO', ...extraAnswers };
+    const answers = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, interns: 0, extraSalaries: '0', otherOutflows: '0', isStartup: 'NO', vatAgri: 'NO', ...extraAnswers };
     await fetch('/api/diagnostic', { method: 'PUT', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ answers, step: 5 }) });
   }, extra);
 }

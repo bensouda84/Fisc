@@ -46,6 +46,7 @@ const FIELD_LABEL_FR: Record<string, string> = {
   donations: 'le montant des dons',
   cdiHires: 'le nombre de CDI',
   apprentices: 'le nombre d’apprentis',
+  interns: 'le nombre de stagiaires',
   extraSalaries: 'les salaires supplémentaires',
   otherOutflows: 'les autres décaissements',
   isStartup: 'si l’entreprise est une startup numérique labellisée',
@@ -68,6 +69,7 @@ const LEVER_LABEL_FR: Record<LeverId, string> = {
   DONATIONS: 'Dons déductibles',
   CREDIT_CDI: 'Crédit d’impôt — CDI',
   CREDIT_APPRENTICE: 'Crédit d’impôt — apprentis',
+  CREDIT_INTERN: 'Crédit d’impôt — stagiaires',
 };
 
 function emptyLever(id: LeverId): LeverResult {
@@ -125,6 +127,7 @@ export function simulate(
   const donationRes = resolveRule(snapshot, 'DONATION_DEDUCTIBILITY', mode, asOf);
   const cdiRes = resolveRule(snapshot, 'CREDIT_CDI', mode, asOf);
   const apprenticeRes = resolveRule(snapshot, 'CREDIT_APPRENTICE', mode, asOf);
+  const internRes = resolveRule(snapshot, 'CREDIT_INTERN', mode, asOf);
   const startupRes = resolveRule(snapshot, 'STARTUP_EXEMPTION', mode, asOf);
   const vatRes = resolveRule(snapshot, 'VAT_FUEL_RECOVERY', mode, asOf);
 
@@ -132,6 +135,7 @@ export function simulate(
   const donations = read(input.donations);
   const cdiHires = read(input.cdiHires);
   const apprentices = read(input.apprentices);
+  const interns = read(input.interns);
   const salaries = read(input.extraSalaries);
   const others = read(input.otherOutflows);
   const isStartup = read(input.isStartup);
@@ -307,6 +311,14 @@ export function simulate(
     apprenticeRes.ok ? apprenticeRes.params.amountPerApprentice : null,
   );
 
+  const internLever = buildCredit(
+    'CREDIT_INTERN',
+    interns,
+    'interns',
+    internRes,
+    internRes.ok ? internRes.params.amountPerIntern : null,
+  );
+
   // Imputation : leviers calculables d'abord, dans l'ordre d'affichage ; les non calculables passent en dernier (Q4).
   let remaining = taxAfterDeductions ?? 0n;
   for (const c of credits) {
@@ -350,7 +362,7 @@ export function simulate(
   }
 
   // Décaissements — étape 6.
-  const levers = [startupLever, donationsLever, cdiLever, apprenticeLever, vatLever];
+  const levers = [startupLever, donationsLever, cdiLever, apprenticeLever, internLever, vatLever];
   for (const lever of levers) {
     if (lever.gross !== null && lever.outflows !== null) lever.net = lever.gross - lever.outflows;
   }

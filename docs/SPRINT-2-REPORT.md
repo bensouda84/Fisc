@@ -98,9 +98,9 @@ Défaut trouvé et corrigé pendant l'ajout : le bouton supplémentaire dans la 
 
 Rien du classeur n'est perdu : ses six onglets sont repris dans `packages/registry/data/catalogue-2026.json` (généré par `python3 -I scripts/build-catalogue.py`, empreinte du classeur incluse) et consultables par le personnel dans **Registre > Catalogue** (`GET /registry/catalogue`, refusé aux clients).
 - 23 règles R et 10 dispositifs N avec statut, base légale, article et page, priorité, « reste à vérifier », plus 23 écarts avec le V4, 23 articles non lus, 11 sources.
-- Chaque ligne dit **si elle est modélisée et pourquoi** : 6 le sont (R08, R11, N01, N02, N03, N05), leurs entrées du registre restant EN ATTENTE ; 27 ne le sont pas (impôt sur opération, procédure, hors entreprises, texte non lu, point à trancher).
+- Chaque ligne dit **si elle est modélisée et pourquoi** : 7 le sont (R08, R11, N01, N02, N03, N04, N05), leurs entrées du registre restant EN ATTENTE ; 26 ne le sont pas (impôt sur opération, procédure, hors entreprises, texte non lu, point à trancher).
 - Le catalogue est **informatif** : le moteur ne le lit pas, aucune valeur n'en est tirée, un client ne le voit pas (R1, R7). Seule la colonne « modélisé » est écrite à la main dans le script.
-- Pas encore construit : le levier stagiaires (N04), en attendant la décision sur le seuil PME (Q à ouvrir si MARABU le veut).
+- Levier stagiaires (N04) construit ensuite : concept `CREDIT_INTERN`, un montant par stagiaire, règle EN ATTENTE (Q26 : seuil PME à trancher).
 
 ## Pour exécuter
 

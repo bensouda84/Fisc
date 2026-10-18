@@ -25,9 +25,9 @@ test.describe('catalogue des 33 lignes du classeur', () => {
     await shot(page, 'catalogue-bureau');
 
     await page.getByRole('radio', { name: 'Modélisées', exact: true }).click();
-    await expect(page.locator('[data-testid^="cat-"]')).toHaveCount(6);
+    await expect(page.locator('[data-testid^="cat-"]')).toHaveCount(7);
     await page.getByRole('radio', { name: 'Non modélisées', exact: true }).click();
-    await expect(page.locator('[data-testid^="cat-"]')).toHaveCount(27);
+    await expect(page.locator('[data-testid^="cat-"]')).toHaveCount(26);
   });
 
   test('mobile : pas de défilement horizontal', async ({ page }) => {

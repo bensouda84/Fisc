@@ -48,6 +48,22 @@
     "sourceToObtain": "Classeur MARABU (18/10/2026, docs/sources) : PARTIELLEMENT CONFIRMÉ. Montant cité : 1 000 000 F par an et par CDI, mais source = rapport sur les dépenses fiscales 2019 (pas un texte) ; CDD réduit de moitié et reversement sur 24 mois (annexe 2020). À retrouver : texte d'origine (annexe 2016) et CGI 111 consolidé. Ne pas présumer le montant."
   },
   {
+    "id": "credit-intern",
+    "concept": "CREDIT_INTERN",
+    "label": "Crédit d’impôt pour les stagiaires (stage-école)",
+    "kind": "REAL",
+    "status": "PENDING",
+    "article": null,
+    "page": null,
+    "effectiveDate": null,
+    "source": null,
+    "author": "mesimpo (initialisation)",
+    "version": 1,
+    "validations": [],
+    "params": null,
+    "sourceToObtain": "Classeur MARABU (18/10/2026, docs/sources, ligne N04) : PARTIELLEMENT CONFIRMÉ. CGI 111 ter, annexe fiscale 2019 art. 11 (lue) : 25 000 F et 50 000 F par an et par stagiaire. À TRANCHER avant de renseigner : la condition qui distingue les deux montants (seuil PME : chiffre d'affaires inférieur à 1 Md F selon l'annexe 2019, ou 50 M F selon le V4), durée du stage et convention. Le registre ne porte qu'un montant par stagiaire : n'en saisir un qu'une fois la condition établie. Ne rien présumer."
+  },
+  {
     "id": "credit-apprentice",
     "concept": "CREDIT_APPRENTICE",
     "label": "Crédit d’impôt pour les apprentis",

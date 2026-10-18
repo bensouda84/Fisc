@@ -43,10 +43,11 @@ export const STEPS: Step[] = [
   {
     id: 'jobs',
     title: 'Combien de personnes l’entreprise a-t-elle embauchées ?',
-    why: 'Les embauches en CDI et les apprentis peuvent ouvrir droit à des crédits d’impôt, appliqués après le calcul de l’impôt et limités à son montant.',
+    why: 'Les embauches en CDI, les apprentis et les stagiaires peuvent ouvrir droit à des crédits d’impôt, appliqués après le calcul de l’impôt et limités à son montant.',
     fields: [
       { key: 'cdiHires', label: 'Embauches en CDI', kind: 'count', hint: 'Saisissez 0 s’il n’y en a pas.', concept: 'CREDIT_CDI' },
       { key: 'apprentices', label: 'Apprentis', kind: 'count', hint: 'Saisissez 0 s’il n’y en a pas.', concept: 'CREDIT_APPRENTICE' },
+      { key: 'interns', label: 'Stagiaires (stage-école)', kind: 'count', hint: 'Saisissez 0 s’il n’y en a pas.', concept: 'CREDIT_INTERN' },
     ],
   },
   {

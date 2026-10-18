@@ -6,6 +6,7 @@ export const RuleConcept = z.enum([
   'DONATION_DEDUCTIBILITY',
   'CREDIT_CDI',
   'CREDIT_APPRENTICE',
+  'CREDIT_INTERN',
   'STARTUP_EXEMPTION',
   'VAT_FUEL_RECOVERY',
 ]);
@@ -52,6 +53,8 @@ export const IsRateParams = z.object({ rate: Rate });
 export const DonationParams = z.object({ deductible: z.boolean() });
 export const CreditCdiParams = z.object({ amountPerHire: NonNegativeMoney });
 export const CreditApprenticeParams = z.object({ amountPerApprentice: NonNegativeMoney });
+/** Crédit stagiaires (N04, CGI 111 ter). Un seul montant par stagiaire : le seuil PME qui distingue 25 000 F de 50 000 F est une décision de la règle validée (Q26). */
+export const CreditInternParams = z.object({ amountPerIntern: NonNegativeMoney });
 
 /**
  * Exonération des startups labellisées (R08). Les paramètres sont des décisions de la règle validée,
@@ -79,6 +82,7 @@ const RuleUnion = z.discriminatedUnion('concept', [
     concept: z.literal('CREDIT_APPRENTICE'),
     params: CreditApprenticeParams.nullable(),
   }),
+  z.object({ ...baseFields, concept: z.literal('CREDIT_INTERN'), params: CreditInternParams.nullable() }),
   z.object({ ...baseFields, concept: z.literal('STARTUP_EXEMPTION'), params: StartupParams.nullable() }),
   z.object({ ...baseFields, concept: z.literal('VAT_FUEL_RECOVERY'), params: VatFuelParams.nullable() }),
 ]);

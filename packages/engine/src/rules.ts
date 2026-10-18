@@ -19,6 +19,7 @@ const CONCEPT_LABEL_FR: Record<RuleConcept, string> = {
   DONATION_DEDUCTIBILITY: 'la déductibilité des dons',
   CREDIT_CDI: 'le crédit d’impôt pour les CDI',
   CREDIT_APPRENTICE: 'le crédit d’impôt pour les apprentis',
+  CREDIT_INTERN: 'le crédit d’impôt pour les stagiaires',
   STARTUP_EXEMPTION: 'l’exonération des startups labellisées',
   VAT_FUEL_RECOVERY: 'la TVA sur le carburant des exploitants agricoles',
 };

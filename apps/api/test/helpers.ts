@@ -57,4 +57,4 @@ export function pdfText(pdf: Buffer): string {
 }
 
 /** T1 du prompt, avec les deux portes « Non » (startup, TVA agricole) : les cinq leviers sont évalués. */
-export const T1 = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, extraSalaries: '0', otherOutflows: '0', isStartup: 'NO', vatAgri: 'NO' };
+export const T1 = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, interns: 0, extraSalaries: '0', otherOutflows: '0', isStartup: 'NO', vatAgri: 'NO' };

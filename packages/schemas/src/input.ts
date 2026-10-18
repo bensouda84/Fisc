@@ -17,6 +17,7 @@ export const EngineInput = z.object({
   donations: Amount.optional(),
   cdiHires: Count.optional(),
   apprentices: Count.optional(),
+  interns: Count.optional(),
   extraSalaries: Amount.optional(),
   otherOutflows: Amount.optional(),
   /** Startup numérique labellisée ? Si NO, les deux questions suivantes ne sont pas posées. */

@@ -40,7 +40,7 @@ export function Simulation({ onStart }: { onStart: () => void }) {
     if (!base || !valid) return;
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      const input: Answers = { cdiHires: 0, apprentices: 0, otherOutflows: '0', ...base, ...values };
+      const input: Answers = { cdiHires: 0, apprentices: 0, interns: 0, otherOutflows: '0', ...base, ...values };
       api.simulate(input, { persist: false }).then((r) => setResult(r.result)).catch((e: Error) => notify(e.message));
     }, 120);
     return () => clearTimeout(timer.current);

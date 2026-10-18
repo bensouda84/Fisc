@@ -34,6 +34,7 @@ function rules(kind: 'TEST' | 'REAL', overrides: Overrides): unknown[] {
     { ...common, id: 'don', concept: 'DONATION_DEDUCTIBILITY', label: `${prefix} — dons déductibles`, params: { deductible: true } },
     { ...common, id: 'cdi', concept: 'CREDIT_CDI', label: `${prefix} — crédit CDI`, params: { amountPerHire: '1000000' } },
     { ...common, id: 'app', concept: 'CREDIT_APPRENTICE', label: `${prefix} — crédit apprenti`, params: { amountPerApprentice: '500000' } },
+    { ...common, id: 'intern', concept: 'CREDIT_INTERN', label: `${prefix} — crédit stagiaire`, params: { amountPerIntern: '25000' } },
     { ...common, id: 'startup', concept: 'STARTUP_EXEMPTION', label: `${prefix} — exonération startup`, params: { durationYears: 3, includesLabelYear: false, appliesToProfitTax: true } },
     { ...common, id: 'vat-fuel', concept: 'VAT_FUEL_RECOVERY', label: `${prefix} — TVA carburant agricole`, params: { capPercent: null } },
   ];

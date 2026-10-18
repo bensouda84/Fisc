@@ -71,6 +71,23 @@
     }
   },
   {
+    "id": "test-credit-intern",
+    "concept": "CREDIT_INTERN",
+    "label": "TEST — crédit de 25 000 F CFA par stagiaire (fictif)",
+    "kind": "TEST",
+    "status": "DRAFT",
+    "article": "TEST — article fictif",
+    "page": 1,
+    "effectiveDate": "2026-01-01",
+    "source": "Jeu de données fictif : valide l’arithmétique uniquement",
+    "author": "mesimpo (initialisation)",
+    "version": 1,
+    "validations": [],
+    "params": {
+      "amountPerIntern": "25000"
+    }
+  },
+  {
     "id": "test-startup-exemption",
     "concept": "STARTUP_EXEMPTION",
     "label": "TEST — exonération startup de 3 ans, année de labellisation exclue, applicable à l’IS (fictif)",

@@ -4,7 +4,7 @@ import { AS_OF, commercial, common, pendingRule, snapshot, lever } from './fixtu
 
 const internal = { mode: 'INTERNAL', asOf: AS_OF } as const;
 const client = { mode: 'CLIENT', asOf: AS_OF } as const;
-const credits = { cdiHires: 2, apprentices: 1 };
+const credits = { cdiHires: 2, apprentices: 1, interns: 0 };
 
 describe('cas dorés', () => {
   it('T1 — dons + crédits : brut 3 500 000, net −500 000, commission 0', () => {
@@ -19,12 +19,13 @@ describe('cas dorés', () => {
       ['DONATIONS', 1_000_000n, -3_000_000n],
       ['CREDIT_CDI', 2_000_000n, 2_000_000n],
       ['CREDIT_APPRENTICE', 500_000n, 500_000n],
+      ['CREDIT_INTERN', 0n, 0n],
       ['VAT_FUEL_RECOVERY', 0n, 0n],
     ]);
   });
 
   it('T2 — sans crédits : brut 1 000 000, net −3 000 000, commission 0', () => {
-    const r = simulate({ ...common, donations: 4_000_000n, cdiHires: 0, apprentices: 0 }, snapshot('TEST'), commercial, internal);
+    const r = simulate({ ...common, donations: 4_000_000n, cdiHires: 0, apprentices: 0, interns: 0 }, snapshot('TEST'), commercial, internal);
     expect(r.gross).toEqual({ state: 'COMPLETE', value: 1_000_000n });
     expect(r.net).toEqual({ state: 'COMPLETE', value: -3_000_000n });
     expect(r.commission).toMatchObject({ state: 'COMPUTED', incl: 0n });
@@ -64,13 +65,13 @@ describe('cas dorés', () => {
     expect(a.gross).toEqual({ state: 'COMPLETE', value: 2_500_000n });
     expect(a.net).toEqual({ state: 'COMPLETE', value: -1_500_000n });
     expect(lever(a, 'DONATIONS')?.state).toBe('NULL');
-    const b = simulate({ ...common, donations: 4_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, internal);
+    const b = simulate({ ...common, donations: 4_000_000n, cdiHires: 0, apprentices: 0, interns: 0 }, snap, commercial, internal);
     expect(b.gross).toEqual({ state: 'COMPLETE', value: 0n });
     expect(b.net).toEqual({ state: 'COMPLETE', value: -4_000_000n });
   });
 
   it('T6 — pas de don, 2 CDI : brut 2 000 000, net 2 000 000, commission 400 000 HT / 72 000 TVA / 472 000 TTC', () => {
-    const r = simulate({ ...common, donations: 0n, cdiHires: 2, apprentices: 0 }, snapshot('TEST'), commercial, internal);
+    const r = simulate({ ...common, donations: 0n, cdiHires: 2, apprentices: 0, interns: 0 }, snapshot('TEST'), commercial, internal);
     expect(r.gross).toEqual({ state: 'COMPLETE', value: 2_000_000n });
     expect(r.outflows).toEqual({ state: 'COMPLETE', value: 0n });
     expect(r.net).toEqual({ state: 'COMPLETE', value: 2_000_000n });
@@ -90,10 +91,25 @@ describe('cas dorés', () => {
 
 describe('états et garde-fous', () => {
   it('« Je ne sais pas » rend le levier non calculable, jamais nul', () => {
-    const r = simulate({ ...common, donations: 'UNKNOWN', cdiHires: 'UNKNOWN', apprentices: 0 }, snapshot('TEST'), commercial, internal);
-    expect(r.levers.map((l) => l.state)).toEqual(['NULL', 'NOT_COMPUTABLE', 'NOT_COMPUTABLE', 'NULL', 'NULL']);
+    const r = simulate({ ...common, donations: 'UNKNOWN', cdiHires: 'UNKNOWN', apprentices: 0, interns: 0 }, snapshot('TEST'), commercial, internal);
+    expect(r.levers.map((l) => l.state)).toEqual(['NULL', 'NOT_COMPUTABLE', 'NOT_COMPUTABLE', 'NULL', 'NULL', 'NULL']);
     expect(lever(r, 'DONATIONS')?.reasons[0]?.code).toBe('INPUT_UNKNOWN');
     expect(lever(r, 'DONATIONS')?.gross).toBeNull();
+  });
+
+  it('crédit stagiaires : 3 stagiaires × 25 000 = 75 000, imputé sur l’impôt, comme les autres crédits', () => {
+    const r = simulate({ ...common, donations: 0n, cdiHires: 0, apprentices: 0, interns: 3 }, snapshot('TEST'), commercial, internal);
+    expect(lever(r, 'CREDIT_INTERN')).toMatchObject({ state: 'CALCULATED', gross: 75_000n, net: 75_000n, creditExcess: 0n });
+    expect(r.gross).toEqual({ state: 'COMPLETE', value: 75_000n });
+  });
+
+  it('crédit stagiaires : non saisi → non calculable ; mode client sans règle confirmée → non calculable et règle listée', () => {
+    const without = { ...common, donations: 0n, cdiHires: 0, apprentices: 0 };
+    const a = simulate(without, snapshot('TEST'), commercial, internal);
+    expect(lever(a, 'CREDIT_INTERN')?.state).toBe('NOT_COMPUTABLE');
+    expect(lever(a, 'CREDIT_INTERN')?.reasons[0]?.code).toBe('INPUT_MISSING');
+    const c = simulate({ ...common, donations: 0n, cdiHires: 0, apprentices: 0, interns: 3 }, snapshot('TEST'), commercial, client);
+    expect(lever(c, 'CREDIT_INTERN')?.state).toBe('NOT_COMPUTABLE');
   });
 
   it('une donnée non saisie donne INPUT_MISSING', () => {
@@ -102,20 +118,20 @@ describe('états et garde-fous', () => {
   });
 
   it('un décaissement non saisi : net PARTIEL et commission non calculée', () => {
-    const r = simulate({ profit: 40_000_000n, donations: 0n, cdiHires: 2, apprentices: 0, isStartup: 'NO', vatAgri: 'NO' }, snapshot('TEST'), commercial, internal);
+    const r = simulate({ profit: 40_000_000n, donations: 0n, cdiHires: 2, apprentices: 0, interns: 0, isStartup: 'NO', vatAgri: 'NO' }, snapshot('TEST'), commercial, internal);
     expect(r.net.state).toBe('PARTIAL');
     expect(r.commission.state).toBe('NOT_COMPUTED');
     expect(r.warnings.some((w) => w.code === 'NET_PARTIAL')).toBe(true);
   });
 
   it('un levier de crédit dépend du levier dons s’il est non calculable', () => {
-    const r = simulate({ ...common, donations: 'UNKNOWN', cdiHires: 2, apprentices: 0 }, snapshot('TEST'), commercial, internal);
+    const r = simulate({ ...common, donations: 'UNKNOWN', cdiHires: 2, apprentices: 0, interns: 0 }, snapshot('TEST'), commercial, internal);
     expect(lever(r, 'CREDIT_CDI')?.state).toBe('NOT_COMPUTABLE');
     expect(lever(r, 'CREDIT_CDI')?.reasons[0]?.code).toBe('DEPENDS_ON_DONATIONS_LEVER');
   });
 
   it('plafonne les crédits à l’impôt et signale l’excédent', () => {
-    const r = simulate({ ...common, profit: 2_000_000n, donations: 0n, cdiHires: 2, apprentices: 1 }, snapshot('TEST'), commercial, internal);
+    const r = simulate({ ...common, profit: 2_000_000n, donations: 0n, cdiHires: 2, apprentices: 1, interns: 0 }, snapshot('TEST'), commercial, internal);
     // impôt = 500 000 ; CDI (2 M) absorbe tout, l'apprenti n'obtient rien.
     expect(lever(r, 'CREDIT_CDI')?.gross).toBe(500_000n);
     expect(lever(r, 'CREDIT_CDI')?.creditExcess).toBe(1_500_000n);
@@ -125,7 +141,7 @@ describe('états et garde-fous', () => {
   });
 
   it('un bénéfice négatif ne produit pas d’impôt négatif', () => {
-    const r = simulate({ ...common, profit: -5_000_000n, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snapshot('TEST'), commercial, internal);
+    const r = simulate({ ...common, profit: -5_000_000n, donations: 1_000_000n, cdiHires: 0, apprentices: 0, interns: 0 }, snapshot('TEST'), commercial, internal);
     expect(r.taxBefore).toBe(0n);
     expect(r.gross).toEqual({ state: 'COMPLETE', value: 0n });
   });
@@ -133,7 +149,7 @@ describe('états et garde-fous', () => {
   it('une règle EN ATTENTE bloque le calcul en mode interne comme en mode client', () => {
     const snap = snapshot('TEST', { IS_RATE: pendingRule('is-rate', 'IS_RATE', 'TEST — taux IS en attente') });
     for (const mode of ['INTERNAL', 'CLIENT'] as const) {
-      const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, { mode, asOf: AS_OF });
+      const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0, interns: 0 }, snap, commercial, { mode, asOf: AS_OF });
       expect(r.taxBefore).toBeNull();
       expect(lever(r, 'DONATIONS')?.reasons.some((x) => x.code === (mode === 'INTERNAL' ? 'RULE_PENDING' : 'RULE_MISSING'))).toBe(true);
     }
@@ -164,13 +180,13 @@ describe('états et garde-fous', () => {
   });
 
   it('mode client : paramètres commerciaux non validés → commission non calculée', () => {
-    const r = simulate({ ...common, donations: 0n, cdiHires: 2, apprentices: 0 }, snapshot('REAL'), { ...commercial, validated: false }, client);
+    const r = simulate({ ...common, donations: 0n, cdiHires: 2, apprentices: 0, interns: 0 }, snapshot('REAL'), { ...commercial, validated: false }, client);
     expect(r.net.state).toBe('COMPLETE');
     expect(r.commission.state).toBe('NOT_COMPUTED');
   });
 
   it('plafond de commission appliqué', () => {
-    const r = simulate({ ...common, donations: 0n, cdiHires: 2, apprentices: 0 }, snapshot('TEST'), { ...commercial, commissionCap: 100_000n }, internal);
+    const r = simulate({ ...common, donations: 0n, cdiHires: 2, apprentices: 0, interns: 0 }, snapshot('TEST'), { ...commercial, commissionCap: 100_000n }, internal);
     expect(r.commission).toMatchObject({ state: 'COMPUTED', excl: 100_000n, vat: 18_000n, incl: 118_000n, capApplied: true });
   });
 
@@ -183,7 +199,7 @@ describe('états et garde-fous', () => {
 describe('règles bloquées', () => {
   it('T4 : le taux non confirmé figure parmi les règles bloquées', () => {
     const snap = snapshot('REAL', { IS_RATE: { status: 'DRAFT', validations: [] } });
-    const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, client);
+    const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0, interns: 0 }, snap, commercial, client);
     expect(r.blockedRules).toContainEqual({ concept: 'IS_RATE', ruleId: 'is-rate', status: 'DRAFT' });
   });
 });
@@ -193,7 +209,7 @@ describe('règle de TEST et règle REAL en attente pour le même concept', () =>
     const base = snapshot('TEST');
     const real = { ...pendingRule('is-rate-real', 'IS_RATE', 'Taux de l’IS'), kind: 'REAL' } as never;
     const snap = { ...base, rules: [...base.rules, real] };
-    const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, client);
+    const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0, interns: 0 }, snap, commercial, client);
     expect(r.blockedRules).toContainEqual({ concept: 'IS_RATE', ruleId: 'is-rate-real', status: 'PENDING' });
     expect(JSON.stringify(r, (_k, v) => (typeof v === 'bigint' ? v.toString() : v))).not.toContain('TEST');
   });

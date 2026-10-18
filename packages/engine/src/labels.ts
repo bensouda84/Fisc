@@ -12,6 +12,7 @@ export const CONCEPT_TITLE_FR: Record<RuleConcept, string> = {
   DONATION_DEDUCTIBILITY: 'Déductibilité des dons',
   CREDIT_CDI: 'Crédit d’impôt pour les CDI',
   CREDIT_APPRENTICE: 'Crédit d’impôt pour les apprentis',
+  CREDIT_INTERN: 'Crédit d’impôt pour les stagiaires',
   STARTUP_EXEMPTION: 'Exonération des startups labellisées',
   VAT_FUEL_RECOVERY: 'TVA sur le carburant des exploitants agricoles',
 };
@@ -21,6 +22,7 @@ export const INPUT_LABEL_FR: Record<keyof EngineInput, string> = {
   donations: 'Dons effectués',
   cdiHires: 'Embauches en CDI',
   apprentices: 'Apprentis',
+  interns: 'Stagiaires',
   extraSalaries: 'Salaires supplémentaires',
   otherOutflows: 'Autres décaissements',
   isStartup: 'Startup numérique labellisée',
@@ -36,7 +38,7 @@ export const INPUT_KEYS = Object.keys(INPUT_LABEL_FR) as (keyof EngineInput)[];
 export function describeInput(key: keyof EngineInput, value: EngineInput[keyof EngineInput]): string {
   if (value === undefined) return 'Non saisi';
   if (value === 'UNKNOWN') return 'Je ne sais pas';
-  if (key === 'cdiHires' || key === 'apprentices' || key === 'startupLabelYear') return String(value);
+  if (key === 'cdiHires' || key === 'apprentices' || key === 'interns' || key === 'startupLabelYear') return String(value);
   if (value === 'YES') return 'Oui';
   if (value === 'NO') return 'Non';
   return formatMoney(value as bigint);

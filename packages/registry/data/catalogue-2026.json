@@ -520,9 +520,9 @@
       "priority": null,
       "toVerify": "Relire la condition qui distingue 25 000 F de 50 000 F. Trancher le seuil PME (1 Md F ou 50 M F).",
       "modelled": {
-        "state": "NO",
-        "concept": null,
-        "reason": "Levier non construit : le seuil PME (CA inférieur à 1 Md F ou 50 M F) qui distingue 25 000 F de 50 000 F est à trancher. Réalisable sur demande."
+        "state": "YES",
+        "concept": "CREDIT_INTERN",
+        "reason": "Levier « Crédit d'impôt stagiaires » : un montant par stagiaire en paramètre. Le seuil PME (CA inférieur à 1 Md F ou 50 M F) qui distingue 25 000 F de 50 000 F reste à trancher (Q26) avant de saisir le montant. Le moteur sait le calculer ; l'entrée du registre reste EN ATTENTE tant que la valeur n'est pas confirmée par deux validateurs."
       }
     },
     {

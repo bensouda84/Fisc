@@ -53,7 +53,7 @@ describe('invariants du moteur (propriétés)', () => {
   const field = fc.oneof(amount, fc.constant('UNKNOWN' as const), fc.constant(undefined));
   const count = fc.oneof(fc.integer({ min: 0, max: 50 }), fc.constant('UNKNOWN' as const), fc.constant(undefined));
   const inputs = fc.record(
-    { profit: fc.oneof(fc.bigInt({ min: -(10n ** 10n), max: 10n ** 11n }), fc.constant('UNKNOWN' as const), fc.constant(undefined)), donations: field, cdiHires: count, apprentices: count, extraSalaries: field, otherOutflows: field },
+    { profit: fc.oneof(fc.bigInt({ min: -(10n ** 10n), max: 10n ** 11n }), fc.constant('UNKNOWN' as const), fc.constant(undefined)), donations: field, cdiHires: count, apprentices: count, interns: count, extraSalaries: field, otherOutflows: field },
     { requiredKeys: [] },
   );
 
@@ -83,7 +83,7 @@ describe('invariants du moteur (propriétés)', () => {
 });
 
 describe('garde-fou client', () => {
-  const okResult = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snapshot('REAL'), commercial, { mode: 'CLIENT', asOf: AS_OF });
+  const okResult = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0, interns: 0 }, snapshot('REAL'), commercial, { mode: 'CLIENT', asOf: AS_OF });
 
   it('laisse passer un résultat sain, ignore le mode interne', () => {
     expect(() => assertClientSafe(okResult)).not.toThrow();
@@ -127,9 +127,9 @@ import { reviveResult, toWireJson } from '../src/index.ts';
 describe('transport JSON', () => {
   it('aller-retour sans perte : résultat → JSON → résultat', () => {
     const cases = [
-      { ...common, donations: 4_000_000n, cdiHires: 2, apprentices: 1 },
-      { ...common, donations: 'UNKNOWN' as const, cdiHires: 2, apprentices: 0 },
-      { profit: 40_000_000n, donations: 0n, cdiHires: 2, apprentices: 0 },
+      { ...common, donations: 4_000_000n, cdiHires: 2, apprentices: 1, interns: 0 },
+      { ...common, donations: 'UNKNOWN' as const, cdiHires: 2, apprentices: 0, interns: 0 },
+      { profit: 40_000_000n, donations: 0n, cdiHires: 2, apprentices: 0, interns: 0 },
     ];
     for (const input of cases) {
       for (const kind of ['TEST', 'REAL'] as const) {

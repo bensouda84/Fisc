@@ -46,7 +46,7 @@ MODEL = {
   'N01': Y('IS_RATE', "Taux de l'impôt sur les sociétés (25 % ; 30 % télécoms et TIC) : paramètre du registre, valeur non codée." + PENDING),
   'N02': Y('CREDIT_CDI', "Crédit d'impôt CDI : montant par CDI en paramètre. 1 M F vient d'un rapport, pas d'un texte." + PENDING),
   'N03': Y('CREDIT_APPRENTICE', "Crédit d'impôt apprentis : montant en paramètre (500 000 F selon l'annexe 2020, validité 2026 non vérifiée)." + PENDING),
-  'N04': N("Levier non construit : le seuil PME (CA inférieur à 1 Md F ou 50 M F) qui distingue 25 000 F de 50 000 F est à trancher. Réalisable sur demande."),
+  'N04': Y('CREDIT_INTERN', "Levier « Crédit d'impôt stagiaires » : un montant par stagiaire en paramètre. Le seuil PME (CA inférieur à 1 Md F ou 50 M F) qui distingue 25 000 F de 50 000 F reste à trancher (Q26) avant de saisir le montant." + PENDING),
   'N05': Y('DONATION_DEDUCTIBILITY', "Levier « Dons » prêt à recevoir un plafond ; aucun texte trouvé, donc rien n'est codé." + PENDING),
   'N06': N("Réinvestissement des bénéfices (art. 110, 110 bis) : textes non lus, ne pas modéliser sans eux."),
   'N07': N("IMF : aucun texte trouvé."),

@@ -28,7 +28,7 @@ async function t1(page: Page | FrameLocator): Promise<void> {
   const next = () => page.getByRole('button', { name: 'Continuer' }).click();
   await page.getByLabel('Bénéfice imposable (F CFA)').fill('40000000'); await next();
   await page.getByLabel('Dons effectués (F CFA)').fill('4000000'); await next();
-  await page.getByLabel('Embauches en CDI').fill('2'); await page.getByLabel('Apprentis').fill('1'); await next();
+  await page.getByLabel('Embauches en CDI').fill('2'); await page.getByLabel('Apprentis').fill('1'); await page.getByLabel('Stagiaires').fill('0'); await next();
   await page.getByLabel('Salaires supplémentaires (F CFA)').fill('0'); await page.getByLabel('Autres décaissements (F CFA)').fill('0'); await next();
   await page.getByRole('radio', { name: 'Non', exact: true }).check(); await next();
   await page.getByRole('radio', { name: 'Non', exact: true }).check();

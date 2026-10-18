@@ -34,10 +34,10 @@ describe('registre V1 initial', () => {
   });
   it('registre initial en mode client : tout est NON CALCULABLE, aucun zéro', () => {
     const snap = publishSnapshot(loadRealRules(), 'v1.0.0', AT);
-    const r = simulate({ profit: 40_000_000n, donations: 4_000_000n, cdiHires: 2, apprentices: 1, extraSalaries: 0n, otherOutflows: 0n }, snap, commercial, { mode: 'CLIENT', asOf: '2026-10-18' });
+    const r = simulate({ profit: 40_000_000n, donations: 4_000_000n, cdiHires: 2, apprentices: 1, interns: 1, extraSalaries: 0n, otherOutflows: 0n }, snap, commercial, { mode: 'CLIENT', asOf: '2026-10-18' });
     expect(r.levers.every((l) => l.state === 'NOT_COMPUTABLE' && l.gross === null)).toBe(true);
     expect(r.net.state).toBe('NOT_COMPUTABLE');
-    expect(r.blockedRules.length).toBe(4);
+    expect(r.blockedRules.length).toBe(5);
   });
 });
 
@@ -72,7 +72,7 @@ describe('cycle de vie et validation à deux niveaux', () => {
   it('une règle confirmée alimente le mode client avec sa source complète', () => {
     const confirmed = validateRule(validateRule(filled(), legal), accounting);
     const snap = publishSnapshot([confirmed], 'v1.1.0', AT);
-    const r = simulate({ profit: 40_000_000n, donations: 0n, cdiHires: 0, apprentices: 0, extraSalaries: 0n, otherOutflows: 0n }, snap, commercial, { mode: 'CLIENT', asOf: '2026-10-18' });
+    const r = simulate({ profit: 40_000_000n, donations: 0n, cdiHires: 0, apprentices: 0, interns: 0, extraSalaries: 0n, otherOutflows: 0n }, snap, commercial, { mode: 'CLIENT', asOf: '2026-10-18' });
     expect(r.taxBefore).toBe(10_000_000n);
     expect(JSON.stringify(r, (_k, v) => (typeof v === 'bigint' ? v.toString() : v))).not.toContain('TEST');
   });
@@ -149,7 +149,7 @@ describe('catalogue du classeur (informatif)', () => {
   it('chaque ligne modélisée pointe un concept qui existe au registre, en attente tant que non confirmé', () => {
     const real = loadRealRules();
     const modelled = cat.lines.filter((l) => l.modelled.state === 'YES');
-    expect(modelled.map((l) => l.id).sort()).toEqual(['N01', 'N02', 'N03', 'N05', 'R08', 'R11']);
+    expect(modelled.map((l) => l.id).sort()).toEqual(['N01', 'N02', 'N03', 'N04', 'N05', 'R08', 'R11']);
     for (const l of modelled) {
       const rule = real.find((r) => r.concept === l.modelled.concept);
       expect(rule, l.id).toBeDefined();
