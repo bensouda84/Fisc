@@ -36,7 +36,7 @@ Le classeur de MARABU recense 23 règles de l'annexe fiscale 2026 et 10 disposit
 | Crédit CDI (N02) | PARTIELLEMENT CONFIRMÉ (montant issu d'un rapport, pas d'un texte) | reste EN ATTENTE |
 | Crédit apprentis (N03) | PARTIELLEMENT CONFIRMÉ (annexe 2020 ; validité 2026 non vérifiée) | reste EN ATTENTE |
 
-Le contenu du classeur (statut, ce qui est lu, ce qui reste à lire) est repris dans le champ « source à obtenir » de chaque entrée du registre, visible du personnel seulement. Le classeur n'est pas versionné dans le dépôt (à confirmer si vous le souhaitez). **Q1 reste donc ouverte** : il faut lire le CGI consolidé 2026 (art. 51, 110, 111, 111 bis, 111 ter, 18 G) pour confirmer une première règle.
+Le contenu du classeur (statut, ce qui est lu, ce qui reste à lire) est repris dans le champ « source à obtenir » de chaque entrée du registre, visible du personnel seulement. Le classeur est versionné dans `docs/sources/` (lecture seule, ne fait pas foi). **Q1 reste donc ouverte** : il faut lire le CGI consolidé 2026 (art. 51, 110, 111, 111 bis, 111 ter, 18 G) pour confirmer une première règle.
 
 Autres constats du classeur utiles au POC :
 - le montant « 1 M F par CDI » **n'est pas** un texte (rapport 2019) : les règles de TEST ne doivent pas être confondues avec des valeurs réelles ;

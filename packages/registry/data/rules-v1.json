@@ -13,7 +13,7 @@
     "version": 1,
     "validations": [],
     "params": null,
-    "sourceToObtain": "Classeur MARABU « Règles applicables » (18/10/2026) : PARTIELLEMENT CONFIRMÉ. Texte lu : 25 % et 30 % pour les télécommunications et TIC, CGI 51, annexe fiscale 2019, art. 8. Non modifié par l'annexe 2026 (aucun titre ne le vise). À lire : CGI 51 consolidé 2026 ; annexes 2020 à 2025. Aucune valeur n'est codée tant que le texte consolidé n'est pas lu."
+    "sourceToObtain": "Classeur MARABU « Règles applicables » (18/10/2026, docs/sources) : PARTIELLEMENT CONFIRMÉ. Texte lu : 25 % et 30 % pour les télécommunications et TIC, CGI 51, annexe fiscale 2019, art. 8. Non modifié par l'annexe 2026 (aucun titre ne le vise). À lire : CGI 51 consolidé 2026 ; annexes 2020 à 2025. Aucune valeur n'est codée tant que le texte consolidé n'est pas lu."
   },
   {
     "id": "donation-deductibility",
@@ -29,7 +29,7 @@
     "version": 1,
     "validations": [],
     "params": null,
-    "sourceToObtain": "Classeur MARABU (18/10/2026) : NON TROUVÉ, ne rien coder. CGI 18 G non confirmé ; le registre V4 cite un double plafond (2,5 % / 200 M F) non vérifié. À chercher : texte consolidé, note DGI sur les dons, BODGI 2026 HS21."
+    "sourceToObtain": "Classeur MARABU (18/10/2026, docs/sources) : NON TROUVÉ, ne rien coder. CGI 18 G non confirmé ; le registre V4 cite un double plafond (2,5 % / 200 M F) non vérifié. À chercher : texte consolidé, note DGI sur les dons, BODGI 2026 HS21."
   },
   {
     "id": "credit-cdi",
@@ -45,7 +45,7 @@
     "version": 1,
     "validations": [],
     "params": null,
-    "sourceToObtain": "Classeur MARABU (18/10/2026) : PARTIELLEMENT CONFIRMÉ. Montant cité : 1 000 000 F par an et par CDI, mais source = rapport sur les dépenses fiscales 2019 (pas un texte) ; CDD réduit de moitié et reversement sur 24 mois (annexe 2020). À retrouver : texte d'origine (annexe 2016) et CGI 111 consolidé. Ne pas présumer le montant."
+    "sourceToObtain": "Classeur MARABU (18/10/2026, docs/sources) : PARTIELLEMENT CONFIRMÉ. Montant cité : 1 000 000 F par an et par CDI, mais source = rapport sur les dépenses fiscales 2019 (pas un texte) ; CDD réduit de moitié et reversement sur 24 mois (annexe 2020). À retrouver : texte d'origine (annexe 2016) et CGI 111 consolidé. Ne pas présumer le montant."
   },
   {
     "id": "credit-apprentice",
@@ -61,6 +61,6 @@
     "version": 1,
     "validations": [],
     "params": null,
-    "sourceToObtain": "Classeur MARABU (18/10/2026) : PARTIELLEMENT CONFIRMÉ. Texte lu : 500 000 F par apprenti (CGI 111 bis, annexe 2020) ; majorations et montants du régime microentreprise cités par le V4 seulement. Validité 2026 non vérifiée. À relire : conditions (entreprise au réel), durée du crédit, CGI consolidé."
+    "sourceToObtain": "Classeur MARABU (18/10/2026, docs/sources) : PARTIELLEMENT CONFIRMÉ. Texte lu : 500 000 F par apprenti (CGI 111 bis, annexe 2020) ; majorations et montants du régime microentreprise cités par le V4 seulement. Validité 2026 non vérifiée. À relire : conditions (entreprise au réel), durée du crédit, CGI consolidé."
   }
 ]
