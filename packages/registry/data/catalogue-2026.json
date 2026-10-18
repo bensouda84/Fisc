@@ -1,0 +1,1036 @@
+{
+  "workbook": {
+    "file": "mesimpo_Regles_Applicables_POC_2026-10-18.xlsx",
+    "sha256": "cc69d3ee4378af7ab978f64fb8047cfb51763e2f32b58186393296f15ed33501",
+    "asOf": "2026-10-18"
+  },
+  "summary": [
+    {
+      "label": "Périmètre",
+      "text": "Règles 2026 qui modifient un calcul (taux, base, exonération, plafond, cumul, condition), et dispositifs non modifiés nécessaires au calcul. L'historique est exclu sauf mention."
+    },
+    {
+      "label": "Règle de confirmation",
+      "text": "CONFIRMÉ = un texte officiel établit l'existence de la règle et son article exact. Les sources secondaires ne suffisent pas."
+    },
+    {
+      "label": "Hiérarchie des preuves",
+      "text": "1 texte officiel en vigueur ; 2 texte réglementaire ; 3 doctrine administrative ; 4 jurisprudence ; 5 commentaire professionnel ; 6 analyse secondaire."
+    },
+    {
+      "label": "Décompte",
+      "text": "23 règles 2026 : 22 CONFIRMÉES dont 2 hors périmètre des entreprises (R20 et R22) ; 1 PARTIELLEMENT CONFIRMÉE (R04). Certaines CONFIRMÉES gardent un point à trancher (R15, R16). 10 dispositifs non modifiés ou à vérifier."
+    },
+    {
+      "label": "Erreurs corrigées",
+      "text": "Stagiaires : 25 000 F et 50 000 F par an (CGI 111 ter), et non 500 000 F. Apprentis : 500 000 F (CGI 111 bis, annexe 2020). CDI : 1 M F cité par un rapport, non un texte. Taux de TVA des opérations de l'art. 6 : 9 % selon BODGI et Douanes (ordonnance 2026-03), et non 18 % comme dans le texte de l'annexe ; ordonnance non lue."
+    },
+    {
+      "label": "Bloquants avant calcul",
+      "text": "(1) Art. 39 : sens de la condition « produit non exonéré » (R16). (2) Ordonnance 2026-03 : texte et ratification (R04). (3) Engrais à 9 % : suspension du 01/07 au 31/12/2026 à confirmer par la DGI (R04). (4) CGI consolidé 2026 pour les art. 51, 110, 111, 111 bis, 111 ter, 18 G (N01 à N06). (5) Validation par un fiscaliste avant mise en production."
+    },
+    {
+      "label": "Priorité POC",
+      "text": "Haute : R02, R03, R04, R08, R12, R14, R16, N01, N02 à N04, et les points V4 FISC-007, 013, 016, 023, 030, 035 à 037."
+    }
+  ],
+  "lines": [
+    {
+      "id": "R01",
+      "family": "R",
+      "theme": "Retenue à la source : productions audiovisuelles",
+      "rule": "Retenue de 7,5 % (CGI 96) étendue aux sommes versées aux acteurs, figurants, personnes assimilées et autres intervenants non salariés des productions radiophoniques, télévisuelles ou cinématographiques.",
+      "effect": "Retenue de 7,5 % des sommes brutes mises en paiement à ces intervenants. Gain attendu : 100 M F.",
+      "legalBasis": "CGI 96",
+      "source": "Art. 1, p. 1 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page44.html (relu en direct le 18/10/2026)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne (secteur audiovisuel)",
+      "toVerify": "Règle absente du V4.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Impôt ou taxe prélevé sur une opération (retenue, TVA, taxe sectorielle) : le moteur ne calcule que l'impôt sur les bénéfices et ses leviers, pas ce flux. Retenue de 7,5 % sur les sommes versées à des intervenants audiovisuels."
+      }
+    },
+    {
+      "id": "R02",
+      "family": "R",
+      "theme": "Mobile money",
+      "rule": "Les règlements par mobile money ne sont pas visés par la limite de déduction de 250 000 F (CGI 18 bis, complété in fine). Pour les charges (CGI 373, 2e alinéa), elles sont déductibles quel que soit leur montant.",
+      "effect": "Plafond de 250 000 F non appliqué aux règlements par mobile money (IBIC et TVA). Coût estimé : 700 M F.",
+      "legalBasis": "CGI 18 bis ; CGI 373",
+      "source": "Art. 7, p. 9 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page52.html (relu en direct le 18/10/2026)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Haute",
+      "toVerify": "Les autres conditions de déduction (justificatifs, lien avec l'exploitation) restent applicables (V4 FISC-007).",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Déductibilité des charges : touche la base imposable, mais le POC n'a pas de saisie par moyen de paiement. À modéliser avec une question « règlements en espèces au-dessus de 250 000 F »."
+      }
+    },
+    {
+      "id": "R03",
+      "family": "R",
+      "theme": "TVA : exonérations supprimées",
+      "rule": "Suppression des alinéas 17, 27, 28 et 30 de CGI 355 : fibres de jute et de sisal ; aliments pour bétail et animaux de basse-cour ; intrants et emballages de ces aliments ; intrants et emballages des engrais.",
+      "effect": "Ces opérations ne sont plus exonérées de TVA. Taux applicable : voir R04. Recette estimée : 9 Md F.",
+      "legalBasis": "CGI 355 (al. 17, 27, 28, 30)",
+      "source": "Art. 6, p. 8 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page51.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Haute",
+      "toVerify": "Les grains intrants (maïs, mil, autres céréales) restent exonérés au titre de CGI 355-9 (BODGI 2026, p. 23). Le texte de l'art. 6 indique 18 % : voir R04.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Impôt ou taxe prélevé sur une opération (retenue, TVA, taxe sectorielle) : le moteur ne calcule que l'impôt sur les bénéfices et ses leviers, pas ce flux. Suppression d'exonérations de TVA ; le taux applicable (9 % ou 18 %) dépend de l'ordonnance 2026-03 non lue (R04)."
+      }
+    },
+    {
+      "id": "R04",
+      "family": "R",
+      "theme": "TVA : taux réduit de 9 %",
+      "rule": "Les opérations de R03 sont taxées à 9 % (et non 18 %) à compter du 17/01/2026, date d'entrée en vigueur de l'ordonnance n° 2026-03 du 7 janvier 2026 (publiée le 16/01/2026). Entre le 05 et le 16/01/2026, les opérations « ne doivent pas être recherchées en paiement de la TVA » (note de service n° 00380/MFB/DGI/DLCD-SDL/bke/01-2026). Importations : code additionnel 9VA (Douanes).",
+      "effect": "TVA à 9 % au lieu de 18 % sur les opérations de R03.",
+      "legalBasis": "Ordonnance n° 2026-03, art. 1 (citée par les Douanes) ; CGI 355 (R03)",
+      "source": "BODGI 2026, p. 23 : https://dgi.gouv.ci/assets/documents/EBOOK/BODGI_2026/files/basic-html/page23.html ; note des Douanes c_2389 ; ordonnance non lue",
+      "modifiedBy2026": true,
+      "status": "PARTIELLEMENT CONFIRMÉ",
+      "priority": "Haute",
+      "toVerify": "(1) Texte de l'ordonnance non lu. (2) Ratification : examen en commission constaté (CAEF), adoption non confirmée. (3) Engrais : suspension du 9 % du 01/07 au 31/12/2026 signalée par le seul rapport USDA, non confirmée par la DGI.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Taux de TVA : opération par opération, et ordonnance 2026-03 non lue. Aucune valeur n'est codée."
+      }
+    },
+    {
+      "id": "R05",
+      "family": "R",
+      "theme": "TVA : affacturage",
+      "rule": "Les opérations d'affacturage sont soumises à la TVA (tiret ajouté à CGI 344).",
+      "effect": "TVA sur les commissions et opérations d'affacturage. Recette estimée : 2,9 Md F.",
+      "legalBasis": "CGI 344",
+      "source": "Art. 5, p. 7 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page50.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne",
+      "toVerify": "L'art. 16 porte le même intitulé au sommaire : doublon ou second texte ? Non localisé (pages 71 à 74 non lues).",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Impôt ou taxe prélevé sur une opération (retenue, TVA, taxe sectorielle) : le moteur ne calcule que l'impôt sur les bénéfices et ses leviers, pas ce flux. Assujettissement de l'affacturage à la TVA."
+      }
+    },
+    {
+      "id": "R06",
+      "family": "R",
+      "theme": "Taxe spéciale sur certains emballages",
+      "rule": "Tarif : 50 F par kg d'emballage plastique ; 5 F par kg d'emballage en verre, en métal à usage unique et en carton non ondulé. Exclusions : emballages destinés à l'exportation ; verre et métal réutilisables ; carton ondulé produit localement ou importé.",
+      "effect": "Charge par kg d'emballage selon la matière et les exclusions. Coût budgétaire estimé : 900 M F.",
+      "legalBasis": "CGI 1138 (§ 1 et 2)",
+      "source": "Art. 8, p. 10-11 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page53.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne",
+      "toVerify": "Aucun point ouvert dans le texte lu.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Impôt ou taxe prélevé sur une opération (retenue, TVA, taxe sectorielle) : le moteur ne calcule que l'impôt sur les bénéfices et ses leviers, pas ce flux. Taxe spéciale sur emballages."
+      }
+    },
+    {
+      "id": "R07",
+      "family": "R",
+      "theme": "Taxe pour le développement touristique",
+      "rule": "Taux porté de 1,5 % à 2,5 % du montant HT facturé (CGI 1140, 2). Champ étendu aux entreprises de l'entreprenant (taxes d'État et communale) du secteur touristique, aux parcs d'attractions et aux espaces événementiels (CGI 1140, 1). Taxe communale de 100 F par montant facturé, recouvrée par le trésorier municipal (LCT 199 ter, créé). Répartition du CGI 1140, 4 ramenée à 50/50 ; taxe communale : 50 % au Fonds de développement touristique, 50 % à la collectivité.",
+      "effect": "Taux de 2,5 % HT au lieu de 1,5 %, plus une taxe communale de 100 F par montant facturé. Recette attendue : 4 Md F.",
+      "legalBasis": "CGI 1140 (1, 2, 4) ; loi n° 2003-489, art. 159 (15) et 199 ter (créé)",
+      "source": "Art. 9, p. 12-14 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page55.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne (tourisme)",
+      "toVerify": "Périmètre exact de l'entreprenant touristique et montant communal à confirmer avec la collectivité concernée.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Impôt ou taxe prélevé sur une opération (retenue, TVA, taxe sectorielle) : le moteur ne calcule que l'impôt sur les bénéfices et ses leviers, pas ce flux. Taxe touristique de 2,5 %."
+      }
+    },
+    {
+      "id": "R08",
+      "family": "R",
+      "theme": "Startups numériques labellisées",
+      "rule": "Exonération pendant 3 ans suivant l'année de labellisation (comité du ministère chargé de la Transition numérique, avec un représentant de la DGI et un de la DGD). Startups numériques au régime réel, hors zone franche biotechnologie et TIC : (a) « impôt sur les bénéfices industriels et commerciaux » (CGI 12 septies) ; (b) impôt des microentreprises (CGI 71 quinquies) ; (c) taxe d'État de l'entreprenant (CGI 80 bis) ; (d) impôt sur le revenu des créances, sur les intérêts de prêts (CGI 236 sexies) ; (e) taxe sur les opérations bancaires, sur les intérêts de prêts (CGI 398, 16°).",
+      "effect": "Exonération pendant 3 ans de l'IBIC, de l'impôt des microentreprises, de la taxe de l'entreprenant, de l'IRC et de la TOB sur les intérêts de prêts.",
+      "legalBasis": "CGI 12 septies ; 71 quinquies ; 80 bis ; 236 sexies ; 398 (16°)",
+      "source": "Art. 35, p. 76-77 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page119.html et page120.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Haute (si startup)",
+      "toVerify": "(1) Rattacher le « BIC » de 12 septies à l'IS (CGI 51). (2) Non-cumul avec le Code des investissements : note du V4 citant le BODGI, non vérifiée. (3) Date d'effet des prêts (05/01/2026 selon le V4) : non vérifiée dans le texte.",
+      "modelled": {
+        "state": "YES",
+        "concept": "STARTUP_EXEMPTION",
+        "reason": "Levier « Exonération startup » : durée, année du label et impôts visés sont des paramètres du registre. Le moteur sait le calculer ; l'entrée du registre reste EN ATTENTE tant que la valeur n'est pas confirmée par deux validateurs."
+      }
+    },
+    {
+      "id": "R09",
+      "family": "R",
+      "theme": "Taxe de l'entreprenant : calendrier de paiement",
+      "rule": "Taxe d'État de l'entreprenant versée en quatre fractions égales, au plus tard le 31 mars, le 30 juin, le 30 septembre et le 30 novembre (CGI 79, 2), au lieu de douze versements mensuels (au plus tard le 10 de chaque mois, au douzième, selon l'exposé). Avant fixation de la taxe annuelle : versements égaux au quart de la taxe annuelle précédente (CGI 79, 3, 1er §).",
+      "effect": "Montant de la taxe inchangé ; calendrier et trésorerie modifiés.",
+      "legalBasis": "CGI 79 (2 et 3, 1er §)",
+      "source": "Art. 36, p. 78 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page121.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne (entreprenant)",
+      "toVerify": "Le texte modifie le 2 pour la taxe d'État de l'entreprenant ; son application au régime des microentreprises n'est indiquée que par l'exposé : à confirmer. Taux : voir N08.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Calendrier de paiement d'une taxe de l'entreprenant : échéancier, pas un montant d'économie."
+      }
+    },
+    {
+      "id": "R10",
+      "family": "R",
+      "theme": "IBNC : primes de réassurance",
+      "rule": "Primes versées par les entreprises d'assurance ivoiriennes aux réassureurs non domiciliés, soumises à une retenue de 50 % de leur montant (CGI 92, 1° e), exonérées jusqu'au 30/04/2027 (décision CIMA n° 008/CIMA/PCMA/PCE/2022 du 22/02/2022). Au-delà : droit commun, sauf mesures contraires.",
+      "effect": "Retenue évitée jusqu'au 30/04/2027.",
+      "legalBasis": "CGI 92 (1, e)",
+      "source": "Art. 37, p. 79 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page122.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne (assurance)",
+      "toVerify": "Régime après le 30/04/2027 : droit commun, à confirmer lors d'une éventuelle prorogation.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Impôt ou taxe prélevé sur une opération (retenue, TVA, taxe sectorielle) : le moteur ne calcule que l'impôt sur les bénéfices et ses leviers, pas ce flux. Retenue sur primes de réassurance versées à des non-résidents."
+      }
+    },
+    {
+      "id": "R11",
+      "family": "R",
+      "theme": "TVA : exploitants agricoles",
+      "rule": "Exploitants agricoles assujettis à la TVA (option exercée) : droit à déduction de la TVA grevant le gaz, le gas-oil, les huiles et les graisses utilisés pour le fonctionnement de leurs engins (CGI 348, 365, 365-1). Conditions cumulatives : produits dans le champ de la TVA et option exercée.",
+      "effect": "Récupération de la TVA sur le carburant agricole, sous conditions. Coût estimé : 1,8 Md F.",
+      "legalBasis": "CGI 348 (tiret) ; CGI 365 (1 et 4e §) ; CGI 365-1",
+      "source": "Art. 38, p. 80 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page123.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne (agriculture)",
+      "toVerify": "Plafond de 95 % de la TVA supportée (CGI 365-1, cité par l'exposé) : à confirmer s'il s'applique aux exploitants agricoles.",
+      "modelled": {
+        "state": "YES",
+        "concept": "VAT_FUEL_RECOVERY",
+        "reason": "Levier « TVA carburant agricole » : deux conditions cumulatives en questions ; plafond en paramètre (95 % à vérifier). Le moteur sait le calculer ; l'entrée du registre reste EN ATTENTE tant que la valeur n'est pas confirmée par deux validateurs."
+      }
+    },
+    {
+      "id": "R12",
+      "family": "R",
+      "theme": "Impôt sur le patrimoine foncier (IPF)",
+      "rule": "Taux de 9 % de la valeur locative des immeubles bâtis et non bâtis productifs de revenus fonciers ; 11 % pour les entreprises et personnes morales (CGI 158, 1er §). Immeuble occupé par son propriétaire : la référence au revenu qu'il pourrait tirer d'une location est supprimée (CGI 153, 1er §). Base des immeubles bâtis non productifs : valeur marchande déclarée (annexe 2025, art. 28, selon l'exposé).",
+      "effect": "IPF de 11 % pour une société propriétaire d'immeubles productifs ; pas de revenu fictif sur l'immeuble occupé par son propriétaire.",
+      "legalBasis": "CGI 153 (1er §) ; CGI 158 (1er et 2e §)",
+      "source": "Art. 18, p. 32-33 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page75.html et page76.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Haute si immobilier",
+      "toVerify": "Le 2e § de l'art. 158 maintient un taux de 0,5 % (objet non lu). Base « valeur marchande » : à vérifier dans l'annexe 2025.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Impôt sur le patrimoine foncier : impôt distinct de l'impôt sur les bénéfices, hors des leviers du POC."
+      }
+    },
+    {
+      "id": "R13",
+      "family": "R",
+      "theme": "Promoteurs immobiliers : droits de douane",
+      "rule": "L'exonération prévue aux points 42 et 43 de CGI 355 (biens et services nécessaires aux programmes immobiliers, codifiés aux CGI 355-42 et 355-43 selon l'exposé) est étendue aux droits de douane.",
+      "effect": "Droits de douane exonérés sur les acquisitions éligibles.",
+      "legalBasis": "CGI 355 (42 et 43)",
+      "source": "Art. 18, p. 34 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page77.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne (promoteurs)",
+      "toVerify": "Conditions d'éligibilité : annexe 2024, art. 7 (non lue).",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Droits de douane de promoteurs immobiliers : opération par opération, secteur étroit."
+      }
+    },
+    {
+      "id": "R14",
+      "family": "R",
+      "theme": "TVA : seuil de l'option pour l'assujettissement",
+      "rule": "Seuil de chiffre d'affaires de l'option (CGI 348) ramené de 100 M F TTC à 50 M F TTC. Noix de coco, banane et ananas retirées de l'option.",
+      "effect": "Éligibilité à l'option TVA au seuil de 50 M F TTC.",
+      "legalBasis": "CGI 348",
+      "source": "Art. 18, p. 32-33 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page75.html et page76.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Moyenne",
+      "toVerify": "Ne pas confondre avec le seuil PME « 50 M F hors TVA » du V4 (FISC-020, Code des investissements, non relu).",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Seuil d'option TVA (50 M F TTC) : un seuil de statut, pas un levier ; sens de la comparaison à confirmer."
+      }
+    },
+    {
+      "id": "R15",
+      "family": "R",
+      "theme": "TVA : banane dessert",
+      "rule": "La banane dessert est exclue de l'exonération de CGI 355-9.",
+      "effect": "La banane dessert n'est plus exonérée au titre de CGI 355-9. Taux applicable : à confirmer.",
+      "legalBasis": "CGI 355-9 (in fine)",
+      "source": "Art. 18, p. 34 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page77.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ (existence) ; taux à confirmer",
+      "priority": "Moyenne",
+      "toVerify": "Taux (9 % ou 18 %) et conditions : à lire dans le CGI consolidé 2026.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Taux de la banane dessert à confirmer ; TVA par produit, hors périmètre du moteur."
+      }
+    },
+    {
+      "id": "R16",
+      "family": "R",
+      "theme": "Charges déductibles : produit non exonéré",
+      "rule": "Ajout au CGI 18-A, 11° : « Le montant lié à la formation d'un produit non exonéré d'impôt sur le bénéfice ». L'exposé indique que cette condition reprend l'article 12-3 de la directive UEMOA n° 01/2008/CM du 28/03/2008 : une charge n'est déductible que si elle concourt à la formation d'un produit non exonéré.",
+      "effect": "Selon l'exposé, une charge qui ne concourt pas à un produit non exonéré n'est pas déductible. La clé de répartition des charges mixtes n'est pas définie dans le texte.",
+      "legalBasis": "CGI 18-A (11°)",
+      "source": "Art. 39, p. 81 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page124.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ (existence et article) ; sens à trancher",
+      "priority": "Haute",
+      "toVerify": "Si l'art. 18-A énumère des charges non déductibles, le libellé peut inverser la règle. À trancher avec le CGI consolidé avant tout calcul. Le V4 (FISC-016) écrit « produits taxables » : à corriger.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Bloquant : le sens de « produit non exonéré » (art. 39) doit être tranché par un fiscaliste avant tout calcul."
+      }
+    },
+    {
+      "id": "R17",
+      "family": "R",
+      "theme": "Contrôle fiscal : report de la première intervention",
+      "rule": "La demande de report doit être écrite, motivée et reçue au moins 3 jours ouvrables avant la première intervention ; un seul report par contrôle ; réponse de l'administration avant la date prévue ; absence de réponse = acceptation (LPF 20, 5).",
+      "effect": "Délai de 3 jours ouvrables à respecter pour tout report.",
+      "legalBasis": "LPF 20 (5)",
+      "source": "Art. 11, p. 16 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page59.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Basse (procédure)",
+      "toVerify": "Aucun.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Procédure ou conformité, sans effet sur un montant : rien à calculer."
+      }
+    },
+    {
+      "id": "R18",
+      "family": "R",
+      "theme": "Patente : déclaration",
+      "rule": "Les sanctions de LPF 169 (1er, 2e et 3e tirets) s'appliquent au défaut de dépôt ou au dépôt tardif de la déclaration de la contribution des patentes (paragraphe inséré après le 7e de LPF 169).",
+      "effect": "Pénalité en cas de défaut ou de retard de dépôt de la déclaration de patente.",
+      "legalBasis": "LPF 169",
+      "source": "Art. 10, p. 15 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page58.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Basse",
+      "toVerify": "Montants des sanctions : dans LPF 169 (non lu).",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Procédure ou conformité, sans effet sur un montant : rien à calculer. Déclaration de patente."
+      }
+    },
+    {
+      "id": "R19",
+      "family": "R",
+      "theme": "Procédure : pièces en langue étrangère",
+      "rule": "Pièces rédigées en langue étrangère, transmises à l'administration : traduction française certifiée conforme obligatoire. Le défaut entraîne l'irrecevabilité des documents (LPF 10, deux paragraphes ajoutés).",
+      "effect": "Recevabilité des pièces transmises.",
+      "legalBasis": "LPF 10",
+      "source": "Art. 19, p. 35 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page78.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Basse (procédure)",
+      "toVerify": "Aucun.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Procédure ou conformité, sans effet sur un montant : rien à calculer. Pièces en langue étrangère."
+      }
+    },
+    {
+      "id": "R20",
+      "family": "R",
+      "theme": "Crédit d'impôt : premier logement (hors entreprises)",
+      "rule": "Crédit de 5 % du prix du premier logement économique et social, si le prix ne dépasse pas 40 M F TTC ; imputable sur l'impôt foncier pendant 5 ans à compter de l'acquisition ou de l'achèvement. Réservé aux personnes physiques (primo-accédants et constructeurs). Exonération de droits de publicité foncière ; prêts bancaires à la construction (CGI 398, 3, c).",
+      "effect": "Non applicable aux entreprises.",
+      "legalBasis": "CGI 114 quater (IV) ; CGI 398 (3, c)",
+      "source": "Art. 2, p. 2-3 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page45.html et page46.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Hors périmètre (personnes physiques)",
+      "toVerify": "Confirme le V4 FISC-001 (ajouter la référence au texte).",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Hors périmètre des entreprises (personnes physiques ou autre acteur). Crédit d'impôt pour le premier logement."
+      }
+    },
+    {
+      "id": "R21",
+      "family": "R",
+      "theme": "IRVM : plus-values de cession de titres",
+      "rule": "Pour les plus-values de cession de titres, la détermination s'effectue par le choix d'une méthode : valeur mathématique, valeur boursière ou méthode financière (CGI 184, 8°).",
+      "effect": "Base imposable des plus-values sur titres selon la méthode retenue.",
+      "legalBasis": "CGI 184 (8°)",
+      "source": "Art. 4, p. 6 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page49.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Basse",
+      "toVerify": "Conditions de choix de la méthode non détaillées dans le texte ; redevables à qualifier.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "IRVM sur plus-values de cession de titres : impôt de l'actionnaire, pas de l'entreprise."
+      }
+    },
+    {
+      "id": "R22",
+      "family": "R",
+      "theme": "SGI et OPCVM : état récapitulatif",
+      "rule": "Déclaration des cessions de titres au plus tard le 30 juin (CGI 209, 3). Amende de 1 M F, majorée de 100 000 F par mois ou fraction de mois de retard ; 50 000 F par erreur constatée.",
+      "effect": "Hors périmètre (sociétés de gestion et d'intermédiation).",
+      "legalBasis": "CGI 209 (3)",
+      "source": "Art. 3 et 4 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page47.html et page48.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Hors périmètre",
+      "toVerify": "Aucun.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Hors périmètre des entreprises (personnes physiques ou autre acteur). SGI et OPCVM."
+      }
+    },
+    {
+      "id": "R23",
+      "family": "R",
+      "theme": "Corrections techniques sans effet de calcul",
+      "rule": "(a) Suppression de l'article 21 bis CGI (exonération de 5 ans de l'IBNC des entreprises agricoles de l'art. 12 bis, déjà supprimée par l'annexe 2022). (b) LPF 145 : suppression d'une précision au 12e tiret du § 7, conséquence de la TVA obligatoire sur le transport public. (c) CGI 567 : renvoi aux horaires supprimés (art. 566).",
+      "effect": "Aucun effet sur le calcul.",
+      "legalBasis": "CGI 21 bis (abrogé), 567 ; LPF 145",
+      "source": "Art. 18, p. 33-34 : https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/files/basic-html/page76.html et page77.html (texte lu)",
+      "modifiedBy2026": true,
+      "status": "CONFIRMÉ",
+      "priority": "Basse (sans effet)",
+      "toVerify": "Aucun.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Corrections techniques sans effet de calcul."
+      }
+    },
+    {
+      "id": "N01",
+      "family": "N",
+      "theme": "Impôt sur les sociétés",
+      "rule": "25 % ; 30 % pour les télécommunications et TIC.",
+      "effect": null,
+      "legalBasis": "CGI 51",
+      "source": "Annexe fiscale 2019, art. 8 (lue en session précédente)",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non : aucun titre ni texte lu de l'annexe 2026 ne le vise",
+      "status": "PARTIELLEMENT CONFIRMÉ : texte 2019 lu ; annexes 2020 à 2025 et CGI consolidé non lus",
+      "priority": null,
+      "toVerify": "Lire le CGI 51 consolidé 2026.",
+      "modelled": {
+        "state": "YES",
+        "concept": "IS_RATE",
+        "reason": "Taux de l'impôt sur les sociétés (25 % ; 30 % télécoms et TIC) : paramètre du registre, valeur non codée. Le moteur sait le calculer ; l'entrée du registre reste EN ATTENTE tant que la valeur n'est pas confirmée par deux validateurs."
+      }
+    },
+    {
+      "id": "N02",
+      "family": "N",
+      "theme": "Crédit d'impôt emploi : CDI",
+      "rule": "Montant cité : 1 000 000 F par an et par CDI. CDD : montant réduit de moitié ; reversement si licenciement dans les 24 mois.",
+      "effect": null,
+      "legalBasis": "CGI 111",
+      "source": "Montant : rapport sur les dépenses fiscales 2019 (non un texte). CDD et reversement : annexe fiscale 2020 (lue en session précédente)",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non",
+      "status": "PARTIELLEMENT CONFIRMÉ : montant issu d'un rapport ; texte d'origine (annexe 2016) à retrouver",
+      "priority": null,
+      "toVerify": "Ne pas présumer le montant (le V4 le demande). Retrouver l'article 111 consolidé.",
+      "modelled": {
+        "state": "YES",
+        "concept": "CREDIT_CDI",
+        "reason": "Crédit d'impôt CDI : montant par CDI en paramètre. 1 M F vient d'un rapport, pas d'un texte. Le moteur sait le calculer ; l'entrée du registre reste EN ATTENTE tant que la valeur n'est pas confirmée par deux validateurs."
+      }
+    },
+    {
+      "id": "N03",
+      "family": "N",
+      "theme": "Crédit d'impôt : apprentis",
+      "rule": "500 000 F par apprenti ; 100 000 F (montant associé au régime microentreprise ou entreprenant par le V4, FISC-036). Personne handicapée : 750 000 F et 150 000 F.",
+      "effect": null,
+      "legalBasis": "CGI 111 bis",
+      "source": "Annexe fiscale 2020 (lue en session précédente) ; V4 FISC-035 et 036 (secondaire, daté « 2022 » à tort)",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non",
+      "status": "PARTIELLEMENT CONFIRMÉ : texte 2020 ; validité 2026 non vérifiée",
+      "priority": null,
+      "toVerify": "Relire les conditions (entreprise au réel) et la durée du crédit dans l'annexe 2020 et le CGI consolidé.",
+      "modelled": {
+        "state": "YES",
+        "concept": "CREDIT_APPRENTICE",
+        "reason": "Crédit d'impôt apprentis : montant en paramètre (500 000 F selon l'annexe 2020, validité 2026 non vérifiée). Le moteur sait le calculer ; l'entrée du registre reste EN ATTENTE tant que la valeur n'est pas confirmée par deux validateurs."
+      }
+    },
+    {
+      "id": "N04",
+      "family": "N",
+      "theme": "Crédit d'impôt : stagiaires (stage-école)",
+      "rule": "25 000 F et 50 000 F par stagiaire et par an. Seuil PME indiqué par l'annexe 2019 : CA inférieur à 1 Md F. Le V4 (FISC-020) cite 50 M F hors TVA (Code des investissements) : divergence.",
+      "effect": null,
+      "legalBasis": "CGI 111 ter",
+      "source": "Annexe fiscale 2019, art. 11 (lue en session précédente) ; V4 FISC-037 (stage-école jusqu'à 6 mois, convention)",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non",
+      "status": "PARTIELLEMENT CONFIRMÉ",
+      "priority": null,
+      "toVerify": "Relire la condition qui distingue 25 000 F de 50 000 F. Trancher le seuil PME (1 Md F ou 50 M F).",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Levier non construit : le seuil PME (CA inférieur à 1 Md F ou 50 M F) qui distingue 25 000 F de 50 000 F est à trancher. Réalisable sur demande."
+      }
+    },
+    {
+      "id": "N05",
+      "family": "N",
+      "theme": "Dons (CGI 18 G)",
+      "rule": "Aucun texte trouvé. Le V4 indique un double plafond (2,5 % / 200 M F) non vérifié.",
+      "effect": null,
+      "legalBasis": "CGI 18 G (non confirmé)",
+      "source": "—",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non (aucun titre ne le vise)",
+      "status": "NON TROUVÉ : ne pas coder",
+      "priority": null,
+      "toVerify": "Chercher le texte consolidé et la note DGI sur les dons.",
+      "modelled": {
+        "state": "YES",
+        "concept": "DONATION_DEDUCTIBILITY",
+        "reason": "Levier « Dons » prêt à recevoir un plafond ; aucun texte trouvé, donc rien n'est codé. Le moteur sait le calculer ; l'entrée du registre reste EN ATTENTE tant que la valeur n'est pas confirmée par deux validateurs."
+      }
+    },
+    {
+      "id": "N06",
+      "family": "N",
+      "theme": "Réinvestissement des bénéfices",
+      "rule": "Non lu. Le V4 (FISC-021) renvoie au CGI et aux annexes 2022 et 2025.",
+      "effect": null,
+      "legalBasis": "CGI 110 ; CGI 110 bis",
+      "source": "—",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non (aucun titre des art. 1 à 41 ne le vise)",
+      "status": "À VÉRIFIER",
+      "priority": null,
+      "toVerify": "Lire les art. 110 et 110 bis et les annexes 2022 et 2025.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Réinvestissement des bénéfices (art. 110, 110 bis) : textes non lus, ne pas modéliser sans eux."
+      }
+    },
+    {
+      "id": "N07",
+      "family": "N",
+      "theme": "IMF (impôt minimum forfaitaire)",
+      "rule": "Aucun texte lu. Ne pas confondre avec l'impôt des microentreprises (annexe 2026, art. 36).",
+      "effect": null,
+      "legalBasis": "—",
+      "source": "—",
+      "modifiedBy2026": false,
+      "modifiedNote": "—",
+      "status": "NON TROUVÉ",
+      "priority": null,
+      "toVerify": "Chercher dans le CGI consolidé.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "IMF : aucun texte trouvé."
+      }
+    },
+    {
+      "id": "N08",
+      "family": "N",
+      "theme": "Taxe de l'entreprenant et impôt des microentreprises : taux",
+      "rule": "Régime institué par l'annexe fiscale 2021 (loi n° 2020-972 du 23/12/2020, art. 33), selon l'exposé de l'art. 36. Taux 6 % et 4 % : V4 (FISC-038, « rapportés » pour 2022), non lus dans un texte.",
+      "effect": null,
+      "legalBasis": "CGI (régime des microentreprises)",
+      "source": "Exposé de l'annexe 2026, art. 36, p. 78",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non (l'art. 36 ne modifie que la périodicité)",
+      "status": "À VÉRIFIER",
+      "priority": null,
+      "toVerify": "Lire l'art. 33 de l'annexe 2021 et les taux en vigueur en 2026.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Taux de la taxe de l'entreprenant et de l'impôt des microentreprises : à vérifier (annexe 2021, art. 33)."
+      }
+    },
+    {
+      "id": "N09",
+      "family": "N",
+      "theme": "Transport public : TVA obligatoire au réel",
+      "rule": "TVA obligatoire pour le transport public de personnes ou de marchandises par des entreprises au régime réel.",
+      "effect": null,
+      "legalBasis": "CGI (TVA)",
+      "source": "Exposé de l'annexe 2026, art. 18 (p. 33), qui cite l'annexe 2024, art. 3",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non (seule la référence LPF 145 est corrigée)",
+      "status": "PARTIELLEMENT CONFIRMÉ : exposé seulement",
+      "priority": null,
+      "toVerify": "Lire l'annexe 2024, art. 3.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "TVA obligatoire au réel pour le transport public : exposé seulement, texte non lu."
+      }
+    },
+    {
+      "id": "N10",
+      "family": "N",
+      "theme": "Logement : exonérations déjà en vigueur",
+      "rule": "TVA sur les honoraires de notaires pour les transferts de propriété (CGI 355-43-2) ; taxe sur les opérations bancaires des prêts acquéreurs (CGI 398, 3 b) ; droits d'enregistrement et de timbre sur les transferts (CGI 635 et 1051).",
+      "effect": null,
+      "legalBasis": "CGI 355-43-2 ; 398 (3 b) ; 635 ; 1051",
+      "source": "Exposé de l'annexe 2026, art. 2 (p. 2)",
+      "modifiedBy2026": false,
+      "modifiedNote": "Non (cités comme existants)",
+      "status": "PARTIELLEMENT CONFIRMÉ : texte cité, non lu",
+      "priority": null,
+      "toVerify": "Hors périmètre entreprises (personnes physiques) sauf cas particulier.",
+      "modelled": {
+        "state": "NO",
+        "concept": null,
+        "reason": "Hors périmètre des entreprises (personnes physiques ou autre acteur). Exonérations de logement."
+      }
+    }
+  ],
+  "v4Gaps": [
+    {
+      "ref": "FISC-001 (crédit logement)",
+      "v4": "5 % jusqu'à 40 M F TTC, imputation sur 5 ans, personne physique.",
+      "texts": "Identique (art. 2, p. 2-3).",
+      "fix": "Garder ; ajouter la référence du texte et le statut CONFIRMÉ.",
+      "priority": "Basse"
+    },
+    {
+      "ref": "FISC-007 (mobile money)",
+      "v4": "« Texte documenté ; application à confirmer » ; plafond de 250 000 F.",
+      "texts": "Art. 7, p. 9 : plafond de 250 000 F non appliqué aux règlements par mobile money (CGI 18 bis) ; charges déductibles quel que soit leur montant (CGI 373).",
+      "fix": "Passer à CONFIRMÉ ; citer art. 7, p. 9.",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-010 (startup : exonération 3 ans)",
+      "v4": "Exonération 3 ans ; « non-cumul avec le Code des investissements selon BODGI ».",
+      "texts": "Art. 35, p. 76-77 : 3 ans ; cinq impôts et taxes. Le non-cumul ne figure pas dans le texte lu.",
+      "fix": "Passer à CONFIRMÉ ; garder le non-cumul en « à vérifier » (source BODGI non lue).",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-011 (« cotisation forfaitaire » startup)",
+      "v4": "Une seule ligne « cotisation forfaitaire startup ».",
+      "texts": "Le texte vise deux impôts distincts : impôt des microentreprises (CGI 71 quinquies) et taxe d'État de l'entreprenant (CGI 80 bis).",
+      "fix": "Scinder en deux lignes.",
+      "priority": "Moyenne"
+    },
+    {
+      "ref": "FISC-012 (TOB startup)",
+      "v4": "TOB sur le financement des startups (CGI 398).",
+      "texts": "Art. 35 : CGI 398, 16° (intérêts des prêts).",
+      "fix": "CONFIRMÉ ; préciser « intérêts de prêts ».",
+      "priority": "Moyenne"
+    },
+    {
+      "ref": "FISC-013 (IRC startup)",
+      "v4": "« Exonération de certains intérêts » ; prêts à compter du 05/01/2026 selon BODGI.",
+      "texts": "Art. 35 : CGI 236 sexies (impôt sur le revenu des créances), 3 ans. La date du 05/01/2026 ne figure pas dans le texte lu.",
+      "fix": "Préciser « IRC (CGI 236 sexies) » ; date à vérifier (BODGI 2026, HS21).",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-014 (réassurance)",
+      "v4": "Réassurance non-résidente (CGI 92).",
+      "texts": "Exonération de retenue jusqu'au 30/04/2027, décision CIMA n° 008/CIMA/PCMA/PCE/2022.",
+      "fix": "Ajouter la date butoir et la référence de la décision.",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-015 (TVA carburants agricoles)",
+      "v4": "TVA sur carburants des engins agricoles (CGI 348, 365-1).",
+      "texts": "Art. 38 : deux conditions cumulatives (produits dans le champ de la TVA ; option exercée). Coût 1,8 Md F. Plafond de 95 % à vérifier.",
+      "fix": "Ajouter les deux conditions et le plafond à vérifier.",
+      "priority": "Moyenne"
+    },
+    {
+      "ref": "FISC-016 (charges)",
+      "v4": "« Charges rattachées aux produits taxables ».",
+      "texts": "Art. 39 : « produit non exonéré d'impôt sur le bénéfice » (CGI 18-A, 11°).",
+      "fix": "CORRIGER le libellé (« produits taxables » devient « produits non exonérés ») ; trancher le sens avant calcul.",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-020 (seuil PME 50 M F hors TVA)",
+      "v4": "Agrément PME : seuil annoncé de 50 M F hors TVA.",
+      "texts": "Autres seuils dans les textes lus : option TVA à 50 M F TTC (CGI 348, art. 18) ; stagiaires : CA inférieur à 1 Md F (annexe 2019, art. 111 ter).",
+      "fix": "Ne pas confondre les seuils ; relire le Code des investissements.",
+      "priority": "Moyenne"
+    },
+    {
+      "ref": "FISC-021 (réinvestissement)",
+      "v4": "« À vérifier article par article ».",
+      "texts": "Non lu.",
+      "fix": "Garder À VÉRIFIER.",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-022 (crédit CDI)",
+      "v4": "« Crédit d'impôt potentiel » ; « ne pas présumer 1 M par CDI annuel ».",
+      "texts": "1 M F : rapport 2019 (non un texte). CDD réduit de moitié et reversement sur 24 mois : annexe 2020.",
+      "fix": "Renseigner le montant avec le statut PARTIELLEMENT CONFIRMÉ et sa source.",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-023 (apprentis)",
+      "v4": "« Ne pas présumer 500 000 F ».",
+      "texts": "500 000 F (annexe 2020, lue) ; 750 000 F si handicap ; 100 000 F et 150 000 F pour le régime microentreprise (V4).",
+      "fix": "Passer à PARTIELLEMENT CONFIRMÉ avec la source 2020 ; dater à 2020 et non 2022.",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-024 (stage-école, CGI 111 ter)",
+      "v4": "Crédit potentiel ; durée et convention.",
+      "texts": "Annexe 2019, art. 11 (lue) : 25 000 F et 50 000 F par an.",
+      "fix": "Renseigner les montants (PARTIELLEMENT CONFIRMÉ) ; trancher le seuil PME.",
+      "priority": "Moyenne"
+    },
+    {
+      "ref": "FISC-025 (dons)",
+      "v4": "Dispositions à préciser ; double plafond 2,5 % / 200 M F (non vérifié).",
+      "texts": "Aucun texte trouvé.",
+      "fix": "Statut NON TROUVÉ ; ne rien coder.",
+      "priority": "Moyenne"
+    },
+    {
+      "ref": "FISC-030 (exonérations supprimées)",
+      "v4": "« Mesure restrictive à détailler ».",
+      "texts": "Art. 6, p. 8 : quatre alinéas de CGI 355 supprimés. Taux de 9 % par l'ordonnance 2026-03 (R04). Grains intrants : exonérés par 355-9 (BODGI).",
+      "fix": "Détailler les quatre suppressions et le taux de 9 % (et non 18 %).",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-035 à 037 (apprentis et stages datés « 2022 »)",
+      "v4": "Millésime 2022 ; « validité 2026 non établie ».",
+      "texts": "Apprentis : annexe 2020 ; stagiaires : annexe 2019 (lues). Les chiffres 2022 sont des annonces de presse.",
+      "fix": "Corriger les millésimes (2019 et 2020) et les sources.",
+      "priority": "Haute"
+    },
+    {
+      "ref": "FISC-038 (micro-entreprises, 6 % et 4 %, « 2022 »)",
+      "v4": "Réduction de taux 2022.",
+      "texts": "Institution par l'annexe 2021 (art. 33), selon l'exposé de l'art. 36. Taux non lus.",
+      "fix": "Corriger le millésime d'institution à 2021 ; taux à vérifier.",
+      "priority": "Moyenne"
+    },
+    {
+      "ref": "FISC-040 (presse)",
+      "v4": "Historique, NON actif présumé en 2026.",
+      "texts": "Aucun titre de l'annexe 2026 ne vise la presse.",
+      "fix": "Garder.",
+      "priority": "Basse"
+    },
+    {
+      "ref": "Méthodologie (décompte)",
+      "v4": "« 41 fiches ».",
+      "texts": "42 lignes ; FISC-034 absent.",
+      "fix": "Corriger le décompte et la numérotation.",
+      "priority": "Basse"
+    },
+    {
+      "ref": "IS (absent du V4)",
+      "v4": "Pas de fiche IS.",
+      "texts": "CGI 51 : 25 % ; 30 % télécoms et TIC (annexe 2019, art. 8).",
+      "fix": "Ajouter la fiche IS (PARTIELLEMENT CONFIRMÉ).",
+      "priority": "Haute"
+    },
+    {
+      "ref": "IMF (absent du V4)",
+      "v4": "Pas de fiche IMF.",
+      "texts": "Aucun texte lu.",
+      "fix": "Ajouter en NON TROUVÉ.",
+      "priority": "Moyenne"
+    },
+    {
+      "ref": "Règles absentes du V4",
+      "v4": "Non recensées.",
+      "texts": "Retenue audiovisuelle 7,5 % (art. 1) ; affacturage (art. 5) ; taxe touristique 2,5 % (art. 9) ; calendrier de l'entreprenant (art. 36) ; IPF 9 % et 11 % (art. 18) ; promoteurs et droits de douane (art. 18) ; seuil d'option TVA 50 M F TTC (art. 18) ; banane dessert (art. 18) ; IRVM sur plus-values (art. 4) ; SGI (art. 3) ; patente, contrôle, traduction (art. 10, 11, 19).",
+      "fix": "Ajouter R01 à R23 au registre.",
+      "priority": "Haute"
+    }
+  ],
+  "unreadArticles": [
+    {
+      "article": "12",
+      "title": "Aménagement du LPF : contrôle de comptabilité informatisée",
+      "relevance": "Faible (procédure)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "13",
+      "title": "Aménagement du LPF : conditions de suspension des contrôles",
+      "relevance": "Faible (procédure)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "14",
+      "title": "Redevances pour occupation du domaine public de l'État",
+      "relevance": "Faible",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "15",
+      "title": "Fiscalité des collectivités territoriales",
+      "relevance": "Moyenne (taxes communales)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "16",
+      "title": "Assujettissement à la TVA des opérations d'affacturage (intitulé identique à l'art. 5)",
+      "relevance": "Moyenne : doublon ou second texte ?",
+      "reading": "Non localisé (pages 71 à 74 à lire)"
+    },
+    {
+      "article": "17",
+      "title": "Extension du pouvoir de contrôle aux taxes locales acquittées au profit des collectivités",
+      "relevance": "Faible (procédure)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "20",
+      "title": "Obligation de dépôt des états financiers des entités à but non lucratif",
+      "relevance": "Faible",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "21",
+      "title": "États financiers annuels de synthèse (CGI et LPF)",
+      "relevance": "Moyenne (conformité)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "22",
+      "title": "Clé de répartition de la taxe sur les entreprises de télécommunications et de transfert d'argent (ANSSI)",
+      "relevance": "Moyenne si opérateur télécom ou transfert d'argent",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "23",
+      "title": "Accord préalable sur les prix de transfert",
+      "relevance": "Haute si groupe",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "24",
+      "title": "Identification et déclaration des bénéficiaires effectifs des personnes morales",
+      "relevance": "Haute (conformité)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "25",
+      "title": "Dispositif de contrôle des prix de transfert",
+      "relevance": "Haute si groupe",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "26",
+      "title": "Dispositions du CGI relatives à l'IRVM",
+      "relevance": "Moyenne (dividendes)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "27",
+      "title": "Prise en compte du chèque spécial du Trésor (CGI et LPF)",
+      "relevance": "Faible",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "28",
+      "title": "Renforcement des garanties du Trésor en cas de cessation frauduleuse d'entreprise",
+      "relevance": "Faible",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "29",
+      "title": "Tarif d'enregistrement de certains actes de justice ; droits de condamnation",
+      "relevance": "Faible",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "30",
+      "title": "Prélèvement à la source sur les revenus des propriétaires de véhicules utilisés via des plateformes en ligne",
+      "relevance": "Moyenne si VTC ou transport",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "31",
+      "title": "Droits constatés (LPF)",
+      "relevance": "Faible",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "32",
+      "title": "Remboursement des trop-payés d'impôts (LPF)",
+      "relevance": "Moyenne (trésorerie)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "33",
+      "title": "Impôt sur les bénéfices des plateformes de commerce en ligne sans installation professionnelle en Côte d'Ivoire ; sanctions",
+      "relevance": "Haute si e-commerce étranger",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "34",
+      "title": "Dispositions du CGI relatives à l'impôt foncier",
+      "relevance": "Moyenne (immobilier)",
+      "reading": "Titre lu ; texte non lu"
+    },
+    {
+      "article": "40",
+      "title": "Titre à revérifier",
+      "relevance": "À déterminer",
+      "reading": "Non vérifié (sommaire p. 42 absent de la transcription)"
+    },
+    {
+      "article": "41",
+      "title": "Titre à revérifier",
+      "relevance": "À déterminer",
+      "reading": "Non vérifié (sommaire p. 42 absent de la transcription)"
+    }
+  ],
+  "sources": [
+    {
+      "level": "1 : texte officiel",
+      "document": "Annexe fiscale à la loi de finances n° 2025-987 du 19 décembre 2025 (annexe 2026), version DGI",
+      "link": "https://www.dgi.gouv.ci/assets/documents/ANNEXE_FISCALE_2026/index.html",
+      "establishes": "Textes des art. 1 à 11, 18, 19 et 35 à 39 ; titres des art. 12 à 17, 20 à 34, 40 et 41. Pied de page « Page N » = page imprimée.",
+      "limit": "Pages 37, 39 et 41 sans texte (images) ; sommaire p. 42 non relu ; art. 12 à 17, 20 à 34 : titres seulement.",
+      "reading": "Lu. Art. 1 (page44) et art. 7 (page52) relus en direct le 18/10/2026."
+    },
+    {
+      "level": "1 : texte officiel",
+      "document": "Ordonnance n° 2026-03 du 7 janvier 2026 (taux réduit de TVA)",
+      "link": "Non trouvée dans cette session",
+      "establishes": "Existence, date et objet (CAEF, BODGI, Douanes) ; publication le 16/01/2026 (BODGI).",
+      "limit": "Contenu et ratification non vérifiés.",
+      "reading": "Non lue"
+    },
+    {
+      "level": "2 : doctrine administrative",
+      "document": "BODGI 2026 (DGI), p. 23",
+      "link": "https://dgi.gouv.ci/assets/documents/EBOOK/BODGI_2026/files/basic-html/page23.html",
+      "establishes": "Taux de 9 % effectif le 17/01/2026 ; transition du 05 au 16/01/2026 (note de service n° 00380/MFB/DGI/DLCD-SDL/bke/01-2026) ; grains intrants exonérés (355-9) ; autres intrants d'aliments et intrants d'engrais à 9 %.",
+      "limit": "Doctrine, non une loi ; la note de service 00380 n'est pas lue.",
+      "reading": "Extrait lu"
+    },
+    {
+      "level": "3 : communication administrative",
+      "document": "Note des Douanes sur l'ordonnance 2026-03",
+      "link": "https://www.douanes.ci/sites/default/files/base_documentaire/c_2389.pdf",
+      "establishes": "Code additionnel 9VA ; mesure applicable à compter du 17/01/2026 pour les importations.",
+      "limit": "Vision douanière seulement.",
+      "reading": "Extrait lu"
+    },
+    {
+      "level": "3 : communiqué DGI",
+      "document": "Communiqué de la DGI sur le taux réduit (publié le 19/01/2026 selon les métadonnées)",
+      "link": "https://www.fne.dgi.gouv.ci/uploads/communiques/pdf_696e12da46ae5_COMMUNIQUE_TAUX_REDUIT.pdf",
+      "establishes": "Application du taux réduit de 9 %.",
+      "limit": "Contenu détaillé non relu.",
+      "reading": "Titre et date seulement"
+    },
+    {
+      "level": "3 : travaux parlementaires",
+      "document": "Assemblée nationale, Commission des affaires économiques et financières (CAEF)",
+      "link": "https://www.assnat.ci/?la-commission-des-affaires-economiques-et-financieres-examine-et-adopte-trois-projets-de-loi-de-ratification-d-ordonnances",
+      "establishes": "Examen du projet de loi de ratification de l'ordonnance n° 2026-03 du 7 janvier 2026.",
+      "limit": "Adoption en plénière et promulgation non confirmées.",
+      "reading": "Extrait lu"
+    },
+    {
+      "level": "1 : texte antérieur",
+      "document": "Annexe fiscale 2019",
+      "link": "https://budget.gouv.ci/doc/loi/ANNEXE%20FISCALE%202019.pdf",
+      "establishes": "IS 25 % / 30 % (art. 8) ; stagiaires, CGI 111 ter (art. 11).",
+      "limit": "Annexes 2020 à 2025 non lues entièrement.",
+      "reading": "Lu en session précédente"
+    },
+    {
+      "level": "1 : texte antérieur",
+      "document": "Annexe fiscale 2020",
+      "link": "https://budget.gouv.ci/doc/loi/ANNEXE%20FISCALE%202020.pdf",
+      "establishes": "CDD réduit de moitié et reversement sur 24 mois (CGI 111) ; apprentis (CGI 111 bis).",
+      "limit": "Annexes 2021 à 2025 non lues.",
+      "reading": "Lu en session précédente"
+    },
+    {
+      "level": "3 : rapport officiel",
+      "document": "Rapport sur les dépenses fiscales 2019",
+      "link": "https://budget.gouv.ci/doc/loi/RAPPORT%20SUR%20LES%20DEPENSES%20%20FISCALES%202019.pdf",
+      "establishes": "Montant de 1 000 000 F par CDI (CGI 111).",
+      "limit": "Rapport, non texte ; texte d'origine (annexe 2016) à retrouver.",
+      "reading": "Lu en session précédente"
+    },
+    {
+      "level": "6 : analyse secondaire",
+      "document": "Rapport USDA FAS GAIN « Cote d'Ivoire 2026 Tax Reforms » (publié le 04/08/2026 selon les métadonnées)",
+      "link": "apps.fas.usda.gov (rapport GAIN, 2026)",
+      "establishes": "Suspension du taux de 9 % sur les intrants d'engrais du 01/07 au 31/12/2026.",
+      "limit": "Non confirmée par la DGI : ne pas utiliser seul.",
+      "reading": "Extrait lu"
+    },
+    {
+      "level": "5 : registre interne",
+      "document": "Registre fiscal V4 (fourni par l'utilisateur)",
+      "link": "Fichier téléversé",
+      "establishes": "Liste des fiches, statuts et sources secondaires (commentaire CGECI, presse).",
+      "limit": "Ne fait pas foi ; plusieurs statuts à corriger (voir « Écarts V4 »).",
+      "reading": "Lu"
+    }
+  ]
+}

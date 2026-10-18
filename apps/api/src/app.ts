@@ -4,7 +4,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import { z, ZodError } from 'zod';
 import { simulate } from '@fisc/engine';
 import {
-  RegistryError, diffSnapshots, publishSnapshot, reviseRule, validateRule, verifyAudit,
+  RegistryError, diffSnapshots, loadCatalogue, publishSnapshot, reviseRule, validateRule, verifyAudit,
 } from '@fisc/registry';
 import {
   ClientResultSchema, CommercialParams, EngineInput, EngineResultSchema, IsoDate, Mode, type EngineResult, type RegistrySnapshot,
@@ -322,6 +322,9 @@ export async function buildApp({ config, db, now = () => new Date() }: AppOption
       return diffSnapshots(a, b);
     },
   });
+
+  // Catalogue informatif des 33 lignes du classeur : lecture seule, réservé au personnel, jamais lu par le moteur.
+  route({ method: 'get', url: '/registry/catalogue', summary: 'Catalogue des règles recensées (informatif)', roles: [...STAFF], handler: async () => loadCatalogue() });
 
   route({
     method: 'get', url: '/audit', summary: 'Journal d’audit (lecture seule)', roles: [...STAFF],

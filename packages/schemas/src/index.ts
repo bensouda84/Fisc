@@ -3,3 +3,4 @@ export * from './rule.ts';
 export * from './input.ts';
 export * from './result.ts';
 export * from './result-schema.ts';
+export * from './catalogue.ts';

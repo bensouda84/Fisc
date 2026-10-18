@@ -84,6 +84,7 @@ export const api: typeof RealApi = {
   snapshots: unavailable('Le registre'),
   publish: unavailable('Le registre'),
   diff: unavailable('Le registre'),
+  catalogue: unavailable('Le registre'),
   audit: unavailable('Le journal d’audit'),
   commercial: unavailable('Le registre'),
   setCommercial: unavailable('Le registre'),

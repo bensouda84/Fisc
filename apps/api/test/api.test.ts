@@ -20,6 +20,17 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('API — registre initial (aucun
     expect((await h.call(null, 'POST', '/auth/login', {})).status).toBe(400);
   });
 
+  it('catalogue des 33 lignes : lecture réservée au personnel, valide, jamais vu par un client', async () => {
+    const client = await h.login('client@fisc.test');
+    expect((await h.call(client, 'GET', '/registry/catalogue')).status).toBe(403);
+    expect((await h.call(null, 'GET', '/registry/catalogue')).status).toBe(401);
+    const staff = await h.login('consultant@fisc.test');
+    const { status, json } = await h.call(staff, 'GET', '/registry/catalogue');
+    expect(status).toBe(200);
+    expect(json.lines).toHaveLength(33);
+    expect(json.v4Gaps.length).toBeGreaterThan(0);
+  });
+
   it('T1 via l’API en mode interne : brut 3 500 000, net −500 000, commission 0', async () => {
     const t = await h.login('consultant@fisc.test');
     const { status, json } = await h.call(t, 'POST', '/simulate', { input: T1 });

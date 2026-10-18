@@ -94,6 +94,14 @@ Défaut trouvé et corrigé pendant l'ajout : le bouton supplémentaire dans la 
 
 **QA / accessibilité** : bonne couverture automatisée ; pas de test lecteur d'écran, zoom, ni appareil réel ; pas de test de charge ; tests e2e dépendants d'une base remise à zéro.
 
+## Catalogue des 33 lignes du classeur
+
+Rien du classeur n'est perdu : ses six onglets sont repris dans `packages/registry/data/catalogue-2026.json` (généré par `python3 -I scripts/build-catalogue.py`, empreinte du classeur incluse) et consultables par le personnel dans **Registre > Catalogue** (`GET /registry/catalogue`, refusé aux clients).
+- 23 règles R et 10 dispositifs N avec statut, base légale, article et page, priorité, « reste à vérifier », plus 23 écarts avec le V4, 23 articles non lus, 11 sources.
+- Chaque ligne dit **si elle est modélisée et pourquoi** : 6 le sont (R08, R11, N01, N02, N03, N05), leurs entrées du registre restant EN ATTENTE ; 27 ne le sont pas (impôt sur opération, procédure, hors entreprises, texte non lu, point à trancher).
+- Le catalogue est **informatif** : le moteur ne le lit pas, aucune valeur n'en est tirée, un client ne le voit pas (R1, R7). Seule la colonne « modélisé » est écrite à la main dans le script.
+- Pas encore construit : le levier stagiaires (N04), en attendant la décision sur le seuil PME (Q à ouvrir si MARABU le veut).
+
 ## Pour exécuter
 
 ```bash

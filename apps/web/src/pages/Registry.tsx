@@ -22,6 +22,7 @@ import { CONCEPT_TITLE_FR, formatDate } from '@fisc/engine';
 import { RULE_STATUS_LABEL_FR } from '@fisc/schemas';
 import { api } from '../api.ts';
 import { useApp } from '../state.tsx';
+import Catalogue from './Catalogue.tsx';
 import type { WireRule } from '../wire.ts';
 
 const PARAM_FIELDS: Record<string, { key: string; label: string; kind: 'rate' | 'money' | 'bool' | 'startup' | 'cap' }> = {
@@ -261,11 +262,13 @@ export default function Registry() {
         <Tab label="Règles" id="tab-0" aria-controls="panel-0" sx={{ minHeight: 48 }} />
         <Tab label="Versions" id="tab-1" aria-controls="panel-1" sx={{ minHeight: 48 }} />
         <Tab label="Journal d’audit" id="tab-2" aria-controls="panel-2" sx={{ minHeight: 48 }} />
+        <Tab label="Catalogue" id="tab-3" aria-controls="panel-3" sx={{ minHeight: 48 }} />
       </Tabs>
       <Box role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
         {tab === 0 && <Rules />}
         {tab === 1 && <Versions />}
         {tab === 2 && <Audit />}
+        {tab === 3 && <Catalogue />}
       </Box>
     </Stack>
   );

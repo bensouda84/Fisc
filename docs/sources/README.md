@@ -7,3 +7,5 @@
 Empreinte SHA-256 du fichier versionné : `cc69d3ee4378af7ab978f64fb8047cfb51763e2f32b58186393296f15ed33501`.
 
 Usage : lecture seule. Le registre des règles (`packages/registry/data/rules-v1.json`) en reprend le statut dans « source à obtenir » ; aucune valeur n'en est codée. Le classeur ne contient aucune donnée de client (R8).
+
+Catalogue : `python3 -I scripts/build-catalogue.py` régénère `packages/registry/data/catalogue-2026.json` à partir de ce classeur (à relancer si le classeur change).

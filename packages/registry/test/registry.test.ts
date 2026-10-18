@@ -3,7 +3,7 @@ import { Rule } from '@fisc/schemas';
 import { simulate } from '@fisc/engine';
 import {
   RegistryError, appendAudit, diffSnapshots, loadRealRules, loadTestRules,
-  publishSnapshot, reviseRule, validateRule, verifyAudit, verifySnapshot,
+  loadCatalogue, publishSnapshot, reviseRule, validateRule, verifyAudit, verifySnapshot,
 } from '../src/index.ts';
 
 const AT = '2026-10-18T09:00:00Z';
@@ -127,5 +127,37 @@ describe('journal d’audit', () => {
     appendAudit(log, entry(2));
     expect(log.length).toBe(1);
     expect(Object.isFrozen(log)).toBe(true);
+  });
+});
+
+describe('catalogue du classeur (informatif)', () => {
+  const cat = loadCatalogue();
+
+  it('recense les 33 lignes : R01 à R23 et N01 à N10, sans doublon', () => {
+    const ids = cat.lines.map((l) => l.id);
+    expect(new Set(ids).size).toBe(33);
+    expect(ids.filter((i) => i.startsWith('R'))).toHaveLength(23);
+    expect(ids.filter((i) => i.startsWith('N'))).toHaveLength(10);
+  });
+
+  it('reprend les autres onglets sans perte (écarts V4, articles non lus, sources)', () => {
+    expect(cat.v4Gaps.length).toBe(23);
+    expect(cat.unreadArticles.length).toBe(23);
+    expect(cat.sources.length).toBe(11);
+  });
+
+  it('chaque ligne modélisée pointe un concept qui existe au registre, en attente tant que non confirmé', () => {
+    const real = loadRealRules();
+    const modelled = cat.lines.filter((l) => l.modelled.state === 'YES');
+    expect(modelled.map((l) => l.id).sort()).toEqual(['N01', 'N02', 'N03', 'N05', 'R08', 'R11']);
+    for (const l of modelled) {
+      const rule = real.find((r) => r.concept === l.modelled.concept);
+      expect(rule, l.id).toBeDefined();
+      expect(rule!.status).toBe('PENDING');
+    }
+  });
+
+  it('ne contient aucune valeur de calcul : toute ligne non modélisée dit pourquoi', () => {
+    for (const l of cat.lines.filter((x) => x.modelled.state === 'NO')) expect(l.modelled.reason.length).toBeGreaterThan(10);
   });
 });

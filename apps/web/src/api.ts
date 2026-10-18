@@ -1,5 +1,5 @@
 import { reviveResult } from '@fisc/engine';
-import type { EngineResult, Mode } from '@fisc/schemas';
+import type { Catalogue, EngineResult, Mode } from '@fisc/schemas';
 import type { Answers, User, WireRule, WireSnapshot } from './wire.ts';
 
 export class ApiError extends Error {
@@ -83,6 +83,7 @@ export const api = {
   publish: (version: string) => json<{ version: string }>('POST', '/registry/publish', { version }),
   diff: (from: string, to: string) =>
     json<{ ruleId: string; change: string; fields: string[] }[]>('GET', `/registry/diff?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`),
+  catalogue: () => json<Catalogue>('GET', '/registry/catalogue'),
   audit: () => json<{ intact: boolean; entries: { seq: number; at: string; actor: string; action: string; target: string }[] }>('GET', '/audit'),
   commercial: () => json<{ commissionRate: { num: string; den: string }; vatRate: { num: string; den: string }; commissionCap: string | null; validated: boolean }>('GET', '/commercial'),
   setCommercial: (body: unknown) => json<unknown>('PUT', '/commercial', body),
