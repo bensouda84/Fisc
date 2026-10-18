@@ -6,6 +6,8 @@ export const RuleConcept = z.enum([
   'DONATION_DEDUCTIBILITY',
   'CREDIT_CDI',
   'CREDIT_APPRENTICE',
+  'STARTUP_EXEMPTION',
+  'VAT_FUEL_RECOVERY',
 ]);
 export type RuleConcept = z.infer<typeof RuleConcept>;
 
@@ -51,6 +53,19 @@ export const DonationParams = z.object({ deductible: z.boolean() });
 export const CreditCdiParams = z.object({ amountPerHire: NonNegativeMoney });
 export const CreditApprenticeParams = z.object({ amountPerApprentice: NonNegativeMoney });
 
+/**
+ * Exonération des startups labellisées (R08). Les paramètres sont des décisions de la règle validée,
+ * pas du moteur : durée, année de labellisation comprise ou non, application à l'impôt sur les sociétés
+ * (le texte vise l'impôt sur les bénéfices industriels et commerciaux, CGI 12 septies : à rattacher à l'IS par le fiscaliste).
+ */
+export const StartupParams = z.object({
+  durationYears: z.number().int().min(1).max(10),
+  includesLabelYear: z.boolean(),
+  appliesToProfitTax: z.boolean(),
+});
+/** Récupération de la TVA sur le carburant agricole (R11). `capPercent` : plafond de la TVA récupérable s'il est établi, sinon null. */
+export const VatFuelParams = z.object({ capPercent: Rate.nullable() });
+
 const RuleUnion = z.discriminatedUnion('concept', [
   z.object({ ...baseFields, concept: z.literal('IS_RATE'), params: IsRateParams.nullable() }),
   z.object({
@@ -64,6 +79,8 @@ const RuleUnion = z.discriminatedUnion('concept', [
     concept: z.literal('CREDIT_APPRENTICE'),
     params: CreditApprenticeParams.nullable(),
   }),
+  z.object({ ...baseFields, concept: z.literal('STARTUP_EXEMPTION'), params: StartupParams.nullable() }),
+  z.object({ ...baseFields, concept: z.literal('VAT_FUEL_RECOVERY'), params: VatFuelParams.nullable() }),
 ]);
 
 /** Invariants du registre : aucune règle n'est inventée (R7), les règles de TEST ne sont jamais confirmées. */

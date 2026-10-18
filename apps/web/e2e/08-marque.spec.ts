@@ -44,7 +44,7 @@ test('le chip « Partielle » reprend l’orange de la marque, avec icône et te
   await login(page, 'consultant@fisc.test');
   await page.evaluate(async () => {
     const token = (JSON.parse(sessionStorage.getItem('fisc.session') ?? '{}') as { token?: string }).token ?? '';
-    const answers = { profit: '40000000', donations: '0', cdiHires: 2, apprentices: 0, extraSalaries: '0' };
+    const answers = { profit: '40000000', donations: '0', cdiHires: 2, apprentices: 0, extraSalaries: '0', isStartup: 'NO', vatAgri: 'NO' };
     await fetch('/api/diagnostic', { method: 'PUT', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ answers, step: 3 }) });
   });
   await page.goto('/#/result');

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { simulate } from '../src/index.ts';
-import { AS_OF, commercial, common, pendingRule, snapshot } from './fixtures.ts';
+import { AS_OF, commercial, common, pendingRule, snapshot, lever } from './fixtures.ts';
 
 const internal = { mode: 'INTERNAL', asOf: AS_OF } as const;
 const client = { mode: 'CLIENT', asOf: AS_OF } as const;
@@ -15,9 +15,11 @@ describe('cas dorés', () => {
     expect(r.commission).toMatchObject({ state: 'COMPUTED', excl: 0n, vat: 0n, incl: 0n });
     // Par levier : dons 1 M brut / −3 M net ; CDI +2 M ; apprenti +0,5 M.
     expect(r.levers.map((l) => [l.id, l.gross, l.net])).toEqual([
+      ['STARTUP_EXEMPTION', 0n, 0n],
       ['DONATIONS', 1_000_000n, -3_000_000n],
       ['CREDIT_CDI', 2_000_000n, 2_000_000n],
       ['CREDIT_APPRENTICE', 500_000n, 500_000n],
+      ['VAT_FUEL_RECOVERY', 0n, 0n],
     ]);
   });
 
@@ -46,7 +48,11 @@ describe('cas dorés', () => {
     const snap = snapshot('REAL', { IS_RATE: { status: 'DRAFT', validations: [] } });
     const r = simulate({ ...common, donations: 4_000_000n, ...credits }, snap, commercial, client);
     expect(r.taxBefore).toBeNull();
-    expect(r.levers.every((l) => l.state === 'NOT_COMPUTABLE' && l.gross === null)).toBe(true);
+    const affected = r.levers.filter((l) => ['DONATIONS', 'CREDIT_CDI', 'CREDIT_APPRENTICE'].includes(l.id));
+    expect(affected.every((l) => l.state === 'NOT_COMPUTABLE' && l.gross === null)).toBe(true);
+    // Startup et TVA agricole : portes « Non » → nuls, ils ne dépendent pas du taux de l'IS.
+    expect(r.levers.filter((l) => !affected.includes(l)).every((l) => l.state === 'NULL')).toBe(true);
+    // Aucun levier calculé (les zéros des portes « Non » n'en sont pas un) : pas de sous-total.
     expect(r.gross.state).toBe('NOT_COMPUTABLE');
     expect(r.net.state).toBe('NOT_COMPUTABLE');
     expect(r.commission.state).toBe('NOT_COMPUTED');
@@ -57,7 +63,7 @@ describe('cas dorés', () => {
     const a = simulate({ ...common, donations: 4_000_000n, ...credits }, snap, commercial, internal);
     expect(a.gross).toEqual({ state: 'COMPLETE', value: 2_500_000n });
     expect(a.net).toEqual({ state: 'COMPLETE', value: -1_500_000n });
-    expect(a.levers[0]?.state).toBe('NULL');
+    expect(lever(a, 'DONATIONS')?.state).toBe('NULL');
     const b = simulate({ ...common, donations: 4_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, internal);
     expect(b.gross).toEqual({ state: 'COMPLETE', value: 0n });
     expect(b.net).toEqual({ state: 'COMPLETE', value: -4_000_000n });
@@ -85,18 +91,18 @@ describe('cas dorés', () => {
 describe('états et garde-fous', () => {
   it('« Je ne sais pas » rend le levier non calculable, jamais nul', () => {
     const r = simulate({ ...common, donations: 'UNKNOWN', cdiHires: 'UNKNOWN', apprentices: 0 }, snapshot('TEST'), commercial, internal);
-    expect(r.levers.map((l) => l.state)).toEqual(['NOT_COMPUTABLE', 'NOT_COMPUTABLE', 'NULL']);
-    expect(r.levers[0]?.reasons[0]?.code).toBe('INPUT_UNKNOWN');
-    expect(r.levers[0]?.gross).toBeNull();
+    expect(r.levers.map((l) => l.state)).toEqual(['NULL', 'NOT_COMPUTABLE', 'NOT_COMPUTABLE', 'NULL', 'NULL']);
+    expect(lever(r, 'DONATIONS')?.reasons[0]?.code).toBe('INPUT_UNKNOWN');
+    expect(lever(r, 'DONATIONS')?.gross).toBeNull();
   });
 
   it('une donnée non saisie donne INPUT_MISSING', () => {
     const r = simulate({ ...common }, snapshot('TEST'), commercial, internal);
-    expect(r.levers[0]?.reasons[0]?.code).toBe('INPUT_MISSING');
+    expect(lever(r, 'DONATIONS')?.reasons[0]?.code).toBe('INPUT_MISSING');
   });
 
   it('un décaissement non saisi : net PARTIEL et commission non calculée', () => {
-    const r = simulate({ profit: 40_000_000n, donations: 0n, cdiHires: 2, apprentices: 0 }, snapshot('TEST'), commercial, internal);
+    const r = simulate({ profit: 40_000_000n, donations: 0n, cdiHires: 2, apprentices: 0, isStartup: 'NO', vatAgri: 'NO' }, snapshot('TEST'), commercial, internal);
     expect(r.net.state).toBe('PARTIAL');
     expect(r.commission.state).toBe('NOT_COMPUTED');
     expect(r.warnings.some((w) => w.code === 'NET_PARTIAL')).toBe(true);
@@ -104,17 +110,17 @@ describe('états et garde-fous', () => {
 
   it('un levier de crédit dépend du levier dons s’il est non calculable', () => {
     const r = simulate({ ...common, donations: 'UNKNOWN', cdiHires: 2, apprentices: 0 }, snapshot('TEST'), commercial, internal);
-    expect(r.levers[1]?.state).toBe('NOT_COMPUTABLE');
-    expect(r.levers[1]?.reasons[0]?.code).toBe('DEPENDS_ON_DONATIONS_LEVER');
+    expect(lever(r, 'CREDIT_CDI')?.state).toBe('NOT_COMPUTABLE');
+    expect(lever(r, 'CREDIT_CDI')?.reasons[0]?.code).toBe('DEPENDS_ON_DONATIONS_LEVER');
   });
 
   it('plafonne les crédits à l’impôt et signale l’excédent', () => {
     const r = simulate({ ...common, profit: 2_000_000n, donations: 0n, cdiHires: 2, apprentices: 1 }, snapshot('TEST'), commercial, internal);
     // impôt = 500 000 ; CDI (2 M) absorbe tout, l'apprenti n'obtient rien.
-    expect(r.levers[1]?.gross).toBe(500_000n);
-    expect(r.levers[1]?.creditExcess).toBe(1_500_000n);
-    expect(r.levers[2]?.gross).toBe(0n);
-    expect(r.levers[2]?.creditExcess).toBe(500_000n);
+    expect(lever(r, 'CREDIT_CDI')?.gross).toBe(500_000n);
+    expect(lever(r, 'CREDIT_CDI')?.creditExcess).toBe(1_500_000n);
+    expect(lever(r, 'CREDIT_APPRENTICE')?.gross).toBe(0n);
+    expect(lever(r, 'CREDIT_APPRENTICE')?.creditExcess).toBe(500_000n);
     expect(r.warnings.some((w) => w.code === 'CREDIT_EXCESS')).toBe(true);
   });
 
@@ -129,14 +135,14 @@ describe('états et garde-fous', () => {
     for (const mode of ['INTERNAL', 'CLIENT'] as const) {
       const r = simulate({ ...common, donations: 1_000_000n, cdiHires: 0, apprentices: 0 }, snap, commercial, { mode, asOf: AS_OF });
       expect(r.taxBefore).toBeNull();
-      expect(r.levers[0]?.reasons.some((x) => x.code === (mode === 'INTERNAL' ? 'RULE_PENDING' : 'RULE_MISSING'))).toBe(true);
+      expect(lever(r, 'DONATIONS')?.reasons.some((x) => x.code === (mode === 'INTERNAL' ? 'RULE_PENDING' : 'RULE_MISSING'))).toBe(true);
     }
   });
 
   it('une règle non encore en vigueur est refusée', () => {
     const snap = snapshot('TEST', { IS_RATE: { effectiveDate: '2027-01-01' } });
     const r = simulate({ ...common, donations: 1_000_000n }, snap, commercial, internal);
-    expect(r.levers[0]?.reasons.some((x) => x.code === 'RULE_NOT_IN_FORCE')).toBe(true);
+    expect(lever(r, 'DONATIONS')?.reasons.some((x) => x.code === 'RULE_NOT_IN_FORCE')).toBe(true);
   });
 
   it('mode interne : les règles de TEST sont listées comme hypothèses', () => {
@@ -148,7 +154,7 @@ describe('états et garde-fous', () => {
   it('mode client avec règles confirmées : sources complètes sur chaque montant (R2)', () => {
     const r = simulate({ ...common, donations: 4_000_000n, ...credits }, snapshot('REAL'), commercial, client);
     expect(r.gross).toEqual({ state: 'COMPLETE', value: 3_500_000n });
-    for (const l of r.levers) {
+    for (const l of r.levers.filter((x) => x.state === 'CALCULATED')) {
       expect(l.sources.length).toBeGreaterThan(0);
       for (const s of l.sources) {
         expect(s).toMatchObject({ status: 'CONFIRMED', kind: 'REAL', registryVersion: 'fictif-0' });

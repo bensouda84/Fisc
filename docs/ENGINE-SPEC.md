@@ -62,3 +62,24 @@ T3, T4 et T7 sont des tests d'états et de sortie, pas d'arithmétique.
 - **Règles bloquées en mode client.** `blockedRules` liste les règles REAL non confirmées (identifiant, statut) pour dire à l'écran ce qui manque. Une règle de TEST n'y figure jamais avec son identifiant (T7). À faire valider par le juriste : R1 dit qu'une sortie client ne contient que des règles CONFIRMÉES ; cette liste ne contient aucune valeur ni aucun montant.
 - **Paramètres commerciaux.** Taux de commission, TVA, plafond : fournis à part (`CommercialParams`), avec un indicateur `validated`. En mode client, non validés → commission non calculée.
 - **Garde-fou.** `simulate` appelle `assertClientSafe` avant de rendre un résultat CLIENT.
+
+## Modules startup (R08) et TVA sur le carburant agricole (R11)
+
+Ajoutés après le sprint 2 à la demande de MARABU, à partir du classeur `docs/sources`. **Aucun des deux n'a de règle confirmée** : en mode client ils sont NON CALCULABLES tant que les règles ne sont pas renseignées, validées et publiées. Les règles de TEST valident l'arithmétique.
+
+### Exonération startup (`STARTUP_EXEMPTION`)
+- Portes de saisie : `isStartup` (Oui / Non / Je ne sais pas) ; si Oui, `startupLabelYear` et `startupRegime` (« régime réel, hors zone franche biotechnologie et TIC », deux conditions cumulées du texte, une seule question).
+- Paramètres de la règle (décisions des validateurs, jamais du moteur) : `durationYears`, `includesLabelYear`, `appliesToProfitTax`. Le texte vise « l'impôt sur les bénéfices industriels et commerciaux » (CGI 12 septies) : le classeur demande de le rattacher à l'IS (CGI 51) ; tant que `appliesToProfitTax` n'est pas posé par les validateurs, la règle ne peut pas être confirmée.
+- Exercice = année de la date de calcul (`asOf`). Période = `[année de labellisation + (includesLabelYear ? 0 : 1), … + durationYears − 1]`.
+- États : porte « Non », régime exclu, hors période ou règle non applicable à l'IS → **NULLE** (zéro établi) ; « Je ne sais pas », donnée manquante, règle non confirmée → **NON CALCULABLE** ; sinon **CALCULÉE** : économie brute = impôt avant opérations.
+- Effet sur les autres leviers : l'exonération s'applique en premier. Exonérée, l'impôt après opérations est 0 : dons et crédits restent CALCULÉS à 0 (zéro réel, motif « l'exonération supprime déjà l'impôt »), les crédits non imputés apparaissent en excédent ; aucun double compte (somme des leviers = impôt avant opérations). Si l'exonération est NON CALCULABLE, l'impôt après opérations est indéterminé : dons et crédits deviennent NON CALCULABLES (`DEPENDS_ON_STARTUP_LEVER`).
+- **Non modélisés** (R08 b à e) : impôt des microentreprises (CGI 71 quinquies), taxe d'État de l'entreprenant (80 bis), impôt sur le revenu des créances (236 sexies), TOB sur intérêts de prêts (398, 16°).
+
+### TVA sur le carburant agricole (`VAT_FUEL_RECOVERY`)
+- Portes : `vatAgri` (assujetti à la TVA par option **et** produits dans le champ de la TVA : conditions cumulatives du texte, une seule question), puis `fuelVat` (TVA supportée sur le gaz, le gas-oil, les huiles et les graisses des engins).
+- Paramètre de la règle : `capPercent` (fraction ou null). Le plafond de 95 % cité par l'exposé n'est **pas** codé : à établir par les validateurs.
+- États : porte « Non » ou TVA nulle → NULLE ; « Je ne sais pas », donnée manquante ou règle non confirmée → NON CALCULABLE ; sinon CALCULÉE : économie brute = `fuelVat` (× plafond s'il existe). Indépendant de l'IS : calculable même sans taux de l'IS.
+- Non retenus comme leviers (voir `docs/OPEN-QUESTIONS.md`) : R03/R04 (taux de 9 % sur des opérations, ordonnance non lue), R05, R14, R15, N09.
+
+### Total et portes
+Un levier non interrogé (donnée absente) est NON CALCULABLE, comme pour tout levier. Un total sans aucun levier CALCULÉ est NON CALCULABLE (des zéros établis par les portes « Non » ne forment pas un sous-total).

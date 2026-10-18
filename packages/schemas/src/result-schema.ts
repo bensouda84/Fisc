@@ -26,7 +26,7 @@ const SourceRef = z.object({
 });
 
 const Lever = z.object({
-  id: z.enum(['DONATIONS', 'CREDIT_CDI', 'CREDIT_APPRENTICE']),
+  id: z.enum(['STARTUP_EXEMPTION', 'DONATIONS', 'CREDIT_CDI', 'CREDIT_APPRENTICE', 'VAT_FUEL_RECOVERY']),
   label: z.string(),
   state: z.enum(['CALCULATED', 'NOT_COMPUTABLE', 'NULL']),
   gross: NullableAmount,

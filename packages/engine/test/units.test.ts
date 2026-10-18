@@ -90,7 +90,7 @@ describe('garde-fou client', () => {
     expect(() => assertClientSafe({ ...okResult, mode: 'INTERNAL', assumptions: [{ ruleId: 'x', label: 'x', kind: 'TEST', status: 'DRAFT', message: 'x' }] })).not.toThrow();
   });
   it('rejette une source de TEST, une hypothèse, un montant sans source, un levier non calculable chiffré', () => {
-    const lever = okResult.levers[0]!;
+    const lever = okResult.levers.find((l) => l.id === 'DONATIONS')!;
     const src = lever.sources[0]!;
     expect(() => assertClientSafe({ ...okResult, levers: [{ ...lever, sources: [{ ...src, kind: 'TEST' }] }] })).toThrow(ClientOutputError);
     expect(() => assertClientSafe({ ...okResult, levers: [{ ...lever, sources: [{ ...src, status: 'DRAFT' }] }] })).toThrow(ClientOutputError);

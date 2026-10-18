@@ -1,7 +1,7 @@
 import type { Mode } from './input.ts';
 import type { RuleConcept, RuleKind, RuleStatus } from './rule.ts';
 
-export type LeverId = 'DONATIONS' | 'CREDIT_CDI' | 'CREDIT_APPRENTICE';
+export type LeverId = 'STARTUP_EXEMPTION' | 'DONATIONS' | 'CREDIT_CDI' | 'CREDIT_APPRENTICE' | 'VAT_FUEL_RECOVERY';
 export type LeverState = 'CALCULATED' | 'NOT_COMPUTABLE' | 'NULL';
 
 export type ReasonCode =
@@ -15,6 +15,11 @@ export type ReasonCode =
   | 'NO_AMOUNT_ENTERED'
   | 'DONATIONS_NOT_DEDUCTIBLE'
   | 'DEPENDS_ON_DONATIONS_LEVER'
+  | 'DEPENDS_ON_STARTUP_LEVER'
+  | 'CONDITION_NOT_MET'
+  | 'OUTSIDE_EXEMPTION_PERIOD'
+  | 'EXEMPTION_NOT_FOR_THIS_TAX'
+  | 'ALREADY_EXEMPT'
   | 'TAX_BASE_NOT_COMPUTABLE';
 
 export interface Reason {

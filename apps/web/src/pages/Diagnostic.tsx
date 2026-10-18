@@ -3,6 +3,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import LinearProgress from '@mui/material/LinearProgress';
 import Stack from '@mui/material/Stack';
@@ -12,24 +17,39 @@ import { useEffect, useRef, useState } from 'react';
 import { formatMoney } from '@fisc/engine';
 import { api } from '../api.ts';
 import { WhySheet } from '../components/Sheets.tsx';
-import { ALL_FIELDS, STEPS, UNKNOWN, fieldError, parseDraft, type Field } from '../questions.ts';
+import { ALL_FIELDS, STEPS, UNKNOWN, fieldError, isVisible, parseDraft, type Draft, type Field } from '../questions.ts';
 import { useApp } from '../state.tsx';
 import type { Answers, WireRule } from '../wire.ts';
-
-type Draft = Record<string, string>;
 
 const toDraft = (a: Answers): Draft => Object.fromEntries(Object.entries(a).map(([k, v]) => [k, String(v)]));
 
 function toAnswers(draft: Draft): Answers {
   const out: Answers = {};
   for (const f of ALL_FIELDS) {
+    if (!isVisible(f, draft)) continue; // une réponse masquée par une porte « Non » n'est pas envoyée
     const v = parseDraft(f, draft[f.key] ?? '');
     if (v !== null && v !== undefined) out[f.key] = v;
   }
   return out;
 }
 
+function YesNoInput({ field, value, onChange }: { field: Field; value: string; onChange: (v: string) => void }) {
+  const id = `f-${field.key}`;
+  return (
+    <FormControl component="fieldset" error={fieldError(field, value) !== null} sx={{ width: '100%' }}>
+      <FormLabel component="legend" id={`${id}-label`} sx={{ color: 'text.primary', fontWeight: 700, mb: 0.5 }}>{field.label}</FormLabel>
+      <RadioGroup value={value} onChange={(e) => onChange(e.target.value)} aria-labelledby={`${id}-label`} aria-describedby={`${id}-hint`} data-testid={id}>
+        <FormControlLabel value="YES" control={<Radio sx={{ p: 1.5 }} />} label="Oui" />
+        <FormControlLabel value="NO" control={<Radio sx={{ p: 1.5 }} />} label="Non" />
+        <FormControlLabel value={UNKNOWN} control={<Radio sx={{ p: 1.5 }} />} label="Je ne sais pas" />
+      </RadioGroup>
+      <FormHelperText id={`${id}-hint`}>{fieldError(field, value) ?? field.hint}</FormHelperText>
+    </FormControl>
+  );
+}
+
 function FieldInput({ field, value, onChange }: { field: Field; value: string; onChange: (v: string) => void }) {
+  if (field.kind === 'yesno') return <YesNoInput field={field} value={value} onChange={onChange} />;
   const unknown = value === UNKNOWN;
   const error = fieldError(field, value);
   const id = `f-${field.key}`;
@@ -90,8 +110,9 @@ export function Diagnostic({ rules, onDone }: { rules: WireRule[]; onDone: () =>
 
   if (!loaded) return <Stack sx={{ py: 8, alignItems: "center" }}><CircularProgress aria-label="Chargement du diagnostic" /></Stack>;
   const current = STEPS[step]!;
-  const stepHasError = current.fields.some((f) => fieldError(f, draft[f.key] ?? '') !== null);
-  const stepEmpty = current.fields.some((f) => (draft[f.key] ?? '').trim() === '');
+  const visibleFields = current.fields.filter((f) => isVisible(f, draft));
+  const stepHasError = visibleFields.some((f) => fieldError(f, draft[f.key] ?? '') !== null);
+  const stepEmpty = visibleFields.some((f) => (draft[f.key] ?? '').trim() === '');
   const last = step === STEPS.length - 1;
 
   async function finish(): Promise<void> {
@@ -117,7 +138,7 @@ export function Diagnostic({ rules, onDone }: { rules: WireRule[]; onDone: () =>
       </Box>
       <Typography id="step-title" variant="h3" component="h1" tabIndex={-1} ref={heading} sx={{ outline: 'none' }}>{current.title}</Typography>
       <Stack spacing={2}>
-        {current.fields.map((f) => (
+        {visibleFields.map((f) => (
           <FieldInput key={f.key} field={f} value={draft[f.key] ?? ''} onChange={(v) => setDraft((d) => ({ ...d, [f.key]: v }))} />
         ))}
       </Stack>
@@ -138,13 +159,13 @@ export function Diagnostic({ rules, onDone }: { rules: WireRule[]; onDone: () =>
         </Button>
       </Stack>
       {stepEmpty && !stepHasError && (
-        <Typography variant="body2" color="text.secondary">Saisissez une valeur ou cochez « Je ne sais pas » pour continuer.</Typography>
+        <Typography variant="body2" color="text.secondary">Saisissez une valeur ou choisissez « Je ne sais pas » pour continuer.</Typography>
       )}
       <WhySheet
         open={why}
         onClose={() => setWhy(false)}
         why={current.why}
-        concepts={current.fields.flatMap((f) => (f.concept ? [f.concept] : []))}
+        concepts={[...new Set(current.fields.flatMap((f) => (f.concept ? [f.concept] : [])))]}
         rules={rules}
         role={role}
       />

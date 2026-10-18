@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { VIEWPORTS, expectNoCriticalA11y, expectNoHorizontalScroll, fillDiagnostic, login, shot } from './helpers.ts';
+import { VIEWPORTS, answerGates, expectNoCriticalA11y, expectNoHorizontalScroll, fillDiagnostic, login, seedDiagnostic, shot } from './helpers.ts';
 
 const NB = ' ';
 const money = (n: string): string => `${n.replace(/\B(?=(\d{3})+$)/g, NB)}${NB}F${NB}CFA`;
@@ -8,7 +8,7 @@ test('parcours 1 — du diagnostic au résultat sourcé en moins de 5 minutes (m
   await page.setViewportSize(VIEWPORTS.mobile);
   const t0 = Date.now();
   await login(page, 'consultant@fisc.test');
-  await expect(page.getByText('Question 1 sur 4')).toBeVisible();
+  await expect(page.getByText('Question 1 sur 6')).toBeVisible();
   await expectNoCriticalA11y(page, 'diagnostic-1');
   await expectNoHorizontalScroll(page);
   await shot(page, 'diagnostic-1-mobile');
@@ -66,13 +66,16 @@ test('« Je ne sais pas » rend le levier non calculable, jamais nul', async ({ 
   await page.getByRole('button', { name: 'Continuer' }).click();
   await page.getByLabel('Salaires supplémentaires (F CFA)').fill('0');
   await page.getByLabel('Autres décaissements (F CFA)').fill('0');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await answerGates(page);
   await page.getByRole('button', { name: 'Voir le résultat' }).click();
   const donations = page.getByTestId('lever-DONATIONS');
   await expect(donations).toContainText('Non calculable');
   await expect(donations).toContainText('Vous ne savez pas le montant des dons');
   await expect(donations).not.toContainText('0 F CFA');
-  await expect(page.getByTestId('gross')).toContainText('Partielle');
-  await expect(page.getByTestId('net')).toContainText('Partielle');
+  // Aucun levier calculé (les portes « Non » donnent des zéros établis, pas un calcul) : pas de sous-total.
+  await expect(page.getByTestId('gross')).toContainText('Non calculable');
+  await expect(page.getByTestId('net')).toContainText('Non calculable');
   await expect(page.getByTestId('fees-none')).toBeVisible();
 });
 
@@ -86,11 +89,7 @@ test('la sauvegarde automatique conserve le diagnostic après rechargement', asy
 
 test('adaptatif : défilement horizontal absent et navigation adaptée à 360, 768 et 1440 px', async ({ page }) => {
   await login(page, 'consultant@fisc.test');
-  await page.evaluate(async () => {
-    const token = (JSON.parse(sessionStorage.getItem('fisc.session') ?? '{}') as { token?: string }).token ?? '';
-    const answers = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, extraSalaries: '0', otherOutflows: '0' };
-    await fetch('/api/diagnostic', { method: 'PUT', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ answers, step: 3 }) });
-  });
+  await seedDiagnostic(page);
   for (const [name, size] of Object.entries(VIEWPORTS)) {
     await page.setViewportSize(size);
     for (const route of ['diagnostic', 'result', 'simulation', 'registry']) {

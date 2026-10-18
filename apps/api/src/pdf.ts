@@ -2,7 +2,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import PDFDocument from 'pdfkit';
 import {
-  CONCEPT_TITLE_FR, INPUT_KEYS, INPUT_LABEL_FR, LEVER_STATE_LABEL_FR, describeAggregate, describeInput, formatDate, formatMoney,
+  CONCEPT_TITLE_FR, INPUT_LABEL_FR, LEVER_STATE_LABEL_FR, describeAggregate, describeInput, formatDate, formatMoney, visibleInputKeys,
 } from '@fisc/engine';
 import { RULE_STATUS_LABEL_FR, type EngineInput, type EngineResult } from '@fisc/schemas';
 
@@ -53,7 +53,7 @@ export function renderProofPdf(result: EngineResult, input: EngineInput): Promis
   line('Mode', result.mode === 'CLIENT' ? 'Client (règles confirmées uniquement)' : 'Interne');
 
   h1('Hypothèses saisies');
-  for (const key of INPUT_KEYS) line(INPUT_LABEL_FR[key], describeInput(key, input[key]));
+  for (const key of visibleInputKeys(input)) line(INPUT_LABEL_FR[key], describeInput(key, input[key]));
   for (const a of result.assumptions) p(`Hypothèse — ${a.message}`, MUTED);
 
   h1('Résultat : trois montants distincts');

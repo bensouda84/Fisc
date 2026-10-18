@@ -62,5 +62,37 @@
     "validations": [],
     "params": null,
     "sourceToObtain": "Classeur MARABU (18/10/2026, docs/sources) : PARTIELLEMENT CONFIRMÉ. Texte lu : 500 000 F par apprenti (CGI 111 bis, annexe 2020) ; majorations et montants du régime microentreprise cités par le V4 seulement. Validité 2026 non vérifiée. À relire : conditions (entreprise au réel), durée du crédit, CGI consolidé."
+  },
+  {
+    "id": "startup-exemption",
+    "concept": "STARTUP_EXEMPTION",
+    "label": "Exonération des startups numériques labellisées",
+    "kind": "REAL",
+    "status": "PENDING",
+    "article": null,
+    "page": null,
+    "effectiveDate": null,
+    "source": null,
+    "author": "mesimpo (initialisation)",
+    "version": 1,
+    "validations": [],
+    "params": null,
+    "sourceToObtain": "Classeur MARABU (18/10/2026, docs/sources), règle R08 : CONFIRMÉ par un texte officiel lu. Annexe fiscale 2026, art. 35, p. 76-77 (loi n° 2025-987 du 19 décembre 2025). Texte : exonération pendant 3 ans suivant l'année de labellisation (comité du ministère chargé de la Transition numérique, avec un représentant de la DGI et un de la DGD), pour les startups au régime réel, hors zone franche biotechnologie et TIC : impôt sur les bénéfices industriels et commerciaux (CGI 12 septies), impôt des microentreprises (CGI 71 quinquies), taxe d'État de l'entreprenant (CGI 80 bis), impôt sur le revenu des créances sur intérêts de prêts (CGI 236 sexies), taxe sur les opérations bancaires sur intérêts de prêts (CGI 398, 16°). À TRANCHER AVANT SAISIE : (1) rattacher le « BIC » de 12 septies à l'impôt sur les sociétés (CGI 51) : paramètre appliesToProfitTax ; (2) la durée « 3 ans suivant l'année de labellisation » inclut-elle l'année de labellisation (includesLabelYear) ; (3) date d'effet : non indiquée dans le classeur ; (4) non-cumul avec le Code des investissements : note du V4 citant le BODGI, non vérifiée. Les paramètres durationYears, includesLabelYear et appliesToProfitTax sont des décisions des validateurs."
+  },
+  {
+    "id": "vat-fuel-recovery",
+    "concept": "VAT_FUEL_RECOVERY",
+    "label": "TVA sur le carburant des exploitants agricoles",
+    "kind": "REAL",
+    "status": "PENDING",
+    "article": null,
+    "page": null,
+    "effectiveDate": null,
+    "source": null,
+    "author": "mesimpo (initialisation)",
+    "version": 1,
+    "validations": [],
+    "params": null,
+    "sourceToObtain": "Classeur MARABU (18/10/2026, docs/sources), règle R11 : CONFIRMÉ par un texte officiel lu. Annexe fiscale 2026, art. 38, p. 80 : exploitants agricoles assujettis à la TVA (option exercée) : droit à déduction de la TVA grevant le gaz, le gas-oil, les huiles et les graisses utilisés pour le fonctionnement de leurs engins (CGI 348, 365, 365-1). Conditions cumulatives : produits dans le champ de la TVA et option exercée. À TRANCHER AVANT SAISIE : (1) plafond de 95 % de la TVA supportée (CGI 365-1, cité par l'exposé) : s'applique-t-il aux exploitants agricoles ? paramètre capPercent (null si aucun plafond) ; (2) date d'effet : non indiquée dans le classeur. Non retenus comme leviers : R03 et R04 (suppression d'exonérations et taux de 9 %, ordonnance 2026-03 non lue : ce sont des taux sur des opérations, pas une réduction de TVA du redevable), R05 (affacturage : taux non indiqué), R14 (seuil de l'option à 50 M F TTC : sens de la condition non établi), R15 (banane dessert : taux à confirmer), N09 (transport)."
   }
 ]

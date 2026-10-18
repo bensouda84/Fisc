@@ -24,11 +24,13 @@ import { api } from '../api.ts';
 import { useApp } from '../state.tsx';
 import type { WireRule } from '../wire.ts';
 
-const PARAM_FIELDS: Record<string, { key: string; label: string; kind: 'rate' | 'money' | 'bool' }> = {
+const PARAM_FIELDS: Record<string, { key: string; label: string; kind: 'rate' | 'money' | 'bool' | 'startup' | 'cap' }> = {
   IS_RATE: { key: 'rate', label: 'Taux (fraction : numérateur / dénominateur)', kind: 'rate' },
   DONATION_DEDUCTIBILITY: { key: 'deductible', label: 'Les dons sont déductibles', kind: 'bool' },
   CREDIT_CDI: { key: 'amountPerHire', label: 'Crédit par CDI (F CFA)', kind: 'money' },
   CREDIT_APPRENTICE: { key: 'amountPerApprentice', label: 'Crédit par apprenti (F CFA)', kind: 'money' },
+  STARTUP_EXEMPTION: { key: 'startup', label: 'Exonération des startups', kind: 'startup' },
+  VAT_FUEL_RECOVERY: { key: 'capPercent', label: 'Plafond de la TVA récupérable (fraction), vide si aucun', kind: 'cap' },
 };
 
 function ReviseDialog({ rule, onClose, onSaved }: { rule: WireRule; onClose: () => void; onSaved: () => void }) {
@@ -43,9 +45,19 @@ function ReviseDialog({ rule, onClose, onSaved }: { rule: WireRule; onClose: () 
   const [den, setDen] = useState(String(prev.rate?.den ?? ''));
   const [amount, setAmount] = useState(String(prev[spec.key] ?? ''));
   const [flag, setFlag] = useState(Boolean(prev.deductible ?? true));
+  const [years, setYears] = useState(String(prev.durationYears ?? ''));
+  const [withLabelYear, setWithLabelYear] = useState(Boolean(prev.includesLabelYear ?? false));
+  const [onProfitTax, setOnProfitTax] = useState(Boolean(prev.appliesToProfitTax ?? false));
+  const [capNum, setCapNum] = useState(String(prev.capPercent?.num ?? ''));
+  const [capDen, setCapDen] = useState(String(prev.capPercent?.den ?? ''));
 
   async function save(): Promise<void> {
-    const params = spec.kind === 'rate' ? { rate: { num, den } } : spec.kind === 'bool' ? { deductible: flag } : { [spec.key]: amount };
+    const params =
+      spec.kind === 'rate' ? { rate: { num, den } }
+      : spec.kind === 'bool' ? { deductible: flag }
+      : spec.kind === 'startup' ? { durationYears: Number.parseInt(years, 10), includesLabelYear: withLabelYear, appliesToProfitTax: onProfitTax }
+      : spec.kind === 'cap' ? { capPercent: capNum === '' && capDen === '' ? null : { num: capNum, den: capDen } }
+      : { [spec.key]: amount };
     try {
       await api.revise(rule.id, { article, page: Number.parseInt(page, 10), effectiveDate: date, source, params });
       notify('Règle enregistrée. Les validations sont à poser de nouveau.');
@@ -71,6 +83,19 @@ function ReviseDialog({ rule, onClose, onSaved }: { rule: WireRule; onClose: () 
           )}
           {spec.kind === 'money' && <TextField label={spec.label} value={amount} onChange={(e) => setAmount(e.target.value)} fullWidth slotProps={{ htmlInput: { inputMode: 'numeric' } }} />}
           {spec.kind === 'bool' && <FormControlLabel control={<Switch checked={flag} onChange={(e) => setFlag(e.target.checked)} />} label={spec.label} />}
+          {spec.kind === 'startup' && (
+            <>
+              <TextField label="Durée de l’exonération (années)" value={years} onChange={(e) => setYears(e.target.value)} fullWidth slotProps={{ htmlInput: { inputMode: 'numeric' } }} />
+              <FormControlLabel control={<Switch checked={withLabelYear} onChange={(e) => setWithLabelYear(e.target.checked)} />} label="L’année de labellisation est comprise dans la durée" />
+              <FormControlLabel control={<Switch checked={onProfitTax} onChange={(e) => setOnProfitTax(e.target.checked)} />} label="L’exonération s’applique à l’impôt sur les sociétés" />
+            </>
+          )}
+          {spec.kind === 'cap' && (
+            <Stack direction="row" sx={{ gap: 2 }}>
+              <TextField label="Plafond : numérateur" value={capNum} onChange={(e) => setCapNum(e.target.value)} fullWidth />
+              <TextField label="Plafond : dénominateur" value={capDen} onChange={(e) => setCapDen(e.target.value)} fullWidth />
+            </Stack>
+          )}
         </Stack>
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>

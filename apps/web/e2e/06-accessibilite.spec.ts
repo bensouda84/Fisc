@@ -4,7 +4,7 @@ import { expectNoCriticalA11y, expectNoHorizontalScroll, login } from './helpers
 async function seedDiagnostic(page: import('@playwright/test').Page): Promise<void> {
   await page.evaluate(async () => {
     const token = (JSON.parse(sessionStorage.getItem('fisc.session') ?? '{}') as { token?: string }).token ?? '';
-    const answers = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, extraSalaries: '0', otherOutflows: '0' };
+    const answers = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, extraSalaries: '0', otherOutflows: '0', isStartup: 'NO', vatAgri: 'NO' };
     await fetch('/api/diagnostic', { method: 'PUT', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ answers, step: 3 }) });
   });
 }

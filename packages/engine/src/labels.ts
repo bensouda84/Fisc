@@ -12,6 +12,8 @@ export const CONCEPT_TITLE_FR: Record<RuleConcept, string> = {
   DONATION_DEDUCTIBILITY: 'Déductibilité des dons',
   CREDIT_CDI: 'Crédit d’impôt pour les CDI',
   CREDIT_APPRENTICE: 'Crédit d’impôt pour les apprentis',
+  STARTUP_EXEMPTION: 'Exonération des startups labellisées',
+  VAT_FUEL_RECOVERY: 'TVA sur le carburant des exploitants agricoles',
 };
 
 export const INPUT_LABEL_FR: Record<keyof EngineInput, string> = {
@@ -21,6 +23,11 @@ export const INPUT_LABEL_FR: Record<keyof EngineInput, string> = {
   apprentices: 'Apprentis',
   extraSalaries: 'Salaires supplémentaires',
   otherOutflows: 'Autres décaissements',
+  isStartup: 'Startup numérique labellisée',
+  startupLabelYear: 'Année de labellisation',
+  startupRegime: 'Régime réel, hors zone franche biotechnologie et TIC',
+  vatAgri: 'Exploitant agricole assujetti à la TVA par option',
+  fuelVat: 'TVA supportée sur le carburant des engins',
 };
 
 export const INPUT_KEYS = Object.keys(INPUT_LABEL_FR) as (keyof EngineInput)[];
@@ -29,7 +36,9 @@ export const INPUT_KEYS = Object.keys(INPUT_LABEL_FR) as (keyof EngineInput)[];
 export function describeInput(key: keyof EngineInput, value: EngineInput[keyof EngineInput]): string {
   if (value === undefined) return 'Non saisi';
   if (value === 'UNKNOWN') return 'Je ne sais pas';
-  if (key === 'cdiHires' || key === 'apprentices') return String(value);
+  if (key === 'cdiHires' || key === 'apprentices' || key === 'startupLabelYear') return String(value);
+  if (value === 'YES') return 'Oui';
+  if (value === 'NO') return 'Non';
   return formatMoney(value as bigint);
 }
 
@@ -38,4 +47,13 @@ export function describeAggregate(agg: Aggregate): string {
   if (agg.state === 'COMPLETE') return formatMoney(agg.value);
   if (agg.state === 'PARTIAL') return `Partielle — sous-total ${formatMoney(agg.subtotal)}`;
   return 'Non calculable';
+}
+
+/** Questions réellement posées : les réponses dépendantes d'une porte « Non » ne sont ni demandées ni affichées. */
+export function visibleInputKeys(input: EngineInput): (keyof EngineInput)[] {
+  return INPUT_KEYS.filter((key) => {
+    if (key === 'startupLabelYear' || key === 'startupRegime') return input.isStartup === 'YES';
+    if (key === 'fuelVat') return input.vatAgri === 'YES';
+    return true;
+  });
 }

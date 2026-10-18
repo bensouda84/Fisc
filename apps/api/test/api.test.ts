@@ -34,8 +34,9 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('API — registre initial (aucun
     const t = await h.login('client@fisc.test');
     const { json } = await h.call(t, 'POST', '/simulate', { input: T1, mode: 'INTERNAL' });
     expect(json.result.mode).toBe('CLIENT');
-    expect(json.result.levers.every((l: any) => l.state === 'NOT_COMPUTABLE' && l.gross === null)).toBe(true);
-    expect(json.result.gross.state).toBe('NOT_COMPUTABLE');
+    const open = json.result.levers.filter((l: any) => ['DONATIONS', 'CREDIT_CDI', 'CREDIT_APPRENTICE'].includes(l.id));
+    expect(open.every((l: any) => l.state === 'NOT_COMPUTABLE' && l.gross === null)).toBe(true);
+    expect(json.result.gross.state).toBe('NOT_COMPUTABLE'); // startup et TVA agricole : portes « Non » → nuls, aucun levier calculé
     expect(JSON.stringify(json)).not.toContain('TEST');
     const reg = await h.call(t, 'GET', '/registry');
     expect(reg.json.rules).toEqual([]);
@@ -208,6 +209,8 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('API — de EN ATTENTE à CONFIR
     'donation-deductibility': { params: { deductible: true } },
     'credit-cdi': { params: { amountPerHire: '1000000' } },
     'credit-apprentice': { params: { amountPerApprentice: '500000' } },
+    'startup-exemption': { params: { durationYears: 3, includesLabelYear: false, appliesToProfitTax: true } },
+    'vat-fuel-recovery': { params: { capPercent: null } },
   };
 
   it('parcours complet du registre', async () => {
@@ -236,18 +239,27 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('API — de EN ATTENTE à CONFIR
     // Avant publication, le client voit toujours l'ancien registre : tout reste non calculable.
     const before = await h.call(client, 'POST', '/simulate', { input: T1 });
     expect(before.json.result.gross.state).toBe('NOT_COMPUTABLE');
+    expect(before.json.result.levers.find((l: any) => l.id === 'DONATIONS').state).toBe('NOT_COMPUTABLE');
 
     expect((await h.call(admin, 'POST', '/registry/publish', { version: 'v1.1.0' })).status).toBe(200);
     expect((await h.call(admin, 'POST', '/registry/publish', { version: 'v1.1.0' })).status).toBe(409);
 
     const sim = await h.call(client, 'POST', '/simulate', { input: T1 });
     expect(sim.json.result.gross).toEqual({ state: 'COMPLETE', value: '3500000' });
-    expect(sim.json.result.levers.every((l: any) => l.sources.length > 0 && l.sources.every((s: any) => s.status === 'CONFIRMED' && s.article && s.page && s.effectiveDate && s.registryVersion === 'v1.1.0'))).toBe(true);
+    expect(sim.json.result.levers.filter((l: any) => l.state === 'CALCULATED').every((l: any) => l.sources.length > 0 && l.sources.every((s: any) => s.status === 'CONFIRMED' && s.article && s.page && s.effectiveDate && s.registryVersion === 'v1.1.0'))).toBe(true);
+    // Startup et TVA agricole : mêmes garde-fous, sourcés une fois confirmés et publiés.
+    const modules = await h.call(client, 'POST', '/simulate', { input: { ...T1, donations: '0', cdiHires: 0, apprentices: 0, isStartup: 'YES', startupLabelYear: 2024, startupRegime: 'YES', vatAgri: 'YES', fuelVat: '1000000' } });
+    const startupLever = modules.json.result.levers.find((l: any) => l.id === 'STARTUP_EXEMPTION');
+    expect(startupLever).toMatchObject({ state: 'CALCULATED', gross: '10000000' });
+    expect(startupLever.sources.map((s: any) => s.concept)).toEqual(['IS_RATE', 'STARTUP_EXEMPTION']);
+    expect(modules.json.result.levers.find((l: any) => l.id === 'VAT_FUEL_RECOVERY')).toMatchObject({ state: 'CALCULATED', gross: '1000000' });
+    expect(modules.json.result.gross).toEqual({ state: 'COMPLETE', value: '11000000' });
+    expect(ClientResultSchema.safeParse(modules.json.result).success).toBe(true);
     // Paramètres commerciaux non validés : pas de commission pour un client.
     expect(sim.json.result.commission.state).toBe('NOT_COMPUTED');
 
     await h.call(admin, 'PUT', '/commercial', { commissionRate: { num: '1', den: '5' }, vatRate: { num: '9', den: '50' }, commissionCap: null, validated: true });
-    const t6 = await h.call(client, 'POST', '/simulate', { input: { profit: '40000000', donations: '0', cdiHires: 2, apprentices: 0, extraSalaries: '0', otherOutflows: '0' } });
+    const t6 = await h.call(client, 'POST', '/simulate', { input: { profit: '40000000', donations: '0', cdiHires: 2, apprentices: 0, extraSalaries: '0', otherOutflows: '0', isStartup: 'NO', vatAgri: 'NO' } });
     expect(t6.json.result.commission).toMatchObject({ state: 'COMPUTED', excl: '400000', vat: '72000', incl: '472000' });
 
     // PDF client : sources visibles, honoraires HT/TVA/TTC.
@@ -261,7 +273,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('API — de EN ATTENTE à CONFIR
 
     // Comparaison entre versions, journal d'audit intact.
     const diff = await h.call(admin, 'GET', '/registry/diff?from=v1.0.0&to=v1.1.0');
-    expect(diff.json.map((d: any) => d.ruleId)).toEqual(['credit-apprentice', 'credit-cdi', 'donation-deductibility', 'is-rate']);
+    expect(diff.json.map((d: any) => d.ruleId)).toEqual(['credit-apprentice', 'credit-cdi', 'donation-deductibility', 'is-rate', 'startup-exemption', 'vat-fuel-recovery']);
     expect(diff.json[0].fields).toEqual(expect.arrayContaining(['status', 'params', 'article']));
     const audit = await h.call(expert, 'GET', '/audit');
     expect(audit.json.intact).toBe(true);
@@ -270,7 +282,7 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('API — de EN ATTENTE à CONFIR
 
     // Le client voit désormais les règles confirmées avec leur source.
     const reg = await h.call(client, 'GET', '/registry');
-    expect(reg.json.rules).toHaveLength(4);
+    expect(reg.json.rules).toHaveLength(6);
   });
 
   it('modifier une règle confirmée la sort du registre publié suivant', async () => {

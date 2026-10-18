@@ -34,6 +34,8 @@ function rules(kind: 'TEST' | 'REAL', overrides: Overrides): unknown[] {
     { ...common, id: 'don', concept: 'DONATION_DEDUCTIBILITY', label: `${prefix} — dons déductibles`, params: { deductible: true } },
     { ...common, id: 'cdi', concept: 'CREDIT_CDI', label: `${prefix} — crédit CDI`, params: { amountPerHire: '1000000' } },
     { ...common, id: 'app', concept: 'CREDIT_APPRENTICE', label: `${prefix} — crédit apprenti`, params: { amountPerApprentice: '500000' } },
+    { ...common, id: 'startup', concept: 'STARTUP_EXEMPTION', label: `${prefix} — exonération startup`, params: { durationYears: 3, includesLabelYear: false, appliesToProfitTax: true } },
+    { ...common, id: 'vat-fuel', concept: 'VAT_FUEL_RECOVERY', label: `${prefix} — TVA carburant agricole`, params: { capPercent: null } },
   ];
   return list.map((r) => ({ ...r, ...(overrides[r.concept as Rule['concept']] ?? {}) }));
 }
@@ -59,9 +61,14 @@ export const commercial: CommercialParams = {
   validated: true,
 };
 
+/** Les deux portes « Non » : startup et TVA agricole non concernées (leviers nuls, comme dans les cas dorés du prompt). */
 export const common: EngineInput = {
   profit: 40_000_000n,
   extraSalaries: 0n,
   otherOutflows: 0n,
+  isStartup: 'NO',
+  vatAgri: 'NO',
 };
 export const AS_OF = '2026-10-18';
+
+export const lever = (r: import('@fisc/schemas').EngineResult, id: import('@fisc/schemas').LeverId) => r.levers.find((l) => l.id === id)!;

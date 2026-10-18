@@ -35,7 +35,7 @@ await page.getByRole('button', { name: 'Se connecter' }).click();
 await page.getByRole('button', { name: 'Se déconnecter' }).waitFor();
 await page.evaluate(async () => {
   const token = JSON.parse(sessionStorage.getItem('fisc.session')).token;
-  const answers = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, extraSalaries: '0', otherOutflows: '0' };
+  const answers = { profit: '40000000', donations: '4000000', cdiHires: 2, apprentices: 1, extraSalaries: '0', otherOutflows: '0', isStartup: 'NO', vatAgri: 'NO' };
   await fetch('/api/diagnostic', { method: 'PUT', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ answers, step: 0 }) });
 });
 targets.push({ name: 'diagnostic', url: `${BASE}/#/diagnostic` }, { name: 'resultat', url: `${BASE}/#/result` }, { name: 'simulation', url: `${BASE}/#/simulation` });

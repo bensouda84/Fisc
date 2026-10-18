@@ -83,7 +83,7 @@ test('de l’estimation à l’inscription : compte client, estimation reportée
   await submit.click();
 
   await expect(page.getByRole('button', { name: 'Se déconnecter' })).toBeVisible();
-  await expect(page.getByText('Question 1 sur 4')).toBeVisible();
+  await expect(page.getByText('Question 1 sur 6')).toBeVisible();
   await expect(page.getByLabel('Bénéfice imposable (F CFA)')).toHaveValue('10000000');
   await expect(page.getByRole('navigation', { name: 'Navigation principale' }).getByText('Registre')).toHaveCount(0);
   await expect(page.getByText('Client', { exact: true })).toBeVisible();

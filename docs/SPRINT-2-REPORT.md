@@ -22,11 +22,11 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 |---|---|
 | Cas dorés T1–T7 (moteur) | 7/7 verts, plus T1/T6/T7 rejoués par l'API et T3/T4/T7 par l'interface |
 | Tests unitaires et propriétés | schémas 13, moteur 34, registre 14 |
-| Tests API (PostgreSQL réel) | 21 verts (dont schémas de sortie, limites de débit, inscription et estimation sans compte) |
+| Tests API (PostgreSQL réel) | 21 verts (dont schémas de sortie, limites de débit, inscription, estimation sans compte et leviers startup/TVA) |
 | Couverture moteur | 95,96 % lignes, 90,82 % branches (seuil 90 %) |
 | Couverture registre | 100 % |
 | Couverture API | 93,7 % lignes, 71,5 % branches (pas de seuil fixé) |
-| Tests de bout en bout Playwright | 28/28 verts (dont thème sombre, marque, estimation sans compte et inscription) |
+| Tests de bout en bout Playwright | 33/33 verts (dont thème sombre, marque, estimation sans compte, inscription, startup et TVA) |
 | axe-core (WCAG 2.2 AA, toutes gravités) | 0 violation sur diagnostic, « pourquoi », source, résultat, simulation, export, client, registre (3 onglets, dialogue) |
 | Lighthouse mobile (simulé), après ajout de la marque | connexion 99/100/100 ; diagnostic 100/100/100 ; résultat 99/100/100 ; simulation 99/100/100 (performance / accessibilité / bonnes pratiques) |
 | Parité écran / PDF | les 6 montants de l'écran se retrouvent à l'identique dans le texte extrait du PDF (test e2e) |
@@ -42,6 +42,16 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 - Lighthouse est mesuré en local avec la limitation réseau simulée de Lighthouse ; un test sur l'hébergement réel reste à faire.
 - axe ne couvre qu'une partie de WCAG 2.2 AA. Vérifié en plus par test : focus visible, cibles de 48 px, absence de défilement horizontal. **Non vérifié** : lecteur d'écran réel (NVDA, VoiceOver), appareils réels.
 - Docker Compose et le workflow GitHub Actions n'ont pas été exécutés dans cet environnement.
+
+## Modules startup et TVA (après le checkpoint 3)
+
+Deux leviers ajoutés à la demande de MARABU, d'après le classeur `docs/sources` : **exonération des startups labellisées** (R08) et **TVA sur le carburant des exploitants agricoles** (R11). Détail et choix de modélisation : `docs/ENGINE-SPEC.md`.
+- **Aucun des deux n'est confirmé** : les règles sont des entrées EN ATTENTE dans le registre (texte, article et page du classeur dans « source à obtenir », décisions à prendre listées). En mode client, ils sont NON CALCULABLES ; les règles de TEST valident l'arithmétique en mode interne.
+- Le moteur ne tranche aucune interprétation : le rattachement de l'exonération à l'IS, la durée, l'année de labellisation comprise ou non et le plafond de TVA sont des **paramètres de la règle**, posés puis validés par deux personnes (Q23, Q24).
+- Interface : deux écrans de plus (6 au total) avec questions conditionnelles (Oui / Non / Je ne sais pas), 11 questions au plus. Résultat, PDF et registre (formulaire de saisie des paramètres) mis à jour.
+- Effet notable : une startup exonérée n'a plus d'impôt à réduire ; dons et crédits restent à zéro (zéro réel, expliqué) et les crédits non imputés apparaissent en excédent.
+- Tests ajoutés : 20 pour le moteur (portes, période, exclusivité, aucun double compte, propriété « brut total = impôt avant opérations »), parcours API de confirmation, 5 de bout en bout.
+- **Ce que « la TVA » couvre** : uniquement R11. Les autres lignes TVA du classeur ne sont pas des réductions de TVA du redevable ou manquent de texte (Q24). Pas de TVA générale (collectée, déductible, crédit de TVA).
 
 ## Estimation sans compte et inscription
 
