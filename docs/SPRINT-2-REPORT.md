@@ -45,7 +45,7 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 
 ## Décisions prises pendant le sprint
 
-- **ADR-0003 : MUI 9.5.0 retenu.** L'essai de Material Web 2.5.0 prévu au prompt n'a **pas** été mené (temps). MUI n'est pas du M3 strict : tokens de rôle générés par `@material/material-color-utilities`, formes, échelle typographique et chips de statut reprennent M3. Écart connu : composants MUI standards (ex. `BottomNavigation`) plutôt que composants M3 natifs.
+- **ADR-0003 : MUI 9.5.0 confirmé après essai de Material Web 2.5.0** (`spikes/material-web`, résultats dans l'ADR). MUI n'est pas du M3 strict : tokens de rôle générés par `@material/material-color-utilities`, formes, échelle typographique et chips de statut reprennent M3. Écart connu : composants MUI standards (ex. `BottomNavigation`) plutôt que composants M3 natifs.
 - **Police : Mulish (OFL 1.1)**, auto-hébergée via `@fontsource/mulish`. Avenir non utilisé (Q3).
 - **Couleur source M3 neutre `#51606f`** (Q3 sans réponse).
 - **Le moteur tourne côté serveur** pour l'écran comme pour le PDF : le mode client est imposé par le rôle, le navigateur d'un client ne reçoit jamais les règles de TEST ni les règles non confirmées. Conséquence : la simulation appelle l'API (≈ 120 ms de délai anti-rebond).

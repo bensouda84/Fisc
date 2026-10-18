@@ -16,7 +16,7 @@ Format : élément · impact · option par défaut retenue. **Bloquant** = néce
 | Q10 | Excédent de crédit non imputé | Montant affiché | « Excédent non remboursable sans texte », non compté dans l'économie | À valider (dépend de l'article concerné) |
 | Q11 | TVA 18 % | Honoraires TTC | Paramètre sous forme de fraction 9/50, comme le 20 % | À valider |
 | Q12 | Identité des validateurs réels (juriste, expert-comptable) | Validation à deux niveaux | Comptes nominatifs distincts ; aucun auto-validé | À fournir |
-| Q13 | Essai Material Web non mené ; MUI retenu (ADR-0003) | Fidélité M3 | MUI + tokens M3 ; essai à faire si MARABU exige du M3 strict | À valider |
+| Q13 | ~~Essai Material Web~~ **mené le 18 octobre 2026** : MUI confirmé (ADR-0003) | Fidélité M3 | MUI + jetons M3 ; à rouvrir si MARABU exige du M3 strict ou si Material Web retrouve des mainteneurs | Clos, sauf exigence M3 strict |
 | Q14 | Couleur source M3 | Identité visuelle | Neutre `#51606f` | À fournir |
 | Q15 | Mesures sur 5 testeurs (temps, compréhension brut/décaissements/net) | Indicateurs § 10 non mesurés | À planifier avec MARABU, sur un parcours sans règle fictive si Q1 est levée | À planifier |
 | Q16 | Hébergement, HTTPS, limitation de débit, révocation des jetons | Mise en service | Hors POC ; liste dans le runbook | À décider |
