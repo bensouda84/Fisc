@@ -20,7 +20,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Toolbar from '@mui/material/Toolbar';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
-import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { api, currentSession, setSession } from './api.ts';
 import { Diagnostic } from './pages/Diagnostic.tsx';
 import { Estimate } from './pages/Estimate.tsx';
@@ -29,6 +29,10 @@ import { Register } from './pages/Register.tsx';
 import { Result } from './pages/Result.tsx';
 import { Simulation } from './pages/Simulation.tsx';
 import { Provider } from './state.tsx';
+import { LOGO } from './brand.ts';
+import { DemoBanner } from './components/DemoBanner.tsx';
+import { DEMO } from './flags.ts';
+import { currentPath, focusMain, navigate, usePath } from './router.tsx';
 import { applyScheme, initialScheme, rememberScheme, type Scheme } from './scheme.ts';
 import { buildTheme, tokens } from './theme.ts';
 import type { Role, User, WireRule } from './wire.ts';
@@ -45,7 +49,7 @@ const ITEMS: { id: RouteId; label: string; icon: ReactNode; roles?: Role[] }[] =
 const ROLE_LABEL: Record<Role, string> = { consultant: 'Consultant', client: 'Client', validator: 'Validateur', admin: 'Administrateur' };
 
 const routeFromHash = (): RouteId => {
-  const id = window.location.hash.replace('#/', '') as RouteId;
+  const id = currentPath().replace('#/', '') as RouteId;
   return ITEMS.some((i) => i.id === id) ? id : 'diagnostic';
 };
 
@@ -64,16 +68,24 @@ function Shell({ user, onLogout, scheme, onToggleScheme }: { user: User; onLogou
   const desktop = useMediaQuery(theme.breakpoints.up('lg'));
   const [route, setRoute] = useState<RouteId>(routeFromHash);
   const [rules, setRules] = useState<WireRule[]>([]);
-  const items = ITEMS.filter((i) => !i.roles || i.roles.includes(user.role));
-
+  const headerRef = useRef<HTMLDivElement>(null);
+  // Le tiroir latéral démarre sous l'en-tête, bandeau de démonstration compris (sa hauteur varie avec la largeur).
   useEffect(() => {
-    const onHash = (): void => setRoute(routeFromHash());
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
+    const el = headerRef.current;
+    if (!el) return;
+    const set = (): void => document.documentElement.style.setProperty('--fisc-header-h', `${el.offsetHeight}px`);
+    set();
+    const observer = new ResizeObserver(set);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
+  const items = ITEMS.filter((i) => (!i.roles || i.roles.includes(user.role)) && !(DEMO && i.id === 'registry'));
+
+  const path = usePath();
+  useEffect(() => { setRoute(routeFromHash()); }, [path]);
   useEffect(() => { api.registry().then((s) => setRules(s.rules)).catch(() => undefined); }, []);
 
-  const go = useCallback((id: RouteId): void => { window.location.hash = `#/${id}`; }, []);
+  const go = useCallback((id: RouteId): void => { navigate(`#/${id}`); }, []);
   const page = (
     <Suspense fallback={null}>
       {route === 'diagnostic' && <Diagnostic rules={rules} onDone={() => go('result')} />}
@@ -86,21 +98,24 @@ function Shell({ user, onLogout, scheme, onToggleScheme }: { user: User; onLogou
 
   return (
     <Box sx={{ minHeight: '100dvh', bgcolor: 'background.default' }}>
-      <Box component="a" href="#main" sx={{ position: 'absolute', left: -9999, '&:focus': { left: 8, top: 8, zIndex: 2000, bgcolor: 'background.paper', p: 1.5, borderRadius: 2 } }}>
+      <Box component="a" href="#main" onClick={focusMain} sx={{ position: 'absolute', left: -9999, '&:focus': { left: 8, top: 8, zIndex: 2000, bgcolor: 'background.paper', p: 1.5, borderRadius: 2 } }}>
         Aller au contenu
       </Box>
-      <AppBar position="sticky" color="inherit" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.default', zIndex: (t) => t.zIndex.drawer + 1 }}>
+      <Box ref={headerRef} sx={{ position: 'sticky', top: 0, zIndex: (t) => t.zIndex.drawer + 1 }}>
+      <DemoBanner />
+      <AppBar position="static" color="inherit" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.default' }}>
         <Toolbar sx={{ gap: 1, flexWrap: 'wrap', py: 0.5 }}>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', minHeight: 48 }}>
-            <Box component="img" src={scheme === 'dark' ? '/logo-dark.png' : '/logo-light.png'} alt="mesimpo" width={160} height={40} sx={{ height: 32, width: 'auto', display: 'block' }} />
+            <Box component="img" src={scheme === 'dark' ? LOGO.dark : LOGO.light} alt="mesimpo" width={160} height={40} sx={{ height: 32, width: 'auto', display: 'block' }} />
           </Box>
           <Chip label={ROLE_LABEL[user.role]} variant="outlined" />
           <SchemeToggle scheme={scheme} onToggle={onToggleScheme} />
           <IconButton aria-label="Se déconnecter" onClick={onLogout}><LogoutIcon /></IconButton>
         </Toolbar>
       </AppBar>
+      </Box>
       {(tablet || desktop) && (
-        <Drawer variant="permanent" open sx={{ width: railWidth, '& .MuiDrawer-paper': { width: railWidth, top: 64, height: 'calc(100% - 64px)', borderRight: 1, borderColor: 'divider' } }}>
+        <Drawer variant="permanent" open sx={{ width: railWidth, '& .MuiDrawer-paper': { width: railWidth, top: 'var(--fisc-header-h, 64px)', height: 'calc(100% - var(--fisc-header-h, 64px))', borderRight: 1, borderColor: 'divider' } }}>
           <nav aria-label="Navigation principale">
             <Box sx={{ p: tablet ? 1 : 2, display: "grid", gap: 0.5 }}>
               {items.map((i) => (
@@ -131,12 +146,7 @@ function Shell({ user, onLogout, scheme, onToggleScheme }: { user: User; onLogou
 }
 
 function PublicRoutes({ onLogin, scheme, onToggleScheme }: { onLogin: (u: User) => void; scheme: Scheme; onToggleScheme: () => void }) {
-  const [hash, setHash] = useState(window.location.hash);
-  useEffect(() => {
-    const onHash = (): void => { setHash(window.location.hash); window.scrollTo(0, 0); };
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
-  }, []);
+  const hash = usePath();
   if (hash === '#/estimation') return <Estimate scheme={scheme} onToggleScheme={onToggleScheme} />;
   if (hash === '#/inscription') return <Register onLogin={onLogin} scheme={scheme} onToggleScheme={onToggleScheme} />;
   return <Login onLogin={onLogin} scheme={scheme} onToggleScheme={onToggleScheme} />;
@@ -157,7 +167,7 @@ export function App() {
       <CssBaseline />
       {user ? (
         <Provider user={user} notify={notify}>
-          <Shell user={user} scheme={scheme} onToggleScheme={toggle} onLogout={() => { setSession(null); setUser(null); window.location.hash = ''; }} />
+          <Shell user={user} scheme={scheme} onToggleScheme={toggle} onLogout={() => { setSession(null); setUser(null); navigate(''); }} />
         </Provider>
       ) : (
         <PublicRoutes onLogin={setUser} scheme={scheme} onToggleScheme={toggle} />

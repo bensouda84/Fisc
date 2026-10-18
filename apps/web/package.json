@@ -10,7 +10,8 @@
     "typecheck": "tsc -p .",
     "test": "echo \"Tests de l'interface : voir pnpm e2e\"",
     "e2e": "playwright test",
-    "lighthouse": "node lighthouse.mjs"
+    "lighthouse": "node lighthouse.mjs",
+    "build:demo": "tsc -p . && vite build --mode demo && node scripts/make-artifact.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

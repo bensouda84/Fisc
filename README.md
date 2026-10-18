@@ -16,6 +16,7 @@ pnpm coverage   # tests + seuil de couverture 90 % sur le moteur
 - Plan : [docs/PLAN.md](docs/PLAN.md)
 - Spécification du moteur et vérification des cas dorés : [docs/ENGINE-SPEC.md](docs/ENGINE-SPEC.md)
 - Décisions d'architecture : [docs/adr/](docs/adr/)
+- Démonstration partageable (une page, sans serveur) : [docs/DEMO.md](docs/DEMO.md)
 - Rapport de sprint 2 (checkpoint 3) : [docs/SPRINT-2-REPORT.md](docs/SPRINT-2-REPORT.md)
 - Runbook : [docs/runbook/RUNBOOK.md](docs/runbook/RUNBOOK.md)
 - Captures : `docs/screenshots/` ; exemples de PDF fictifs : `docs/examples/`

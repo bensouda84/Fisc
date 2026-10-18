@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
 import { api, setSession } from '../api.ts';
 import { PublicFrame } from '../components/PublicFrame.tsx';
+import { NavButton, navigate } from '../router.tsx';
 import type { Scheme } from '../scheme.ts';
 import type { User } from '../wire.ts';
 import { ESTIMATE_KEY } from './Estimate.tsx';
@@ -45,7 +46,7 @@ export function Register({ onLogin, scheme, onToggleScheme }: { onLogin: (u: Use
       const s = await api.register(email.trim(), password, consent);
       setSession(s);
       await carryOverEstimate();
-      window.location.hash = '#/diagnostic';
+      navigate('#/diagnostic');
       onLogin(s.user);
     } catch (err) {
       setError((err as Error).message);
@@ -78,7 +79,7 @@ export function Register({ onLogin, scheme, onToggleScheme }: { onLogin: (u: Use
           label="J’accepte que mesimpo traite mon adresse e-mail pour gérer mon compte."
         />
         <Button type="submit" variant="contained" disabled={busy || !email || password.length < 12 || !consent}>Créer mon compte</Button>
-        <Button component="a" href="#/" variant="text">J’ai déjà un compte</Button>
+        <NavButton to="#/" variant="text">J’ai déjà un compte</NavButton>
         <Typography variant="body2" color="text.secondary">Environnement de démonstration : données fictives.</Typography>
       </Stack>
     </PublicFrame>

@@ -11,6 +11,7 @@ import { Levers } from '../components/ResultView.tsx';
 import { PublicFrame } from '../components/PublicFrame.tsx';
 import { StatusChip } from '../components/StatusChip.tsx';
 import { SourcesSheet } from '../components/Sheets.tsx';
+import { NavButton } from '../router.tsx';
 import type { Scheme } from '../scheme.ts';
 
 export const ESTIMATE_KEY = 'fisc.estimate';
@@ -124,7 +125,7 @@ export function Estimate({ scheme, onToggleScheme }: { scheme: Scheme; onToggleS
               <Typography sx={{ my: 1.5 }}>
                 Un diagnostic de 4 écrans suffit pour calculer chaque levier avec vos données, texte et page à l’appui. Votre estimation est reportée dans votre compte.
               </Typography>
-              <Button component="a" href="#/inscription" variant="contained">Créer mon compte pour compléter le diagnostic</Button>
+              <NavButton to="#/inscription" variant="contained">Créer mon compte pour compléter le diagnostic</NavButton>
             </Box>
             <Stack spacing={0.5}>
               <Typography variant="body2" data-testid="estimate-date">Estimation établie le {formatDate(out.result.asOf)} · registre des règles {out.result.registryVersion}.</Typography>
@@ -132,7 +133,7 @@ export function Estimate({ scheme, onToggleScheme }: { scheme: Scheme; onToggleS
             </Stack>
           </Stack>
         )}
-        <Button component="a" href="#/" variant="text" sx={{ alignSelf: 'flex-start' }}>J’ai déjà un compte</Button>
+        <NavButton to="#/" variant="text" sx={{ alignSelf: 'flex-start' }}>J’ai déjà un compte</NavButton>
       </Stack>
     </PublicFrame>
   );

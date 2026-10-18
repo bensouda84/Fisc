@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import type { Mode } from '@fisc/schemas';
 import { api } from '../api.ts';
 import { Fees, Footnotes, Levers, Notices, Synthesis, ThreeAmounts } from '../components/ResultView.tsx';
+import { DEMO } from '../flags.ts';
 import { useApp } from '../state.tsx';
 
 export function Result({ onStart }: { onStart: () => void }) {
@@ -84,12 +85,12 @@ export function Result({ onStart }: { onStart: () => void }) {
       <Fees result={result} />
       <Levers result={result} />
       <Footnotes result={result} />
-      {last.id ? (
+      {last.id && !DEMO ? (
         <Button variant="contained" startIcon={<PictureAsPdfIcon />} onClick={exportPdf} disabled={exporting} sx={{ alignSelf: 'flex-start' }}>
           Exporter le dossier de preuve (PDF)
         </Button>
       ) : (
-        <Alert severity="info">Cette simulation n’est pas enregistrée : lancez le diagnostic pour exporter un dossier de preuve.</Alert>
+        <Alert severity="info">{DEMO ? 'L’export du dossier de preuve en PDF n’est pas disponible dans la démonstration.' : 'Cette simulation n’est pas enregistrée : lancez le diagnostic pour exporter un dossier de preuve.'}</Alert>
       )}
     </Stack>
   );
