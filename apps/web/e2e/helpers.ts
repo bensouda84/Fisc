@@ -26,6 +26,9 @@ export async function login(page: Page, email: string, options: { fresh?: boolea
 
 /** Zéro violation critique ou grave (WCAG 2.2 AA). */
 export async function expectNoCriticalA11y(page: Page, label: string): Promise<void> {
+  // Attendre la fin des transitions : axe lirait sinon des couleurs intermédiaires.
+  await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => undefined))));
+  await page.waitForTimeout(350);
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
   const bad = results.violations.filter((v) => v.impact === 'critical' || v.impact === 'serious');
   expect(bad.map((v) => `${label}: ${v.id} — ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`), `axe ${label}`).toEqual([]);

@@ -21,7 +21,7 @@ Format : élément · impact · option par défaut retenue. **Bloquant** = néce
 | Q15 | Mesures sur 5 testeurs (temps, compréhension brut/décaissements/net) | Indicateurs § 10 non mesurés | À planifier avec MARABU, sur un parcours sans règle fictive si Q1 est levée | À planifier |
 | Q16 | Hébergement, HTTPS, limitation de débit, révocation des jetons | Mise en service | Hors POC ; liste dans le runbook | À décider |
 | Q17 | Liste « ce qui manque pour calculer » visible d'un client | Cohérence avec R1 | Concept + statut, sans valeur ni montant | À valider (juriste) |
-| Q18 | Thème sombre | Confort, accessibilité | Non fait | À décider |
+| Q18 | ~~Thème sombre~~ **fait** | Confort, accessibilité | Suit le système puis bouton ; pas de mode « système » explicite après un choix manuel | Clos |
 
 ## Sources à obtenir (entrées EN ATTENTE du registre)
 

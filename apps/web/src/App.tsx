@@ -1,6 +1,8 @@
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import GavelIcon from '@mui/icons-material/Gavel';
 import InsightsIcon from '@mui/icons-material/Insights';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import LogoutIcon from '@mui/icons-material/Logout';
 import TuneIcon from '@mui/icons-material/Tune';
 import AppBar from '@mui/material/AppBar';
@@ -19,14 +21,15 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
-import { Suspense, lazy, useCallback, useEffect, useState, type ReactNode } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api, currentSession, setSession } from './api.ts';
 import { Diagnostic } from './pages/Diagnostic.tsx';
 import { Login } from './pages/Login.tsx';
 import { Result } from './pages/Result.tsx';
 import { Simulation } from './pages/Simulation.tsx';
 import { Provider } from './state.tsx';
-import { buildTheme } from './theme.ts';
+import { applyScheme, initialScheme, rememberScheme, type Scheme } from './scheme.ts';
+import { buildTheme, tokens } from './theme.ts';
 import type { Role, User, WireRule } from './wire.ts';
 
 const Registry = lazy(() => import('./pages/Registry.tsx'));
@@ -45,7 +48,16 @@ const routeFromHash = (): RouteId => {
   return ITEMS.some((i) => i.id === id) ? id : 'diagnostic';
 };
 
-function Shell({ user, onLogout }: { user: User; onLogout: () => void }) {
+function SchemeToggle({ scheme, onToggle }: { scheme: Scheme; onToggle: () => void }) {
+  const dark = scheme === 'dark';
+  return (
+    <IconButton aria-label={dark ? 'Passer au thème clair' : 'Passer au thème sombre'} onClick={onToggle} data-testid="scheme-toggle">
+      {dark ? <LightModeIcon /> : <DarkModeIcon />}
+    </IconButton>
+  );
+}
+
+function Shell({ user, onLogout, scheme, onToggleScheme }: { user: User; onLogout: () => void; scheme: Scheme; onToggleScheme: () => void }) {
   const theme = useTheme();
   const tablet = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
   const desktop = useMediaQuery(theme.breakpoints.up('lg'));
@@ -77,9 +89,10 @@ function Shell({ user, onLogout }: { user: User; onLogout: () => void }) {
         Aller au contenu
       </Box>
       <AppBar position="sticky" color="inherit" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider', bgcolor: 'background.default', zIndex: (t) => t.zIndex.drawer + 1 }}>
-        <Toolbar sx={{ gap: 1.5 }}>
+        <Toolbar sx={{ gap: 1, flexWrap: 'wrap', py: 0.5 }}>
           <Typography variant="h4" component="p" sx={{ flexGrow: 1 }}>FISC.CI</Typography>
           <Chip label={ROLE_LABEL[user.role]} variant="outlined" />
+          <SchemeToggle scheme={scheme} onToggle={onToggleScheme} />
           <IconButton aria-label="Se déconnecter" onClick={onLogout}><LogoutIcon /></IconButton>
         </Toolbar>
       </AppBar>
@@ -117,18 +130,22 @@ function Shell({ user, onLogout }: { user: User; onLogout: () => void }) {
 export function App() {
   const [user, setUser] = useState<User | null>(currentSession()?.user ?? null);
   const [message, setMessage] = useState<string | null>(null);
+  const [scheme, setScheme] = useState<Scheme>(initialScheme);
+  const theme = useMemo(() => buildTheme(scheme), [scheme]);
+  useEffect(() => { applyScheme(scheme, tokens[scheme].background); }, [scheme]);
+  const toggle = useCallback(() => setScheme((s) => { const next = s === 'dark' ? 'light' : 'dark'; rememberScheme(next); return next; }), []);
   const notify = useCallback((m: string) => setMessage(m), []);
   useEffect(() => { if (!currentSession()) setUser(null); });
 
   return (
-    <ThemeProvider theme={buildTheme('light')}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       {user ? (
         <Provider user={user} notify={notify}>
-          <Shell user={user} onLogout={() => { setSession(null); setUser(null); window.location.hash = ''; }} />
+          <Shell user={user} scheme={scheme} onToggleScheme={toggle} onLogout={() => { setSession(null); setUser(null); window.location.hash = ''; }} />
         </Provider>
       ) : (
-        <Login onLogin={setUser} />
+        <Login onLogin={setUser} scheme={scheme} onToggleScheme={toggle} />
       )}
       <Snackbar open={message !== null} autoHideDuration={5000} onClose={() => setMessage(null)} message={message} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} sx={{ bottom: { xs: 88, sm: 24 }, pointerEvents: 'none' }} />
     </ThemeProvider>

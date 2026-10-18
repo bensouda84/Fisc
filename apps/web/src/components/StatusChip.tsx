@@ -3,9 +3,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
 import Chip from '@mui/material/Chip';
+import { useTheme } from '@mui/material/styles';
 import { LEVER_STATE_LABEL_FR } from '@fisc/engine';
 import type { LeverState } from '@fisc/schemas';
-import { tokens } from '../theme.ts';
+import { tokens, type Tokens } from '../theme.ts';
 
 export type ChipKind = LeverState | 'PARTIAL';
 
@@ -17,17 +18,17 @@ const ICON = {
   PARTIAL: <HourglassTopIcon />,
 } as const;
 
-const t = tokens.light;
 // Le sens passe par l'icône et le texte, jamais par la couleur seule.
-const COLORS: Record<ChipKind, { bg: string; fg: string }> = {
-  CALCULATED: { bg: t.primaryContainer, fg: t.onPrimaryContainer },
-  NOT_COMPUTABLE: { bg: t.errorContainer, fg: t.onErrorContainer },
-  NULL: { bg: t.secondaryContainer, fg: t.onSecondaryContainer },
-  PARTIAL: { bg: t.tertiaryContainer, fg: t.onTertiaryContainer },
+const ROLES: Record<ChipKind, { bg: keyof Tokens; fg: keyof Tokens }> = {
+  CALCULATED: { bg: 'primaryContainer', fg: 'onPrimaryContainer' },
+  NOT_COMPUTABLE: { bg: 'errorContainer', fg: 'onErrorContainer' },
+  NULL: { bg: 'secondaryContainer', fg: 'onSecondaryContainer' },
+  PARTIAL: { bg: 'tertiaryContainer', fg: 'onTertiaryContainer' },
 };
 
 export function StatusChip({ kind }: { kind: ChipKind }) {
-  const c = COLORS[kind];
+  const t = tokens[useTheme().palette.mode];
+  const c = { bg: t[ROLES[kind].bg], fg: t[ROLES[kind].fg] };
   return (
     <Chip
       icon={ICON[kind]}

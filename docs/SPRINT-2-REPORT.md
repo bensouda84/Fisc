@@ -26,7 +26,7 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 | Couverture moteur | 95,96 % lignes, 90,82 % branches (seuil 90 %) |
 | Couverture registre | 100 % |
 | Couverture API | 93,7 % lignes, 71,5 % branches (pas de seuil fixé) |
-| Tests de bout en bout Playwright | 16/16 verts |
+| Tests de bout en bout Playwright | 21/21 verts (dont 5 sur le thème sombre) |
 | axe-core (WCAG 2.2 AA, toutes gravités) | 0 violation sur diagnostic, « pourquoi », source, résultat, simulation, export, client, registre (3 onglets, dialogue) |
 | Lighthouse mobile (simulé) | connexion 100/100/100 ; diagnostic 100/100/100 ; résultat 100/100/100 ; simulation 99/100/100 (performance / accessibilité / bonnes pratiques) |
 | Parité écran / PDF | les 6 montants de l'écran se retrouvent à l'identique dans le texte extrait du PDF (test e2e) |
@@ -40,8 +40,14 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 - **« Moins de 5 minutes » et « 4 testeurs sur 5 distinguent brut, décaissements et net »** : ce sont des mesures sur de vraies personnes. Le test automatisé saisit le parcours en ~4 s ; cela prouve qu'il n'y a pas d'étape bloquante, pas le temps d'un humain. **Aucun testeur n'a été sollicité.**
 - **Résultat client réel sourcé** : impossible tant qu'aucune règle réelle n'est confirmée (Q1). Les démonstrations sourcées utilisent des règles fictives « FICTIF-… » confirmées dans la base de test.
 - Lighthouse est mesuré en local avec la limitation réseau simulée de Lighthouse ; un test sur l'hébergement réel reste à faire.
-- axe ne couvre qu'une partie de WCAG 2.2 AA. Vérifié en plus par test : focus visible, cibles de 48 px, absence de défilement horizontal. **Non vérifié** : lecteur d'écran réel (NVDA, VoiceOver), appareils réels, mode sombre (non implémenté).
+- axe ne couvre qu'une partie de WCAG 2.2 AA. Vérifié en plus par test : focus visible, cibles de 48 px, absence de défilement horizontal. **Non vérifié** : lecteur d'écran réel (NVDA, VoiceOver), appareils réels.
 - Docker Compose et le workflow GitHub Actions n'ont pas été exécutés dans cet environnement.
+
+## Thème sombre
+
+Suit la préférence du système au premier chargement, puis un bouton (soleil / lune) dans la barre du haut et sur l'écran de connexion mémorise le choix dans `localStorage` (try/catch : sans stockage, le choix vaut pour la session). Mêmes jetons M3, schéma sombre généré depuis la même couleur source. Les chips de statut gardent icône + texte. Un script en tête de page évite le flash de fond clair.
+Vérifié : axe 0 violation (toutes gravités) sur connexion, diagnostic, « pourquoi », résultat, source, simulation, aperçu client, registre (3 onglets, dialogue) ; persistance après rechargement ; absence de défilement horizontal. Captures : `docs/screenshots/sombre-*.png`.
+Défaut trouvé et corrigé pendant l'ajout : le bouton supplémentaire dans la barre du haut provoquait un défilement horizontal avec le texte à 200 % ; la barre passe désormais à la ligne. Le titre de chaque étape recevait en plus un cadre de focus lors du changement d'écran ; le cadre est réservé aux éléments focalisables au clavier.
 
 ## Décisions prises pendant le sprint
 
@@ -59,7 +65,7 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 
 **Product owner** : parcours et critères d'acceptation couverts ; mesures sur testeurs à planifier. Le diagnostic ne propose pas d'exemple pré-rempli pour un test rapide (volontaire : pas de donnée réelle).
 
-**Designer UX/UI** : l'interface est cohérente et lisible sur 360/768/1440 px. Écarts : thème sombre absent ; MUI et non M3 strict ; la liste « Détail par levier » est longue sur mobile (pas de repli) ; les cartes de synthèse occupent beaucoup de place sur mobile ; la carte registre répète le nom du concept sous le titre.
+**Designer UX/UI** : l'interface est cohérente et lisible sur 360/768/1440 px, en clair et en sombre. Écarts : MUI et non M3 strict ; la liste « Détail par levier » est longue sur mobile (pas de repli) ; les cartes de synthèse occupent beaucoup de place sur mobile ; la carte registre répète le nom du concept sous le titre.
 
 **Architecte** : limitation de débit de la connexion en mémoire (5 échecs / 15 min par adresse et IP, perdue au redémarrage, non partagée entre instances) ; jetons de 8 h non révocables ; HTTPS à terminer devant l'API ; pas de seuil de couverture sur l'API (branches 71 %) ; le schéma Zod du résultat existe (`EngineResultSchema`, `ClientResultSchema`) et valide chaque sortie de l'API, mais le type TypeScript du résultat n'en est pas encore dérivé ; `reviveResult` utilise des `any` à la frontière JSON ; le contrat OpenAPI ne décrit pas les réponses.
 

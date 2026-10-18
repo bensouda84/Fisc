@@ -69,7 +69,7 @@ export function buildTheme(scheme: 'light' | 'dark' = 'light'): Theme {
         styleOverrides: {
           ':root': Object.fromEntries(Object.entries(t).map(([k, v]) => [`--md-sys-color-${k}`, v])),
           body: { backgroundColor: t.background },
-          '*:focus-visible:not(.MuiInputBase-input)': { outline: `3px solid ${t.primary} !important`, outlineOffset: '2px !important' },
+          '*:focus-visible:not(.MuiInputBase-input):not([tabindex="-1"])': { outline: `3px solid ${t.primary} !important`, outlineOffset: '2px !important' },
           '@media (prefers-reduced-motion: reduce)': {
             '*, *::before, *::after': { animationDuration: '0.01ms !important', animationIterationCount: '1 !important', transitionDuration: '0.01ms !important', scrollBehavior: 'auto !important' },
           },
