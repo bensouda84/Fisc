@@ -54,6 +54,7 @@ export const EngineResultSchema = z.object({
   asOf: z.iso.date(),
   registryVersion: z.string().min(1),
   taxBefore: NullableAmount,
+  taxSources: z.array(SourceRef),
   taxAfterDeductions: NullableAmount,
   levers: z.array(Lever),
   gross: Aggregate,
@@ -75,6 +76,10 @@ export const ClientResultSchema = EngineResultSchema.superRefine((r, ctx) => {
   const issue = (message: string): void => { ctx.addIssue({ code: 'custom', message }); };
   if (r.mode !== 'CLIENT') issue('Une sortie client est en mode CLIENT.');
   if (r.assumptions.length > 0) issue('Aucune hypothèse en sortie client.');
+  for (const s of r.taxSources) {
+    if (s.kind !== 'REAL' || s.status !== 'CONFIRMED') issue(`Source ${s.ruleId} interdite en sortie client.`);
+  }
+  if (r.taxBefore !== null && r.taxBefore !== 0n && r.taxSources.length === 0) issue('Impôt sans source.');
   for (const lever of r.levers) {
     for (const s of lever.sources) {
       if (s.kind !== 'REAL' || s.status !== 'CONFIRMED') issue(`Source ${s.ruleId} interdite en sortie client.`);

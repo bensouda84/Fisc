@@ -22,11 +22,11 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 |---|---|
 | Cas dorés T1–T7 (moteur) | 7/7 verts, plus T1/T6/T7 rejoués par l'API et T3/T4/T7 par l'interface |
 | Tests unitaires et propriétés | schémas 13, moteur 34, registre 14 |
-| Tests API (PostgreSQL réel) | 15 verts (dont schémas de sortie interne/client et limitation de débit de la connexion) |
+| Tests API (PostgreSQL réel) | 21 verts (dont schémas de sortie, limites de débit, inscription et estimation sans compte) |
 | Couverture moteur | 95,96 % lignes, 90,82 % branches (seuil 90 %) |
 | Couverture registre | 100 % |
 | Couverture API | 93,7 % lignes, 71,5 % branches (pas de seuil fixé) |
-| Tests de bout en bout Playwright | 24/24 verts (dont 5 sur le thème sombre et 3 sur la marque) |
+| Tests de bout en bout Playwright | 28/28 verts (dont thème sombre, marque, estimation sans compte et inscription) |
 | axe-core (WCAG 2.2 AA, toutes gravités) | 0 violation sur diagnostic, « pourquoi », source, résultat, simulation, export, client, registre (3 onglets, dialogue) |
 | Lighthouse mobile (simulé), après ajout de la marque | connexion 99/100/100 ; diagnostic 100/100/100 ; résultat 99/100/100 ; simulation 99/100/100 (performance / accessibilité / bonnes pratiques) |
 | Parité écran / PDF | les 6 montants de l'écran se retrouvent à l'identique dans le texte extrait du PDF (test e2e) |
@@ -42,6 +42,15 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 - Lighthouse est mesuré en local avec la limitation réseau simulée de Lighthouse ; un test sur l'hébergement réel reste à faire.
 - axe ne couvre qu'une partie de WCAG 2.2 AA. Vérifié en plus par test : focus visible, cibles de 48 px, absence de défilement horizontal. **Non vérifié** : lecteur d'écran réel (NVDA, VoiceOver), appareils réels.
 - Docker Compose et le workflow GitHub Actions n'ont pas été exécutés dans cet environnement.
+
+## Estimation sans compte et inscription
+
+Écrans publics `#/estimation` et `#/inscription`, accessibles depuis la connexion.
+- **Estimation express** : une seule donnée obligatoire (chiffre d'affaires annuel), une marge bénéficiaire estimée facultative (hypothèse de l'utilisateur, jamais une règle). `POST /public/estimate` fait tourner le **moteur en mode client** : mêmes règles, mêmes garde-fous (schéma de sortie client appliqué), rien n'est enregistré (ni calcul, ni compte), limite de 30 demandes par minute et par IP.
+- **Ce que l'invité voit aujourd'hui** : aucun montant. Le chiffre d'affaires seul ne permet pas de chiffrer un impôt (l'impôt se calcule sur le bénéfice imposable) et le taux de l'IS n'est pas confirmé : l'impôt et les trois leviers sont « Non calculable », avec ce qu'il manque pour chacun. Dès que le taux de l'IS sera confirmé et publié, l'invité qui indique une marge verra l'**impôt avant optimisation**, sourcé (article, page, statut, date d'effet, version) ; les leviers resteront non calculables sans les détails, ce qui motive l'inscription. Vérifié sur la règle fictive des tests (CA 100 M F, marge 10 % → bénéfice estimé 10 M F → impôt 2,5 M F).
+- **Inscription** : e-mail, mot de passe de 12 caractères au moins, case de consentement, rôle `client` imposé côté serveur (tout rôle demandé est ignoré), connexion immédiate, bénéfice estimé reporté dans le diagnostic du nouveau compte. L'adresse n'est pas écrite dans le journal d'audit.
+- **Limites** : pas de vérification de l'adresse e-mail, pas de réinitialisation de mot de passe, limiteurs en mémoire, notice de données personnelles non relue par un juriste (Q21, Q22). Le moteur a gagné un champ `taxSources` pour sourcer l'impôt avant optimisation (R2).
+- **Pourquoi pas de chiffre d'économie** : afficher un gain à partir du seul chiffre d'affaires exigerait des règles confirmées (R1) et un taux de marge inventé (R7), et ressemblerait à une promesse de résultat (R9).
 
 ## Thème sombre
 

@@ -54,7 +54,17 @@ async function request(method: string, path: string, body?: unknown): Promise<Re
 }
 const json = async <T>(method: string, path: string, body?: unknown): Promise<T> => (await request(method, path, body)).json() as Promise<T>;
 
+export interface Estimation {
+  assumption: { turnover: string; marginPercent: number | null; estimatedProfit: string | null };
+  result: EngineResult;
+}
+
 export const api = {
+  async estimate(turnover: string, marginPercent?: number): Promise<Estimation> {
+    const r = await json<{ assumption: Estimation['assumption']; result: unknown }>('POST', '/public/estimate', { turnover, ...(marginPercent === undefined ? {} : { marginPercent }) });
+    return { assumption: r.assumption, result: reviveResult(r.result) };
+  },
+  register: (email: string, password: string, consent: boolean) => json<Session>('POST', '/auth/register', { email, password, consent }),
   login: (email: string, password: string) => json<Session>('POST', '/auth/login', { email, password }),
   registry: () => json<WireSnapshot>('GET', '/registry'),
   diagnostic: () => json<{ answers: Answers; step: number }>('GET', '/diagnostic'),

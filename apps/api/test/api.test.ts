@@ -127,6 +127,75 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('API — registre initial (aucun
     await expect(h.db.query('delete from audit_log')).rejects.toThrow(/ajout seul/);
     await expect(h.db.query('truncate audit_log')).rejects.toThrow(/ajout seul/);
   });
+
+  it('estimation sans compte : chiffre d’affaires seul → mode client, tout non calculable, rien d’enregistré', async () => {
+    const before = (await h.db.query("select (select count(*)::int from calculation) as c, (select count(*)::int from users) as u")).rows[0];
+    const r = await h.call(null, 'POST', '/public/estimate', { turnover: '250000000' });
+    expect(r.status).toBe(200);
+    expect(r.json.assumption).toEqual({ turnover: '250000000', marginPercent: null, estimatedProfit: null });
+    expect(r.json.result.mode).toBe('CLIENT');
+    expect(r.json.result.taxBefore).toBeNull();
+    expect(r.json.result.levers.every((l: any) => l.state === 'NOT_COMPUTABLE' && l.gross === null)).toBe(true);
+    expect(JSON.stringify(r.json)).not.toContain('TEST');
+    expect(ClientResultSchema.safeParse(r.json.result).success).toBe(true);
+    const after = (await h.db.query("select (select count(*)::int from calculation) as c, (select count(*)::int from users) as u")).rows[0];
+    expect(after).toEqual(before);
+  });
+
+  it('estimation sans compte : la marge produit un bénéfice estimé en entiers (hypothèse), jamais une règle', async () => {
+    const r = await h.call(null, 'POST', '/public/estimate', { turnover: '100000001', marginPercent: 10 });
+    expect(r.json.assumption.estimatedProfit).toBe('10000000'); // 10 000 000,1 arrondi au franc
+    const odd = await h.call(null, 'POST', '/public/estimate', { turnover: '15', marginPercent: 10 });
+    expect(odd.json.assumption.estimatedProfit).toBe('2'); // 1,5 → 2 (demi vers le haut)
+    expect(r.json.result.taxBefore).toBeNull(); // taux de l'IS non confirmé : pas de chiffre
+  });
+
+  it('estimation sans compte : saisies invalides refusées', async () => {
+    for (const body of [{}, { turnover: '0' }, { turnover: '-5' }, { turnover: '12.5' }, { turnover: '1000', marginPercent: 101 }, { turnover: '1000', marginPercent: 12.5 }, { turnover: '1000', marginPercent: -1 }]) {
+      expect((await h.call(null, 'POST', '/public/estimate', body)).status, JSON.stringify(body)).toBe(400);
+    }
+  });
+
+  it('inscription : crée un compte client avec consentement, connecte, et ignore tout rôle demandé', async () => {
+    const r = await h.call(null, 'POST', '/auth/register', { email: 'Nouveau.Client@exemple.test', password: 'un-mot-de-passe-solide', consent: true, role: 'admin' });
+    expect(r.status).toBe(200);
+    expect(r.json.user).toMatchObject({ email: 'nouveau.client@exemple.test', role: 'client' });
+    const row = (await h.db.query("select role, consent_at from users where email = 'nouveau.client@exemple.test'")).rows[0];
+    expect(row.role).toBe('client');
+    expect(row.consent_at).toBeTruthy();
+    const sim = await h.call(r.json.token, 'POST', '/simulate', { input: T1, mode: 'INTERNAL' });
+    expect(sim.json.result.mode).toBe('CLIENT');
+    expect((await h.call(r.json.token, 'GET', '/rules')).status).toBe(403);
+    expect((await h.call(null, 'POST', '/auth/login', { email: 'nouveau.client@exemple.test', password: 'un-mot-de-passe-solide' })).status).toBe(200);
+    // Le journal ne contient pas l'adresse e-mail.
+    const audit = (await h.db.query("select detail, target from audit_log where action = 'USER_REGISTERED'")).rows;
+    expect(audit.length).toBe(1);
+    expect(JSON.stringify(audit)).not.toContain('exemple.test');
+  });
+
+  it('inscription : consentement, mot de passe court, adresse invalide et doublon refusés', async () => {
+    const ok = { email: 'autre@exemple.test', password: 'un-mot-de-passe-solide', consent: true };
+    expect((await h.call(null, 'POST', '/auth/register', { ...ok, consent: false })).status).toBe(400);
+    expect((await h.call(null, 'POST', '/auth/register', { ...ok, consent: undefined })).status).toBe(400);
+    const short = await h.call(null, 'POST', '/auth/register', { ...ok, password: 'court' });
+    expect(short.status).toBe(400);
+    expect(JSON.stringify(short.json.issues)).toContain('12 caractères');
+    expect((await h.call(null, 'POST', '/auth/register', { ...ok, email: 'pas-une-adresse' })).status).toBe(400);
+    const dup = await h.call(null, 'POST', '/auth/register', { ...ok, email: 'NOUVEAU.CLIENT@exemple.test' });
+    expect(dup.status).toBe(409);
+    expect(dup.json.error).toBe('EMAIL_TAKEN');
+  });
+
+  it('limite les créations de compte et les estimations par adresse IP', async () => {
+    for (let i = 0; i < 3; i++) {
+      expect((await h.call(null, 'POST', '/auth/register', { email: `lim${i}@exemple.test`, password: 'un-mot-de-passe-solide', consent: true })).status).toBe(200);
+    }
+    const blocked = await h.call(null, 'POST', '/auth/register', { email: 'lim9@exemple.test', password: 'un-mot-de-passe-solide', consent: true });
+    expect(blocked.status).toBe(429);
+    let last = 200;
+    for (let i = 0; i < 40 && last === 200; i++) last = (await h.call(null, 'POST', '/public/estimate', { turnover: '1000' })).status;
+    expect(last).toBe(429);
+  });
 });
 
 describe.skipIf(!process.env.TEST_DATABASE_URL)('API — de EN ATTENTE à CONFIRMÉE jusqu’à une sortie client sourcée', () => {

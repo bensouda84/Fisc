@@ -24,6 +24,8 @@ Format : élément · impact · option par défaut retenue. **Bloquant** = néce
 | Q16 | Hébergement, HTTPS, limitation de débit, révocation des jetons | Mise en service | Hors POC ; liste dans le runbook | À décider |
 | Q17 | Liste « ce qui manque pour calculer » visible d'un client | Cohérence avec R1 | Concept + statut, sans valeur ni montant | À valider (juriste) |
 | Q18 | ~~Thème sombre~~ **fait** | Confort, accessibilité | Suit le système puis bouton ; pas de mode « système » explicite après un choix manuel | Clos |
+| Q21 | Inscription libre des clients : adresse e-mail + mot de passe, consentement coché, sans vérification de l'adresse ni confirmation par e-mail | Données personnelles (loi n° 2013-450, ARTCI : Q8), comptes faux ou en masse | Collecte minimale, consentement horodaté (`users.consent_at`), limite de 5 créations par heure et par IP (en mémoire), notice courte non relue par un juriste | À valider (juriste), vérification d'e-mail à ajouter |
+| Q22 | Estimation sans compte : quels chiffres montrer avant inscription ? | Conversion vs R1 (règles confirmées seulement) et R9 (aucune garantie) | Aucun montant d'économie. L'impôt avant optimisation n'apparaît que si le taux de l'IS est confirmé, avec la marge saisie par l'utilisateur comme hypothèse déclarée ; jamais de règle de TEST ni de marge par défaut | À valider (MARABU, juriste) |
 
 ## Classeur « règles applicables » (fourni le 18 octobre 2026)
 

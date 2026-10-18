@@ -350,6 +350,7 @@ export function simulate(
     asOf,
     registryVersion: snapshot.version,
     taxBefore,
+    taxSources: taxBefore !== null && rateRes.ok ? [rateRes.source] : [],
     taxAfterDeductions,
     levers,
     gross: grossAgg,

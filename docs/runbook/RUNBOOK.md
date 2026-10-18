@@ -35,6 +35,12 @@ Comptes de démonstration (mot de passe : `SEED_PASSWORD`) : `consultant@`, `cli
 - **Sauvegarde** : `pg_dump` quotidien de la base ; conserver les instantanés de registre (ils portent l'empreinte).
 - **Rotation du secret JWT** : changer `JWT_SECRET` et redémarrer ; toutes les sessions sont invalidées.
 
+## Inscription et estimation sans compte
+
+- `POST /auth/register` crée uniquement des comptes `client`. Limite : 5 créations par heure et par adresse IP (en mémoire : perdue au redémarrage, non partagée entre plusieurs instances ; derrière un reverse proxy, activer `trustProxy` sinon toutes les demandes partagent l'IP du proxy).
+- `POST /public/estimate` : sans jeton, mode client, rien n'est enregistré, 30 demandes par minute et par IP.
+- Pas de vérification d'e-mail ni de réinitialisation de mot de passe dans le POC : un administrateur doit réinitialiser un mot de passe en base. Suppression d'un compte sur demande : `delete from users where email = …` (les diagnostics et calculs sont supprimés en cascade).
+
 ## Incidents
 
 | Symptôme | Cause probable | Action |

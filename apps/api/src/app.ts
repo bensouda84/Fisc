@@ -11,6 +11,7 @@ import {
 } from '@fisc/schemas';
 import type { Config } from './config.ts';
 import type { Db } from './db.ts';
+import { EstimateBody, createLimiter, estimatedProfit } from './estimate.ts';
 import { HttpError, buildOpenApi, type AuthUser, type RouteDef } from './http.ts';
 import { renderProofPdf } from './pdf.ts';
 import { hashPassword, verifyPassword } from './password.ts';
@@ -76,15 +77,9 @@ export async function buildApp({ config, db, now = () => new Date() }: AppOption
     return reply.code(500).send({ error: 'INTERNAL', message: 'Erreur interne. Réessayez plus tard.' });
   });
 
-  /** Limite de débit en mémoire : 5 échecs par adresse et par adresse IP sur 15 minutes. */
-  const failures = new Map<string, number[]>();
-  const keyOf = (email: string, ip: string): string => `${email.toLowerCase()}|${ip}`;
-  const recent = (key: string): number[] => {
-    const t = now().getTime();
-    const list = (failures.get(key) ?? []).filter((x) => t - x < LOGIN_WINDOW_MS);
-    failures.set(key, list);
-    return list;
-  };
+  const loginLimiter = createLimiter(LOGIN_MAX_FAILURES, LOGIN_WINDOW_MS, now);
+  const registerLimiter = createLimiter(5, 60 * 60 * 1000, now);
+  const publicLimiter = createLimiter(30, 60 * 1000, now);
 
   const routes: RouteDef<never, never>[] = [];
   function route<B = undefined, Q = undefined>(def: RouteDef<B, Q>): void {
@@ -129,20 +124,71 @@ export async function buildApp({ config, db, now = () => new Date() }: AppOption
     method: 'post', url: '/auth/login', summary: 'Connexion', roles: 'public',
     body: z.object({ email: z.string().min(3), password: z.string().min(1) }),
     handler: async ({ req, reply, body }) => {
-      const key = keyOf(body.email, req.ip);
-      if (recent(key).length >= LOGIN_MAX_FAILURES) {
-        reply.header('retry-after', String(Math.ceil(LOGIN_WINDOW_MS / 1000)));
+      const key = `${body.email.toLowerCase()}|${req.ip}`;
+      if (loginLimiter.blocked(key)) {
+        reply.header('retry-after', String(loginLimiter.windowSeconds));
         throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Trop de tentatives. Réessayez dans quelques minutes.');
       }
       const user = await store.findUserByEmail(db, body.email);
       const ok = await verifyPassword(body.password, user?.pass_hash ?? DUMMY_HASH);
       if (!user || !ok) {
-        recent(key).push(now().getTime());
+        loginLimiter.hit(key);
         throw new HttpError(401, 'BAD_CREDENTIALS', 'Adresse ou mot de passe incorrect.');
       }
-      failures.delete(key);
+      loginLimiter.clear(key);
       const payload: AuthUser = { sub: String(user.id), email: user.email, role: user.role, specialty: user.specialty };
       return { token: app.jwt.sign(payload), user: { email: user.email, display: user.display, role: user.role, specialty: user.specialty } };
+    },
+  });
+
+  route({
+    method: 'post', url: '/auth/register', summary: 'Inscription libre d’un client (rôle client uniquement)', roles: 'public',
+    body: z.object({
+      email: z.email().max(254),
+      password: z.string().min(12, 'Le mot de passe compte au moins 12 caractères.').max(200),
+      display: z.string().trim().min(1).max(80).optional(),
+      consent: z.literal(true, { error: 'Le consentement est requis pour créer un compte.' }),
+    }),
+    handler: async ({ req, reply, body }) => {
+      if (registerLimiter.blocked(req.ip)) {
+        reply.header('retry-after', String(registerLimiter.windowSeconds));
+        throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Trop de créations de compte. Réessayez plus tard.');
+      }
+      registerLimiter.hit(req.ip);
+      const email = body.email.toLowerCase();
+      const display = body.display ?? email.split('@')[0]!;
+      const inserted = await db.query<{ id: string }>(
+        `insert into users(email, display, role, pass_hash, consent_at) values ($1, $2, 'client', $3, $4)
+         on conflict (email) do nothing returning id`,
+        [email, display, await hashPassword(body.password), now()],
+      );
+      if (inserted.rows.length === 0) throw new HttpError(409, 'EMAIL_TAKEN', 'Un compte existe déjà avec cette adresse. Connectez-vous.');
+      await store.audit(db, { actor: 'système', action: 'USER_REGISTERED', target: `user:${inserted.rows[0]!.id}`, detail: { role: 'client' } }, now());
+      const payload: AuthUser = { sub: inserted.rows[0]!.id, email, role: 'client', specialty: null };
+      return { token: app.jwt.sign(payload), user: { email, display, role: 'client', specialty: null } };
+    },
+  });
+
+  route({
+    method: 'post', url: '/public/estimate', summary: 'Estimation express sans compte à partir du chiffre d’affaires (mode client, rien n’est enregistré)', roles: 'public',
+    body: EstimateBody,
+    handler: async ({ req, reply, body }) => {
+      if (publicLimiter.blocked(req.ip)) {
+        reply.header('retry-after', String(publicLimiter.windowSeconds));
+        throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Trop de demandes. Réessayez dans une minute.');
+      }
+      publicLimiter.hit(req.ip);
+      const profit = body.marginPercent === undefined ? null : estimatedProfit(body.turnover, body.marginPercent);
+      const input = profit === null ? {} : { profit };
+      const result = compute(input, await requireSnapshot(), await store.getCommercial(db), 'CLIENT', isoDay(now()));
+      return {
+        assumption: {
+          turnover: body.turnover.toString(),
+          marginPercent: body.marginPercent ?? null,
+          estimatedProfit: profit === null ? null : profit.toString(),
+        },
+        result: toWire(result),
+      };
     },
   });
 

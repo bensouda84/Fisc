@@ -1,19 +1,15 @@
 import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useState, type FormEvent } from 'react';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import IconButton from '@mui/material/IconButton';
 import { api, setSession } from '../api.ts';
+import { PublicFrame } from '../components/PublicFrame.tsx';
+import type { Scheme } from '../scheme.ts';
 import type { User } from '../wire.ts';
 
-export function Login({ onLogin, scheme, onToggleScheme }: { onLogin: (u: User) => void; scheme: 'light' | 'dark'; onToggleScheme: () => void }) {
+export function Login({ onLogin, scheme, onToggleScheme }: { onLogin: (u: User) => void; scheme: Scheme; onToggleScheme: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -35,28 +31,22 @@ export function Login({ onLogin, scheme, onToggleScheme }: { onLogin: (u: User) 
   }
 
   return (
-    <Box component="main" id="main" sx={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', p: 2 }}>
-      <IconButton aria-label={scheme === 'dark' ? 'Passer au thème clair' : 'Passer au thème sombre'} onClick={onToggleScheme} data-testid="scheme-toggle" sx={{ position: 'absolute', top: 8, right: 8 }}>
-        {scheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
-      </IconButton>
-      <Card sx={{ width: '100%', maxWidth: 440 }}>
-        <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
-          <Stack component="form" spacing={2.5} onSubmit={submit} noValidate aria-labelledby="login-title">
-            <Typography variant="h1" component="h1" id="login-title" sx={{ m: 0, lineHeight: 0 }}>
-              <Box component="img" src={scheme === 'dark' ? '/logo-dark.png' : '/logo-light.png'} alt="mesimpo" width={240} height={60} sx={{ height: 56, width: 'auto', maxWidth: '100%' }} />
-            </Typography>
-            <Typography color="text.secondary">Payez juste. Pas plus.</Typography>
-            <Typography>Simulation fiscale sourcée. Connectez-vous pour continuer.</Typography>
-            {error && <Alert severity="error" role="alert">{error}</Alert>}
-            <TextField label="Adresse e-mail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required fullWidth />
-            <TextField label="Mot de passe" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required fullWidth />
-            <Button type="submit" variant="contained" disabled={busy || !email || !password}>Se connecter</Button>
-            <Typography variant="body2" color="text.secondary">
-              Environnement de démonstration : données fictives. Cette simulation ne remplace pas l’avis d’un professionnel.
-            </Typography>
-          </Stack>
-        </CardContent>
-      </Card>
-    </Box>
+    <PublicFrame scheme={scheme} onToggleScheme={onToggleScheme}>
+      <Stack component="form" spacing={2.5} onSubmit={submit} noValidate aria-labelledby="login-title">
+        <Typography variant="h2" component="h1" id="login-title">Connexion</Typography>
+        <Typography color="text.secondary">Payez juste. Pas plus.</Typography>
+        {error && <Alert severity="error" role="alert">{error}</Alert>}
+        <TextField label="Adresse e-mail" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required fullWidth />
+        <TextField label="Mot de passe" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required fullWidth />
+        <Button type="submit" variant="contained" disabled={busy || !email || !password}>Se connecter</Button>
+        <Stack spacing={0.5}>
+          <Button component="a" href="#/estimation" variant="outlined">Estimer sans compte</Button>
+          <Button component="a" href="#/inscription" variant="text">Créer un compte</Button>
+        </Stack>
+        <Typography variant="body2" color="text.secondary">
+          Environnement de démonstration : données fictives. Cette simulation ne remplace pas l’avis d’un professionnel.
+        </Typography>
+      </Stack>
+    </PublicFrame>
   );
 }

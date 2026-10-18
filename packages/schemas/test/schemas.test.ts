@@ -54,7 +54,7 @@ import { ClientResultSchema, EngineResultSchema } from '../src/index.ts';
 
 describe('schéma de sortie du moteur', () => {
   const base = {
-    mode: 'CLIENT', asOf: '2026-10-18', registryVersion: 'v1.0.0', taxBefore: null, taxAfterDeductions: null,
+    mode: 'CLIENT', asOf: '2026-10-18', registryVersion: 'v1.0.0', taxBefore: null, taxSources: [], taxAfterDeductions: null,
     levers: [{ id: 'DONATIONS', label: 'Dons', state: 'NOT_COMPUTABLE', gross: null, outflows: '4000000', net: null, creditExcess: null, reasons: [], sources: [] }],
     gross: { state: 'NOT_COMPUTABLE', missing: ['DONATIONS'] },
     outflows: { state: 'COMPLETE', value: '4000000' },
@@ -82,6 +82,11 @@ describe('schéma de sortie du moteur', () => {
     expect(bad({ assumptions: [{ ruleId: 'r', label: 'l', kind: 'REAL', status: 'DRAFT', message: 'm' }] })).toBe(false);
     expect(bad({ disclaimer: 'règle de TEST' })).toBe(false);
     expect(bad({ levers: [{ ...lever, state: 'CALCULATED', gross: '1000', sources: [source] }] })).toBe(true);
+  });
+  it('refuse un impôt sans source et une source d’impôt de TEST', () => {
+    expect(ClientResultSchema.safeParse({ ...base, taxBefore: '2500000' }).success).toBe(false);
+    expect(ClientResultSchema.safeParse({ ...base, taxBefore: '2500000', taxSources: [source] }).success).toBe(true);
+    expect(ClientResultSchema.safeParse({ ...base, taxBefore: '2500000', taxSources: [{ ...source, kind: 'TEST' }] }).success).toBe(false);
   });
   it('refuse un montant flottant', () => {
     expect(EngineResultSchema.safeParse({ ...base, taxBefore: '1.5' }).success).toBe(false);

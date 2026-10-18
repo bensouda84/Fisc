@@ -3,7 +3,7 @@ import type { EngineResult, SourceRef } from '@fisc/schemas';
 export class ClientOutputError extends Error {}
 
 function everySource(result: EngineResult): SourceRef[] {
-  return result.levers.flatMap((l) => l.sources);
+  return [...result.taxSources, ...result.levers.flatMap((l) => l.sources)];
 }
 
 /**
@@ -20,6 +20,9 @@ export function assertClientSafe(result: EngineResult): void {
   }
   if (result.assumptions.length > 0) {
     throw new ClientOutputError('Hypothèse interdite en sortie client');
+  }
+  if (result.taxBefore !== null && result.taxBefore !== 0n && result.taxSources.length === 0) {
+    throw new ClientOutputError('Impôt sans source');
   }
   for (const lever of result.levers) {
     const hasAmount = lever.gross !== null && lever.gross !== 0n;

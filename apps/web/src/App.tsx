@@ -23,7 +23,9 @@ import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api, currentSession, setSession } from './api.ts';
 import { Diagnostic } from './pages/Diagnostic.tsx';
+import { Estimate } from './pages/Estimate.tsx';
 import { Login } from './pages/Login.tsx';
+import { Register } from './pages/Register.tsx';
 import { Result } from './pages/Result.tsx';
 import { Simulation } from './pages/Simulation.tsx';
 import { Provider } from './state.tsx';
@@ -128,6 +130,18 @@ function Shell({ user, onLogout, scheme, onToggleScheme }: { user: User; onLogou
   );
 }
 
+function PublicRoutes({ onLogin, scheme, onToggleScheme }: { onLogin: (u: User) => void; scheme: Scheme; onToggleScheme: () => void }) {
+  const [hash, setHash] = useState(window.location.hash);
+  useEffect(() => {
+    const onHash = (): void => { setHash(window.location.hash); window.scrollTo(0, 0); };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+  if (hash === '#/estimation') return <Estimate scheme={scheme} onToggleScheme={onToggleScheme} />;
+  if (hash === '#/inscription') return <Register onLogin={onLogin} scheme={scheme} onToggleScheme={onToggleScheme} />;
+  return <Login onLogin={onLogin} scheme={scheme} onToggleScheme={onToggleScheme} />;
+}
+
 export function App() {
   const [user, setUser] = useState<User | null>(currentSession()?.user ?? null);
   const [message, setMessage] = useState<string | null>(null);
@@ -146,7 +160,7 @@ export function App() {
           <Shell user={user} scheme={scheme} onToggleScheme={toggle} onLogout={() => { setSession(null); setUser(null); window.location.hash = ''; }} />
         </Provider>
       ) : (
-        <Login onLogin={setUser} scheme={scheme} onToggleScheme={toggle} />
+        <PublicRoutes onLogin={setUser} scheme={scheme} onToggleScheme={toggle} />
       )}
       <Snackbar open={message !== null} autoHideDuration={5000} onClose={() => setMessage(null)} message={message} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} sx={{ bottom: { xs: 88, sm: 24 }, pointerEvents: 'none' }} />
     </ThemeProvider>

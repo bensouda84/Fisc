@@ -97,6 +97,8 @@ describe('garde-fou client', () => {
     expect(() => assertClientSafe({ ...okResult, assumptions: [{ ruleId: 'x', label: 'x', kind: 'REAL', status: 'DRAFT', message: 'x' }] })).toThrow(ClientOutputError);
     expect(() => assertClientSafe({ ...okResult, levers: [{ ...lever, sources: [] }] })).toThrow(ClientOutputError);
     expect(() => assertClientSafe({ ...okResult, levers: [{ ...lever, state: 'NOT_COMPUTABLE' }] })).toThrow(ClientOutputError);
+    expect(() => assertClientSafe({ ...okResult, taxSources: [] })).toThrow(ClientOutputError);
+    expect(() => assertClientSafe({ ...okResult, taxSources: [{ ...src, kind: 'TEST' }] })).toThrow(ClientOutputError);
   });
 });
 
@@ -137,5 +139,19 @@ describe('transport JSON', () => {
         }
       }
     }
+  });
+});
+
+describe('source de l’impôt avant opérations', () => {
+  it('l’impôt porte la source du taux, y compris quand tous les leviers sont non calculables', () => {
+    const r = simulate({ profit: 10_000_000n }, snapshot('REAL'), commercial, { mode: 'CLIENT', asOf: AS_OF });
+    expect(r.taxBefore).toBe(2_500_000n);
+    expect(r.taxSources.map((s) => s.ruleId)).toEqual(['is-rate']);
+    expect(r.levers.every((l) => l.state === 'NOT_COMPUTABLE')).toBe(true);
+  });
+  it('pas de source quand l’impôt n’est pas calculé', () => {
+    const r = simulate({}, snapshot('REAL'), commercial, { mode: 'CLIENT', asOf: AS_OF });
+    expect(r.taxBefore).toBeNull();
+    expect(r.taxSources).toEqual([]);
   });
 });

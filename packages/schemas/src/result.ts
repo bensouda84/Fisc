@@ -94,6 +94,8 @@ export interface EngineResult {
   asOf: string;
   registryVersion: string;
   taxBefore: bigint | null;
+  /** Texte du taux utilisé pour l'impôt avant opérations (R2) ; vide si l'impôt n'est pas calculé. */
+  taxSources: SourceRef[];
   taxAfterDeductions: bigint | null;
   levers: LeverResult[];
   gross: Aggregate;
