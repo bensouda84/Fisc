@@ -1,0 +1,62 @@
+[
+  {
+    "id": "test-is-rate",
+    "concept": "IS_RATE",
+    "label": "TEST — taux de l’IS à 25 % (fictif)",
+    "kind": "TEST",
+    "status": "DRAFT",
+    "article": "TEST — article fictif",
+    "page": 1,
+    "effectiveDate": "2026-01-01",
+    "source": "Jeu de données fictif : valide l’arithmétique uniquement",
+    "author": "FISC.CI (initialisation)",
+    "version": 1,
+    "validations": [],
+    "params": { "rate": { "num": "1", "den": "4" } }
+  },
+  {
+    "id": "test-donation-deductibility",
+    "concept": "DONATION_DEDUCTIBILITY",
+    "label": "TEST — dons entièrement déductibles (fictif)",
+    "kind": "TEST",
+    "status": "DRAFT",
+    "article": "TEST — article fictif",
+    "page": 1,
+    "effectiveDate": "2026-01-01",
+    "source": "Jeu de données fictif : valide l’arithmétique uniquement",
+    "author": "FISC.CI (initialisation)",
+    "version": 1,
+    "validations": [],
+    "params": { "deductible": true }
+  },
+  {
+    "id": "test-credit-cdi",
+    "concept": "CREDIT_CDI",
+    "label": "TEST — crédit de 1 000 000 F CFA par CDI (fictif)",
+    "kind": "TEST",
+    "status": "DRAFT",
+    "article": "TEST — article fictif",
+    "page": 1,
+    "effectiveDate": "2026-01-01",
+    "source": "Jeu de données fictif : valide l’arithmétique uniquement",
+    "author": "FISC.CI (initialisation)",
+    "version": 1,
+    "validations": [],
+    "params": { "amountPerHire": "1000000" }
+  },
+  {
+    "id": "test-credit-apprentice",
+    "concept": "CREDIT_APPRENTICE",
+    "label": "TEST — crédit de 500 000 F CFA par apprenti (fictif)",
+    "kind": "TEST",
+    "status": "DRAFT",
+    "article": "TEST — article fictif",
+    "page": 1,
+    "effectiveDate": "2026-01-01",
+    "source": "Jeu de données fictif : valide l’arithmétique uniquement",
+    "author": "FISC.CI (initialisation)",
+    "version": 1,
+    "validations": [],
+    "params": { "amountPerApprentice": "500000" }
+  }
+]

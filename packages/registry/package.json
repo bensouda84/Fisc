@@ -1,0 +1,14 @@
+{
+  "name": "@fisc/registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": { "@fisc/schemas": "workspace:*" },
+  "devDependencies": { "@fisc/engine": "workspace:*" }
+}

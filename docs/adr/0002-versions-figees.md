@@ -10,7 +10,7 @@ Versions stables publiées au jour de la vérification :
 | Paquet | Version | Note |
 |---|---|---|
 | Node.js | 22.22.0 | version présente dans l'environnement ; à confirmer LTS avant le sprint 1 |
-| pnpm | 12.14.0 (l'environnement fournit 10.28.0) | choisir et épingler via `packageManager` |
+| pnpm | **10.28.0 retenu** (12.14.0 publié) | version de l'environnement, épinglée dans `packageManager` ; migration à étudier plus tard |
 | typescript | **7.0.2 publiée, mais 6.0.3 retenue** | `typescript-eslint` 8.71.2 déclare `typescript >=4.8.4 <6.1.0` |
 | vite | 8.3.4 | |
 | react | 19.3.1 | |
