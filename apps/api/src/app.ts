@@ -7,7 +7,7 @@ import {
   RegistryError, diffSnapshots, publishSnapshot, reviseRule, validateRule, verifyAudit,
 } from '@fisc/registry';
 import {
-  CommercialParams, EngineInput, IsoDate, Mode, type EngineResult, type RegistrySnapshot,
+  ClientResultSchema, CommercialParams, EngineInput, EngineResultSchema, IsoDate, Mode, type EngineResult, type RegistrySnapshot,
 } from '@fisc/schemas';
 import type { Config } from './config.ts';
 import type { Db } from './db.ts';
@@ -35,6 +35,8 @@ export interface AppOptions {
 }
 
 const isoDay = (d: Date): string => d.toISOString().slice(0, 10);
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_MAX_FAILURES = 5;
 const DUMMY_HASH = await hashPassword('mot-de-passe-factice-pour-temps-constant');
 
 /** Un client ne voit que les règles REAL au statut CONFIRMED (R1). */
@@ -74,6 +76,16 @@ export async function buildApp({ config, db, now = () => new Date() }: AppOption
     return reply.code(500).send({ error: 'INTERNAL', message: 'Erreur interne. Réessayez plus tard.' });
   });
 
+  /** Limite de débit en mémoire : 5 échecs par adresse et par adresse IP sur 15 minutes. */
+  const failures = new Map<string, number[]>();
+  const keyOf = (email: string, ip: string): string => `${email.toLowerCase()}|${ip}`;
+  const recent = (key: string): number[] => {
+    const t = now().getTime();
+    const list = (failures.get(key) ?? []).filter((x) => t - x < LOGIN_WINDOW_MS);
+    failures.set(key, list);
+    return list;
+  };
+
   const routes: RouteDef<never, never>[] = [];
   function route<B = undefined, Q = undefined>(def: RouteDef<B, Q>): void {
     routes.push(def as unknown as RouteDef<never, never>);
@@ -105,7 +117,10 @@ export async function buildApp({ config, db, now = () => new Date() }: AppOption
   /** Unique point de calcul de l'API : utilisé par /simulate et par l'export PDF (parité). */
   function compute(input: EngineInput, snapshot: RegistrySnapshot, commercial: CommercialParams, mode: Mode, asOf: string): EngineResult {
     const effective = mode === 'CLIENT' ? { ...snapshot, rules: snapshot.rules.filter((r) => r.kind === 'REAL') } : snapshot;
-    return simulate(input, effective, commercial, { mode, asOf });
+    const result = simulate(input, effective, commercial, { mode, asOf });
+    // Ceinture et bretelles : le schéma de sortie client refuse toute règle de TEST, hypothèse ou montant sans source.
+    (mode === 'CLIENT' ? ClientResultSchema : EngineResultSchema).parse(toWire(result));
+    return result;
   }
 
   route({ method: 'get', url: '/health', summary: 'État du service', roles: 'public', handler: async () => ({ ok: true }) });
@@ -113,10 +128,19 @@ export async function buildApp({ config, db, now = () => new Date() }: AppOption
   route({
     method: 'post', url: '/auth/login', summary: 'Connexion', roles: 'public',
     body: z.object({ email: z.string().min(3), password: z.string().min(1) }),
-    handler: async ({ body }) => {
+    handler: async ({ req, reply, body }) => {
+      const key = keyOf(body.email, req.ip);
+      if (recent(key).length >= LOGIN_MAX_FAILURES) {
+        reply.header('retry-after', String(Math.ceil(LOGIN_WINDOW_MS / 1000)));
+        throw new HttpError(429, 'TOO_MANY_ATTEMPTS', 'Trop de tentatives. Réessayez dans quelques minutes.');
+      }
       const user = await store.findUserByEmail(db, body.email);
       const ok = await verifyPassword(body.password, user?.pass_hash ?? DUMMY_HASH);
-      if (!user || !ok) throw new HttpError(401, 'BAD_CREDENTIALS', 'Adresse ou mot de passe incorrect.');
+      if (!user || !ok) {
+        recent(key).push(now().getTime());
+        throw new HttpError(401, 'BAD_CREDENTIALS', 'Adresse ou mot de passe incorrect.');
+      }
+      failures.delete(key);
       const payload: AuthUser = { sub: String(user.id), email: user.email, role: user.role, specialty: user.specialty };
       return { token: app.jwt.sign(payload), user: { email: user.email, display: user.display, role: user.role, specialty: user.specialty } };
     },

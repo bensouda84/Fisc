@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { formatMoney } from '@fisc/engine';
+import { ClientResultSchema, EngineResultSchema } from '@fisc/schemas';
 import { NBSP_TO_SPACE, T1, harness, pdfText, type Harness } from './helpers.ts';
 
 const money = (n: bigint): string => NBSP_TO_SPACE(formatMoney(n));
@@ -38,6 +39,23 @@ describe.skipIf(!process.env.TEST_DATABASE_URL)('API — registre initial (aucun
     expect(JSON.stringify(json)).not.toContain('TEST');
     const reg = await h.call(t, 'GET', '/registry');
     expect(reg.json.rules).toEqual([]);
+  });
+
+  it('les sorties de /simulate respectent les schémas de sortie (interne et client)', async () => {
+    const staff = await h.call(await h.login('consultant@fisc.test'), 'POST', '/simulate', { input: T1 });
+    expect(EngineResultSchema.safeParse(staff.json.result).success).toBe(true);
+    const client = await h.call(await h.login('client@fisc.test'), 'POST', '/simulate', { input: T1 });
+    expect(ClientResultSchema.safeParse(client.json.result).success).toBe(true);
+    // Le même résultat interne ne passe pas pour une sortie client.
+    expect(ClientResultSchema.safeParse(staff.json.result).success).toBe(false);
+  });
+
+  it('limite les tentatives de connexion (429 après 5 échecs) sans bloquer les autres comptes', async () => {
+    for (let i = 0; i < 5; i++) expect((await h.call(null, 'POST', '/auth/login', { email: 'juriste@fisc.test', password: 'faux' })).status).toBe(401);
+    const blocked = await h.call(null, 'POST', '/auth/login', { email: 'juriste@fisc.test', password: 'faux' });
+    expect(blocked.status).toBe(429);
+    expect((await h.call(null, 'POST', '/auth/login', { email: 'juriste@fisc.test', password: 'mot-de-passe-de-test-fictif' })).status).toBe(429);
+    expect((await h.call(null, 'POST', '/auth/login', { email: 'expert@fisc.test', password: 'mot-de-passe-de-test-fictif' })).status).toBe(200);
   });
 
   it('une simulation exploratoire (persist: false) ne laisse aucune trace', async () => {

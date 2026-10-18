@@ -46,4 +46,4 @@ Comptes de démonstration (mot de passe : `SEED_PASSWORD`) : `consultant@`, `cli
 
 ## Sécurité du POC (limites connues)
 
-HTTPS est à terminer devant l'API (reverse proxy). Pas de limitation de débit sur la connexion. Jetons de 8 h non révocables. Mots de passe hachés avec scrypt. Aucune donnée personnelle de salarié nominative n'est saisie : seuls des montants et effectifs agrégés (minimisation).
+HTTPS est à terminer devant l'API (reverse proxy). Limitation de débit de la connexion en mémoire seulement (5 échecs / 15 min, réponse 429). Jetons de 8 h non révocables. Mots de passe hachés avec scrypt. Aucune donnée personnelle de salarié nominative n'est saisie : seuls des montants et effectifs agrégés (minimisation).

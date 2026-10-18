@@ -49,3 +49,41 @@ describe('règle', () => {
     expect(() => Rule.parse({ ...full, status: 'CONFIRMED', validations: [] })).toThrow();
   });
 });
+
+import { ClientResultSchema, EngineResultSchema } from '../src/index.ts';
+
+describe('schéma de sortie du moteur', () => {
+  const base = {
+    mode: 'CLIENT', asOf: '2026-10-18', registryVersion: 'v1.0.0', taxBefore: null, taxAfterDeductions: null,
+    levers: [{ id: 'DONATIONS', label: 'Dons', state: 'NOT_COMPUTABLE', gross: null, outflows: '4000000', net: null, creditExcess: null, reasons: [], sources: [] }],
+    gross: { state: 'NOT_COMPUTABLE', missing: ['DONATIONS'] },
+    outflows: { state: 'COMPLETE', value: '4000000' },
+    unallocatedOutflows: { state: 'COMPLETE', value: '0' },
+    net: { state: 'NOT_COMPUTABLE', missing: ['DONATIONS'] },
+    commission: { state: 'NOT_COMPUTED', reason: { code: 'X', message: 'm' } },
+    blockedRules: [], assumptions: [], warnings: [], disclaimer: 'Non-avis.',
+  };
+  const source = { ruleId: 'r', concept: 'IS_RATE', label: 'Taux', kind: 'REAL', status: 'CONFIRMED', article: 'A', page: 3, effectiveDate: '2026-01-01', source: 'S', registryVersion: 'v1.0.0' };
+
+  it('lit les montants en bigint', () => {
+    expect(EngineResultSchema.parse(base).outflows).toEqual({ state: 'COMPLETE', value: 4_000_000n });
+  });
+  it('accepte une sortie client saine', () => {
+    expect(ClientResultSchema.safeParse(base).success).toBe(true);
+  });
+  it('refuse une sortie client avec source de TEST, hypothèse, faux montant ou montant sans source', () => {
+    const lever = base.levers[0]!;
+    const bad = (patch: object) => ClientResultSchema.safeParse({ ...base, ...patch }).success;
+    expect(bad({ mode: 'INTERNAL' })).toBe(false);
+    expect(bad({ levers: [{ ...lever, state: 'CALCULATED', gross: '1000', sources: [{ ...source, kind: 'TEST' }] }] })).toBe(false);
+    expect(bad({ levers: [{ ...lever, state: 'CALCULATED', gross: '1000', sources: [{ ...source, status: 'DRAFT' }] }] })).toBe(false);
+    expect(bad({ levers: [{ ...lever, state: 'CALCULATED', gross: '1000', sources: [] }] })).toBe(false);
+    expect(bad({ levers: [{ ...lever, gross: '0' }] })).toBe(false);
+    expect(bad({ assumptions: [{ ruleId: 'r', label: 'l', kind: 'REAL', status: 'DRAFT', message: 'm' }] })).toBe(false);
+    expect(bad({ disclaimer: 'règle de TEST' })).toBe(false);
+    expect(bad({ levers: [{ ...lever, state: 'CALCULATED', gross: '1000', sources: [source] }] })).toBe(true);
+  });
+  it('refuse un montant flottant', () => {
+    expect(EngineResultSchema.safeParse({ ...base, taxBefore: '1.5' }).success).toBe(false);
+  });
+});

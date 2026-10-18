@@ -21,24 +21,26 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 | Contrôle | Résultat |
 |---|---|
 | Cas dorés T1–T7 (moteur) | 7/7 verts, plus T1/T6/T7 rejoués par l'API et T3/T4/T7 par l'interface |
-| Tests unitaires et propriétés | schémas 9, moteur 34, registre 14 |
-| Tests API (PostgreSQL réel) | 13 verts |
+| Tests unitaires et propriétés | schémas 13, moteur 34, registre 14 |
+| Tests API (PostgreSQL réel) | 15 verts (dont schémas de sortie interne/client et limitation de débit de la connexion) |
 | Couverture moteur | 95,96 % lignes, 90,82 % branches (seuil 90 %) |
 | Couverture registre | 100 % |
 | Couverture API | 93,7 % lignes, 71,5 % branches (pas de seuil fixé) |
-| Tests de bout en bout Playwright | 12/12 verts |
+| Tests de bout en bout Playwright | 16/16 verts |
 | axe-core (WCAG 2.2 AA, toutes gravités) | 0 violation sur diagnostic, « pourquoi », source, résultat, simulation, export, client, registre (3 onglets, dialogue) |
 | Lighthouse mobile (simulé) | connexion 100/100/100 ; diagnostic 100/100/100 ; résultat 100/100/100 ; simulation 99/100/100 (performance / accessibilité / bonnes pratiques) |
 | Parité écran / PDF | les 6 montants de l'écran se retrouvent à l'identique dans le texte extrait du PDF (test e2e) |
 | Mode client | aucun « TEST » dans la page, dans l'API ni dans le PDF ; aucun montant à la place d'une lacune |
-| Aucun défilement horizontal | 360, 768 et 1440 px, sur les 4 écrans |
+| Aucun défilement horizontal | 320, 360, 768 et 1440 px, sur les 4 écrans ; texte à 200 % ; axe à 320 px |
+| Mouvement réduit | transitions neutralisées (test) |
+| Repères lecteur d'écran | un seul `main`, `nav`, `banner`, lien d'évitement, `lang=fr`, focus sur le titre de chaque étape (test de structure, pas un test avec lecteur d'écran) |
 
 ## Ce qui n'est PAS mesuré
 
 - **« Moins de 5 minutes » et « 4 testeurs sur 5 distinguent brut, décaissements et net »** : ce sont des mesures sur de vraies personnes. Le test automatisé saisit le parcours en ~4 s ; cela prouve qu'il n'y a pas d'étape bloquante, pas le temps d'un humain. **Aucun testeur n'a été sollicité.**
 - **Résultat client réel sourcé** : impossible tant qu'aucune règle réelle n'est confirmée (Q1). Les démonstrations sourcées utilisent des règles fictives « FICTIF-… » confirmées dans la base de test.
 - Lighthouse est mesuré en local avec la limitation réseau simulée de Lighthouse ; un test sur l'hébergement réel reste à faire.
-- axe ne couvre qu'une partie de WCAG 2.2 AA. Vérifié en plus par test : focus visible, cibles de 48 px, absence de défilement horizontal. **Non vérifié** : lecteur d'écran réel, zoom 200 %, mode sombre (non implémenté, seulement le thème clair), préférence de mouvement réduit (règle CSS posée, non testée).
+- axe ne couvre qu'une partie de WCAG 2.2 AA. Vérifié en plus par test : focus visible, cibles de 48 px, absence de défilement horizontal. **Non vérifié** : lecteur d'écran réel (NVDA, VoiceOver), appareils réels, mode sombre (non implémenté).
 - Docker Compose et le workflow GitHub Actions n'ont pas été exécutés dans cet environnement.
 
 ## Décisions prises pendant le sprint
@@ -59,7 +61,7 @@ Exemples de PDF (données fictives) : `docs/examples/`. Captures : `docs/screens
 
 **Designer UX/UI** : l'interface est cohérente et lisible sur 360/768/1440 px. Écarts : thème sombre absent ; MUI et non M3 strict ; la liste « Détail par levier » est longue sur mobile (pas de repli) ; les cartes de synthèse occupent beaucoup de place sur mobile ; la carte registre répète le nom du concept sous le titre.
 
-**Architecte** : pas de limitation de débit sur la connexion ; jetons de 8 h non révocables ; HTTPS à terminer devant l'API ; pas de seuil de couverture sur l'API (branches 71 %) ; schéma Zod du résultat non fait (type TypeScript uniquement) ; `reviveResult` utilise des `any` à la frontière JSON ; le contrat OpenAPI ne décrit pas les réponses.
+**Architecte** : limitation de débit de la connexion en mémoire (5 échecs / 15 min par adresse et IP, perdue au redémarrage, non partagée entre instances) ; jetons de 8 h non révocables ; HTTPS à terminer devant l'API ; pas de seuil de couverture sur l'API (branches 71 %) ; le schéma Zod du résultat existe (`EngineResultSchema`, `ClientResultSchema`) et valide chaque sortie de l'API, mais le type TypeScript du résultat n'en est pas encore dérivé ; `reviveResult` utilise des `any` à la frontière JSON ; le contrat OpenAPI ne décrit pas les réponses.
 
 **Fiscaliste** : aucune règle réelle ; les conventions d'imputation (Q4), de commission globale (Q5) et d'arrondi (Q2) restent à valider ; l'effet fiscal des salaires n'est pas modélisé (annoncé à l'écran et dans le PDF).
 
